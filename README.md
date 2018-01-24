@@ -37,11 +37,6 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-### Run intial migrations
-```bash
-python manage.py migrate
-```
-
 ## Running
 ```bash
 python manage.py runserver
