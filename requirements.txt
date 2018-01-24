@@ -2,3 +2,4 @@ Django==2.0.1
 django-cors-headers==2.1.0
 psycopg2==2.7.3.2
 pytz==2017.3
+-e git+git@github.com:k-nut/django-json-widget.git@vendorize-jsoneditor#egg=django_json_widget

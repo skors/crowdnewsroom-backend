@@ -1,14 +1,10 @@
 from django.contrib import admin
 from django import forms
+from django.contrib.postgres import fields
 from django.utils.safestring import mark_safe
+from django_json_widget.widgets import JSONEditorWidget
 
 from .models import Investigation, Form, FormResponse
-
-
-class FRForm(forms.ModelForm):
-    class Meta:
-        model = FormResponse
-        exclude = ["json"]
 
 
 def rendered_response(obj: FormResponse):
@@ -43,6 +39,12 @@ class FormResponseAdmin(admin.ModelAdmin):
     exclude = ["reply"]
 
 
-admin.site.register(Form)
+class FormAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        fields.JSONField: {'widget': JSONEditorWidget}
+    }
+
+
+admin.site.register(Form, FormAdmin)
 admin.site.register(Investigation)
 admin.site.register(FormResponse, FormResponseAdmin)
