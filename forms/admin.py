@@ -24,11 +24,11 @@ def rendered_response(obj: FormResponse):
     for (name, props) in properties.items():
         content = ""
         if ui_schema.get(name, dict()).get("ui:widget") == "signatureWidget":
-            content += "<img src={}></img>".format(form_data[name])
+            content += "<img src={}></img>".format(form_data.get(name))
         elif props["type"] == "boolean":
-            content += "Yes" if form_data[name] else "No"
+            content += "Yes" if form_data.get(name) else "No"
         else:
-            content += form_data[name]
+            content += form_data.get(name, "")
         response += "<tr><th>{}</th><td>{}</td></tr>".format(props["title"], content)
     response += "</table>"
 
