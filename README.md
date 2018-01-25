@@ -37,6 +37,12 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
+### Get example data
+To load some example data that contains an investigation with a corresponding form you can run
+```bash
+python manage.py loaddata investigation_and_form
+```
+
 ## Running
 ```bash
 python manage.py runserver

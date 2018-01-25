@@ -1,0 +1,80 @@
+[
+{
+  "model": "forms.investigation",
+  "pk": 1,
+  "fields": {
+    "name": "Signable Investigation"
+  }
+},
+{
+  "model": "forms.form",
+  "pk": 1,
+  "fields": {
+    "form_json": {
+      "type": "object",
+      "title": "An example form",
+      "required": [
+        "signature",
+        "email"
+      ],
+      "properties": {
+        "bio": {
+          "type": "string",
+          "title": "Your best family story"
+        },
+        "name": {
+          "type": "string",
+          "title": "Your name"
+        },
+        "email": {
+          "type": "string",
+          "title": "E-Mail"
+        },
+        "children": {
+          "type": "integer",
+          "title": "Number of children"
+        },
+        "signature": {
+          "type": "string",
+          "title": "Signature"
+        },
+        "newsletter": {
+          "type": "boolean",
+          "title": "Subscribe to newsletter"
+        }
+      },
+      "description": "Tell us something about your family"
+    },
+    "ui_schema_json": {
+      "bio": {
+        "ui:widget": "textarea"
+      },
+      "name": {
+        "ui:autofocus": true,
+        "ui:emptyValue": ""
+      },
+      "email": {
+        "ui:help": "Provide your e-mail address so that we can contact you later if we have questions about your answers",
+        "ui:options": {
+          "inputType": "email"
+        }
+      },
+      "children": {
+        "ui:title": "Children",
+        "ui:widget": "updown",
+        "ui:description": "How many children do you have?"
+      },
+      "ui:order": [
+        "name",
+        "*",
+        "signature"
+      ],
+      "signature": {
+        "ui:widget": "signatureWidget"
+      }
+    },
+    "version": 0,
+    "investigation": 1
+  }
+}
+]
