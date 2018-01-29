@@ -1,3 +1,5 @@
+import secrets
+
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 
@@ -17,5 +19,12 @@ class Form(models.Model):
 
 
 class FormResponse(models.Model):
+    STATUSES = (
+        ('D', 'Draft'),
+        ('S', 'Submitted'),
+        ('V', 'Verified')
+    )
     json = JSONField()
     form = models.ForeignKey(Form, on_delete=models.CASCADE)
+    status = models.CharField(max_length=1, choices=STATUSES, default='D')
+    token = models.CharField(max_length=256, db_index=True, default=secrets.token_urlsafe())

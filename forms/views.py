@@ -24,5 +24,9 @@ def form_response(request, investigation_id, form_id):
         response.json = data
         response.form_id = form_id
         response.save()
-        return JsonResponse({})
+        return JsonResponse({"status": "ok", "token": response.token})
 
+
+def form_data(request, token):
+    response = FormResponse.objects.filter(token=token).first()
+    return JsonResponse(model_to_dict(response))
