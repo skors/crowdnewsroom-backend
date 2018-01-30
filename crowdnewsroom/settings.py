@@ -74,21 +74,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'crowdnewsroom.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'crowdnewsroom',
-        'HOST': 'localhost',
-        'PORT': 32770,
-        'USER': 'postgres'
-    }
-}
-
-
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
@@ -131,3 +116,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 
 CORS_ALLOW_HEADERS = default_headers + ('X-FR-Version', 'X-FR-URL')
+
+try:
+    from .local_settings import *  # noqa
+except ImportError:
+    pass

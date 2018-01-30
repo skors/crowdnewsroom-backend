@@ -25,7 +25,9 @@ docker run --name crowdnewsroom-docker -d -p 32770:5432 postgres
 docker exec -it crowdnewsroom-docker createdb -U postgres crowdnewsroom
 ```
 
-If you did not choose docker or set a different path you may need to edit the `DATABASES` config in `crowdnewsroom/settings.py`
+## Settings
+
+Move `crowdnewsroom/local_settings.py.example` to `crowdnewsroom/local_settings.py` and update the settings according to your local environment, in case you are not using docker.
 
 ### Run migrations
 ```bash

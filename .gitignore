@@ -1,2 +1,3 @@
 venv/
 *.pyc
+crowdnewsroom/local_settings.py
