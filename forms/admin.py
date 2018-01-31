@@ -2,7 +2,7 @@ from django.contrib import admin
 from django import forms
 from django.utils.safestring import mark_safe
 
-from .models import Investigation, Form, FormResponse
+from .models import Investigation, Form, FormResponse, FormInstance, Partner
 
 
 class FRForm(forms.ModelForm):
@@ -46,3 +46,5 @@ class FormResponseAdmin(admin.ModelAdmin):
 admin.site.register(Form)
 admin.site.register(Investigation)
 admin.site.register(FormResponse, FormResponseAdmin)
+admin.site.register(Partner)
+admin.site.register(FormInstance)
