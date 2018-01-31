@@ -4,7 +4,7 @@ from django.contrib.postgres import fields
 from django.utils.safestring import mark_safe
 from django_json_widget.widgets import JSONEditorWidget
 
-from .models import Investigation, Form, FormResponse
+from .models import Investigation, Form, FormResponse, FormInstance, Partner
 
 
 def rendered_response(obj: FormResponse):
@@ -48,3 +48,5 @@ class FormAdmin(admin.ModelAdmin):
 admin.site.register(Form, FormAdmin)
 admin.site.register(Investigation)
 admin.site.register(FormResponse, FormResponseAdmin)
+admin.site.register(Partner)
+admin.site.register(FormInstance)

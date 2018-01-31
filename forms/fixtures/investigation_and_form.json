@@ -10,6 +10,14 @@
   "model": "forms.form",
   "pk": 1,
   "fields": {
+    "name": "The first form",
+    "investigation": 1
+  }
+},
+{
+  "model": "forms.forminstance",
+  "pk": 1,
+  "fields": {
     "form_json": {
       "type": "object",
       "title": "An example form",
@@ -74,7 +82,7 @@
       }
     },
     "version": 0,
-    "investigation": 1
+    "form": 1
   }
 }
 ]

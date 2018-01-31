@@ -1,0 +1,72 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}Validate Submission{% endblock %}
+
+{% block content %}
+    <div id="content-main">
+        <h1>Validate Submission</h1>
+        <h2>Content of Response</h2>
+        <table>
+            {% for entry in response.rendered_fields %}
+                <tr>
+                    <th>{{ entry.title }}</th>
+                    {% if entry.type == "text" %}
+                        <td>{{ entry.value }}</td>
+                    {% endif %}
+
+                    {% if entry.type == "image" %}
+                        <td>
+                            <img src="{{ entry.value }}"/>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+
+        <h2>Comments</h2>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Submit"/>
+        </form>
+
+        <ul class="commentList">
+            {% for comment in response.comment_set.all reversed %}
+                <li>
+                    <div class="comment">
+                        <div class="header">
+                            <span class="author">{{ comment.author.first_name }} {{ comment.author.last_name }}</span>
+                            <span class="date">{{ comment.date }}</span>
+                        </div>
+                        <div class="text">
+                            {{ comment.text }}
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <style>
+        .commentList li {
+            list-style-type: none;
+            margin-top: 2em;
+        }
+
+        .comment {
+            width: 400px;
+            border: 1px solid black;
+        }
+
+        .comment .header {
+            display: flex;
+            justify-content: space-between;
+            background: lightblue;
+        }
+
+        .comment .header, .comment .text{
+            padding: .5em;
+        }
+
+    </style>
+{% endblock %}
