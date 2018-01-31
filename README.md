@@ -49,3 +49,10 @@ python manage.py loaddata investigation_and_form
 ```bash
 python manage.py runserver
 ```
+
+## License
+The source code for this project is published under [GNU AGPL License](https://github.com/correctiv/crowdnewsroom-backend/blob/master/LICENSE)
+
+## About
+This project uses [BrowserStack](https://www.browserstack.com/) for cross-browser testing and [Crowdin](https://crowdin.com) for translations. Cheers to these tools to support non-profit and Open Source initiatives.
+
