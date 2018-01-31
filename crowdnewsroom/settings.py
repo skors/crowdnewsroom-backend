@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'corsheaders',
+    'django_json_widget',
     'forms.apps.FormsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
