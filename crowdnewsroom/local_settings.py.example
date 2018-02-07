@@ -12,3 +12,5 @@ DATABASES = {
         'USER': 'postgres'
     }
 }
+
+DEBUG = True
