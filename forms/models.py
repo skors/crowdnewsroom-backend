@@ -83,7 +83,7 @@ class FormResponse(models.Model):
     json = JSONField()
     form_instance = models.ForeignKey(FormInstance, on_delete=models.CASCADE)
     status = models.CharField(max_length=1, choices=STATUSES, default='D')
-    token = models.CharField(max_length=256, db_index=True, default=secrets.token_urlsafe())
+    token = models.CharField(max_length=256, db_index=True, default=secrets.token_urlsafe)
     submission_date = models.DateTimeField()
 
     @staticmethod
