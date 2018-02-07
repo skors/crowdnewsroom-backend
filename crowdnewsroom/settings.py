@@ -115,9 +115,6 @@ STATIC_URL = '/static/'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-
-CORS_ALLOW_HEADERS = default_headers + ('X-FR-Version', 'X-FR-URL')
-
 try:
     from .local_settings import *  # noqa
 except ImportError:
