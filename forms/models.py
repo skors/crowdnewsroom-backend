@@ -1,4 +1,4 @@
-import secrets
+from . import secrets# TODO: Replace with included module once updated to python 3.6
 
 from django.contrib.auth.models import User
 from django.db import models
