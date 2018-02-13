@@ -1,0 +1,23 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}Signatures{% endblock %}
+
+{% block content %}
+    <div id="content-main">
+        <h1>Responses for the investigation</h1>
+        <table>
+            <tr>
+                <td>Link</td>
+                <td>Status</td>
+                <td>Comments</td>
+            </tr>
+            {% for response in responses %}
+                <tr>
+                    <td><a href="{% url "response_details" investigation_id response.id %}">{{ response }}</a></td>
+                    <td>{{ response.get_status_display }}</td>
+                    <td>{{ response.comment_set.count }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

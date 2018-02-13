@@ -36,6 +36,12 @@ class Investigation(models.Model):
     methodology = models.TextField()
     faq = models.TextField()
 
+    class Meta:
+        permissions = (
+            ('view_investigation', 'View investigation'),
+            ('manage_investigation', 'Manage investigation'),
+        )
+
     def __str__(self):
         return self.name
 

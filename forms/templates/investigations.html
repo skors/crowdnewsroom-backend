@@ -1,0 +1,12 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}Signatures{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  <h1>Your Investigations</h1>
+  {% for investigation in investigations %}
+      <li><a href="{% url "investigation_responses" investigation.id %}">{{ investigation }}</a></li>
+  {% endfor %}
+</div>
+{% endblock %}

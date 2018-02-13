@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'guardian'
 ]
 
 MIDDLEWARE = [
@@ -94,6 +95,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # default
+    'guardian.backends.ObjectPermissionBackend',
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
@@ -120,6 +125,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'public/static')
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+DEBUG = True
 try:
     from .local_settings import *  # noqa
 except ImportError:
