@@ -14,7 +14,6 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import dj_database_url
-from corsheaders.defaults import default_headers
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -34,7 +33,6 @@ ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', "").split(",")
 # Application definition
 
 INSTALLED_APPS = [
-    'corsheaders',
     'django_json_widget',
     'forms.apps.FormsConfig',
     'django.contrib.admin',
@@ -122,8 +120,6 @@ DATABASES = {
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'public/static')
-
-CORS_ORIGIN_ALLOW_ALL = True
 
 try:
     from .local_settings import *  # noqa
