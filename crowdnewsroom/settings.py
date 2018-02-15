@@ -125,7 +125,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'public/static')
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-DEBUG = True
 try:
     from .local_settings import *  # noqa
 except ImportError:
