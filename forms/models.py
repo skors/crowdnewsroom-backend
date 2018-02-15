@@ -1,9 +1,11 @@
 from . import secrets# TODO: Replace with included module once updated to python 3.6
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.db.models.aggregates import Func
+from django.dispatch import receiver
+from guardian.shortcuts import assign_perm
 
 
 class ObjectAtPath(Func):
@@ -44,6 +46,19 @@ class Investigation(models.Model):
 
     def __str__(self):
         return self.name
+
+
+@receiver(models.signals.post_save, sender=Investigation)
+def execute_after_save(sender, instance, created, *args, **kwargs):
+    investigation = instance
+    if created:
+        for group_type in ["Editors", "Viewers", "Auditors", "Admins", "Owners"]:
+            group = Group(name="{} - {}".format(investigation.name, group_type))
+            group.save()
+
+            assign_perm("view_investigation", group, investigation)
+            if group_type in ["Admins", "Owners"]:
+                assign_perm("manage_investigation", group, investigation)
 
 
 class Partner(models.Model):
