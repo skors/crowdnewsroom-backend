@@ -50,13 +50,8 @@ def edit_response(request, investigation_id, form_response_id):
 
     if request.method == "POST":
         form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = Comment()
-            comment.author = request.user
-            comment.text = form.cleaned_data.get("comment")
-            comment.date = datetime.datetime.now()
-            comment.form_response_id = response.id
-            comment.save()
+        form.save_with_extra_props(form_response=response, author=request.user)
+
     form = CommentForm()
     return render(request, "edit_form.html", {"response": response,
                                               "form": form})

@@ -1,5 +1,17 @@
-from django import forms
+from django.forms import ModelForm
+from django.utils import timezone
+
+from forms.models import Comment
 
 
-class CommentForm(forms.Form):
-    comment = forms.CharField(widget=forms.Textarea, label="Your comment")
+class CommentForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ["text"]
+
+    def save_with_extra_props(self, **kwargs):
+        comment = self.save(commit=False)
+        comment.date = timezone.now()
+        for (key, value) in kwargs.items():
+            comment.__setattr__(key, value)
+        comment.save()
