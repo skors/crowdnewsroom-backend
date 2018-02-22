@@ -15,7 +15,7 @@
       {% get_obj_perms request.user for investigation as "investigation_perms" %}
 
         {% if "manage_investigation" in investigation_perms %}
-            <a href="{ investigation.id }}">Edit</a>
+            <a href="{{ investigation.id }}">Edit</a>
         {% endif %}
 
       </li>
