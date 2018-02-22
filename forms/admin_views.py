@@ -43,9 +43,10 @@ def list_responses(request, investigation_id):
 @login_required(login_url="/admin/login")
 @permission_required('forms.view_investigation', (Investigation, 'id', 'investigation_id'), return_403=True)
 def edit_response(request, investigation_id, form_response_id):
-    response = FormResponse.objects.select_related('form_instance__form__investigation').get(id=form_response_id)
-    if response.form_instance.form.investigation_id != investigation_id:
+    if not FormResponse.belongs_to_investigation(form_response_id, investigation_id):
         return HttpResponseForbidden("This is not the right Investigation for this ID")
+
+    response = FormResponse.objects.get(id=form_response_id)
 
     if request.method == "POST":
         form = CommentForm(request.POST)

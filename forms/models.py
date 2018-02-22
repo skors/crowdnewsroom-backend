@@ -154,6 +154,11 @@ class FormResponse(models.Model):
                 row["value"] = form_data.get(name, "")
             yield row
 
+    @classmethod
+    def belongs_to_investigation(cls, form_response_id, investigation_id):
+        response = FormResponse.objects.select_related('form_instance__form__investigation').get(id=form_response_id)
+        return response.form_instance.form.investigation_id == investigation_id
+
 
 class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
