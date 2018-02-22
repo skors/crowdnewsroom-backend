@@ -1,0 +1,10 @@
+{% load static %}
+
+<header class="header">
+  <div class="header__container">
+    <a class="header__brand" href="{% url 'index' %}">
+      <img src='{% static 'img/correctiv_logo_reduced.svg' %}' alt='Correctiv'/>
+    </a>
+    {% include 'includes/nav-primary.html' %}
+  </div>
+</header>

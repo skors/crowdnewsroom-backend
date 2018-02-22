@@ -1,0 +1,36 @@
+{% load i18n %}
+
+<footer class="footer">
+  <div class="footer__container">
+
+    {% if request.user.is_authenticated %}
+    <div class="row">
+      <div class="col-md-11">
+        <form action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <small>{% blocktrans with name=request.user %}Logged in as <strong>{{ name }}</strong>{% endblocktrans %}</small>
+          <button type="submit" class="btn btn-link footer__meta-link">
+            {% trans 'Logout' %}
+          </button>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="row" style="margin-top: 3em">
+      <ul class="footer__meta">
+        <li class="footer__meta-item">
+          <a  class="footer__meta-link" href="/impress/">
+            {% trans 'Impress' %}
+          </a>
+        </li>
+        <li class="footer__meta-item">
+          <a  class="footer__meta-link" href="https://correctiv.org">
+            correctiv.org
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</footer>

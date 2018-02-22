@@ -1,0 +1,18 @@
+{% load i18n %}
+
+<div class="nav-primary" id="nav-primary">
+  <ul class="nav-primary__children">
+  {% if request.user.is_authenticated %}
+    <li class="nav-primary__child">
+      <a class="nav-primary__link" href="{% url 'index' %}">
+        {% trans 'Search' %}
+      </a>
+    </li>
+    <li class="nav-primary__child">
+      <a class="nav-primary__link" href="{% url 'logout' %}">
+        {% trans 'Logout' %}
+      </a>
+    </li>
+  {% endif %}
+  </ul>
+</div>

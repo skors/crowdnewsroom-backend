@@ -1,0 +1,35 @@
+{% load i18n %}
+
+{% if page.paginator.num_pages > 1 %}
+
+<section class="pagination">
+  <span class="step-links step-links--left">
+    {% if page.has_previous %}
+    <a href="?{{ get_params }}&p=1">&laquo; {% trans 'first' %}</a>
+    {% else %}
+      &nbsp;
+    {% endif %}
+  </span>
+
+  <span class="step-links step-links--current">
+    {% if page.has_previous %}
+    <a href="?{{ get_params }}&p={{ page.previous_page_number }}">&laquo; {% trans 'prev' %}</a>
+    {% endif %}
+    {% blocktrans with number=page.number total=page.paginator.num_pages %}
+    Page {{ number }} of {{ total }}
+    {% endblocktrans %}
+    {% if page.has_next %}
+    <a href="?{{ get_params }}&p={{ page.next_page_number }}">{% trans 'next' %} &raquo;</a>
+    {% endif %}
+  </span>
+
+  <span class="step-links step-links--right">
+    {% if page.has_next %}
+    <a href="?{{ get_params }}&p={{ page.paginator.num_pages }}">{% trans 'last' %} &raquo;</a>
+    {% else %}
+      &nbsp;
+    {% endif %}
+  </span>
+</section>
+
+{% endif %}
