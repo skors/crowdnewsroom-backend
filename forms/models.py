@@ -48,17 +48,41 @@ class Investigation(models.Model):
         return self.name
 
 
+class UserGroup(models.Model):
+    ROLES = (
+        ('O', 'Owner'),
+        ('A', 'Admin'),
+        ('E', 'Editor'),
+        ('A', 'Auditor'),
+        ('V', 'Viewer')
+    )
+    investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    role = models.CharField(max_length=1, choices=ROLES, default='V')
+
+    def assign_permissions(self):
+        assign_perm("view_investigation", self.group, self.investigation)
+        if self.role in ["O", "A"]:
+            assign_perm("manage_investigation", self.group, self.investigation)
+
+    @classmethod
+    def create_all_for(cls, investigation):
+        for (key, name) in cls.ROLES:
+            group_name = "{} - {}s".format(investigation.name, name)
+            group = Group(name=group_name)
+            group.save()
+
+            user_group = UserGroup(role=key, investigation=investigation, group=group)
+            user_group.save()
+
+            user_group.assign_permissions()
+
+
 @receiver(models.signals.post_save, sender=Investigation)
 def execute_after_save(sender, instance, created, *args, **kwargs):
     investigation = instance
     if created:
-        for group_type in ["Editors", "Viewers", "Auditors", "Admins", "Owners"]:
-            group = Group(name="{} - {}".format(investigation.name, group_type))
-            group.save()
-
-            assign_perm("view_investigation", group, investigation)
-            if group_type in ["Admins", "Owners"]:
-                assign_perm("manage_investigation", group, investigation)
+        UserGroup.create_all_for(investigation)
 
 
 class Partner(models.Model):
