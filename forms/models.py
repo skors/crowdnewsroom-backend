@@ -3,21 +3,8 @@ from . import secrets# TODO: Replace with included module once updated to python
 from django.contrib.auth.models import User, Group
 from django.db import models
 from django.contrib.postgres.fields import JSONField
-from django.db.models.aggregates import Func
 from django.dispatch import receiver
 from guardian.shortcuts import assign_perm
-
-
-class ObjectAtPath(Func):
-    function = '#>'
-    template = "%(expressions)s%(function)s'{%(path)s}'"
-    arity = 1
-
-    def __init__(self, expression, path, **extra):
-        # if path is a list, convert it to a comma separated string
-        if isinstance(path, (list, tuple)):
-            path = ','.join(path)
-        super().__init__(expression, path=path, **extra)
 
 
 class Investigation(models.Model):
@@ -130,13 +117,6 @@ class FormResponse(models.Model):
     status = models.CharField(max_length=1, choices=STATUSES, default='D')
     token = models.CharField(max_length=256, db_index=True, default=secrets.token_urlsafe)
     submission_date = models.DateTimeField()
-
-    @staticmethod
-    def get_signatures():
-        responses = FormResponse.objects \
-                                .annotate(signatures=ObjectAtPath('json', ['formData', 'signature'])) \
-                                .values_list('signatures', flat=True)
-        return responses
 
     def rendered_fields(self):
         form_data = self.json.get("formData")

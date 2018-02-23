@@ -17,9 +17,6 @@ def get_item(dictionary, key, alternative):
     return dictionary.get(key, alternative)
 
 
-@login_required(login_url="/admin/login")
-def signatures(request):
-    return render(request, "signatures.html", {"signatures": FormResponse.get_signatures()})
 
 
 @login_required(login_url="/admin/login")
