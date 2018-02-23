@@ -139,6 +139,10 @@ class FormResponse(models.Model):
         response = FormResponse.objects.select_related('form_instance__form__investigation').get(id=form_response_id)
         return response.form_instance.form.investigation_id == investigation_id
 
+    @classmethod
+    def get_all_for_investigation(cls, investigation_id):
+        return cls.objects.filter(form_instance__form__investigation_id=investigation_id)
+
 
 class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.DO_NOTHING)

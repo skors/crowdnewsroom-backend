@@ -4,16 +4,16 @@
 
 {% block content %}
     <div id="content-main">
-        <h1>Responses for the investigation</h1>
+        <h1>Responses for {{ investigation.name }}</h1>
         <table>
             <tr>
                 <td>Link</td>
                 <td>Status</td>
                 <td>Comments</td>
             </tr>
-            {% for response in responses %}
+            {% for response in formresponse_list %}
                 <tr>
-                    <td><a href="{% url "response_details" investigation_id response.id %}">{{ response }}</a></td>
+                    <td><a href="{% url "response_details" investigation.id response.id %}">{{ response }}</a></td>
                     <td>{{ response.get_status_display }}</td>
                     <td>{{ response.comment_set.count }}</td>
                 </tr>

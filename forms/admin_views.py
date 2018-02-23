@@ -1,54 +1,72 @@
-import datetime
-
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
-from django.shortcuts import render
-from django.template.defaultfilters import register
-from guardian.decorators import permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
+from guardian.mixins import PermissionRequiredMixin
+from django.http import Http404
+from django.shortcuts import get_object_or_404
+from django.views.generic import ListView, DetailView, CreateView
 from guardian.shortcuts import get_objects_for_user
 
 from forms.forms import CommentForm
-from forms.models import FormResponse, Comment, Investigation
+from forms.models import FormResponse, Investigation, Comment
 
 
-@login_required(login_url="/admin/login")
-@register.filter
-def get_item(dictionary, key, alternative):
-    return dictionary.get(key, alternative)
+class InvestigationListView(ListView, LoginRequiredMixin):
+    def get_queryset(self):
+        return get_objects_for_user(self.request.user, 'view_investigation', Investigation)
 
 
+class FormResponseListView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
+    permission_required = 'forms.view_investigation'
+    return_403 = True
+
+    def get_permission_object(self):
+        return Investigation.objects.get(id=self.kwargs.get("investigation_id"))
+
+    def get_queryset(self):
+        return FormResponse.get_all_for_investigation(self.kwargs.get("investigation_id"))
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        investigation = get_object_or_404(Investigation, id=self.kwargs.get("investigation_id"))
+        context['investigation'] = investigation
+        return context
 
 
-@login_required(login_url="/admin/login")
-def list_investigations(request):
-    investigations = get_objects_for_user(request.user, 'view_investigation', Investigation)
-    return render(request, "investigations.html", {"investigations": investigations})
+class FormResponseDetailView(PermissionRequiredMixin, LoginRequiredMixin, DetailView):
+    permission_required = 'forms.view_investigation'
+    return_403 = True
+    model = FormResponse
+    pk_url_kwarg = "response_id"
+
+    def get_permission_object(self):
+        return Investigation.objects.get(id=self.kwargs.get("investigation_id"))
+
+    def dispatch(self, request, *args, **kwargs):
+        form_response_id = self.kwargs[self.pk_url_kwarg]
+        investigation_id = self.kwargs["investigation_id"]
+        if not FormResponse.belongs_to_investigation(form_response_id, investigation_id):
+            raise Http404()
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = CommentForm()
+        return context
 
 
-@login_required(login_url="/admin/login")
-@permission_required('forms.view_investigation', (Investigation, 'id', 'investigation_id'), return_403=True)
-def list_responses(request, investigation_id):
-    investigation = Investigation.objects.get(id=investigation_id)
-    responses = []
-    for form in investigation.form_set.all():
-        for form_instance in form.forminstance_set.all():
-            for response in form_instance.formresponse_set.all():
-                responses.append(response)
-    return render(request, "responses.html", {"responses": responses, "investigation_id": investigation_id})
+class CommentAddView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+    permission_required = 'forms.view_investigation'
+    return_403 = True
+    model = Comment
+    form_class = CommentForm
 
+    def get_success_url(self):
+        return reverse("response_details", kwargs=self.kwargs)
 
-@login_required(login_url="/admin/login")
-@permission_required('forms.view_investigation', (Investigation, 'id', 'investigation_id'), return_403=True)
-def edit_response(request, investigation_id, form_response_id):
-    if not FormResponse.belongs_to_investigation(form_response_id, investigation_id):
-        return HttpResponseForbidden("This is not the right Investigation for this ID")
+    def get_permission_object(self):
+        return Investigation.objects.get(id=self.kwargs.get("investigation_id"))
 
-    response = FormResponse.objects.get(id=form_response_id)
-
-    if request.method == "POST":
-        form = CommentForm(request.POST)
-        form.save_with_extra_props(form_response=response, author=request.user)
-
-    form = CommentForm()
-    return render(request, "edit_form.html", {"response": response,
-                                              "form": form})
+    def form_valid(self, form):
+        response = FormResponse.objects.get(id=self.kwargs.get("response_id"))
+        form.save_with_extra_props(form_response=response, author=self.request.user)
+        return super().form_valid(form)
