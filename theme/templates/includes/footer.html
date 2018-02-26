@@ -2,21 +2,6 @@
 
 <footer class="footer">
   <div class="footer__container">
-
-    {% if request.user.is_authenticated %}
-    <div class="row">
-      <div class="col-md-11">
-        <form action="{% url 'logout' %}" method="post">
-          {% csrf_token %}
-          <small>{% blocktrans with name=request.user %}Logged in as <strong>{{ name }}</strong>{% endblocktrans %}</small>
-          <button type="submit" class="btn btn-link footer__meta-link">
-            {% trans 'Logout' %}
-          </button>
-        </form>
-      </div>
-    </div>
-    {% endif %}
-
     <div class="row" style="margin-top: 3em">
       <ul class="footer__meta">
         <li class="footer__meta-item">

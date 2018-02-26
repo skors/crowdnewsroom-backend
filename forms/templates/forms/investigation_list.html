@@ -1,25 +1,31 @@
-{% extends "admin/base_site.html" %}
+{% extends "base.html" %}
 {% load i18n %}
+{% load guardian_tags %}
+{% load static %}
 
 {% block title %}Investigations{% endblock %}
+{% block headertitle %}{% trans "Your Investigations" %}{% endblock %}
 
-{% block content %}
-
-{% load guardian_tags %}
-
-<div id="content-main">
-  <h1>{% trans "Your Investigations" %}</h1>
-  {% for investigation in investigation_list %}
-      <li>
-          <a href="{% url "investigation_responses" investigation.id %}">{{ investigation }}</a>
-
+{% block main %}
+<div class="investigations">
+    <ul>
+    {% for investigation in investigation_list %}
       {% get_obj_perms request.user for investigation as "investigation_perms" %}
 
-        {% if "manage_investigation" in investigation_perms %}
-            <a href="{{ investigation.id }}">{% trans "Edit" %}</a>
-        {% endif %}
+      <li>
+       <a href="{% url "investigation_responses" investigation.id %}">
+            <div class="status {{ investigation.status }}">
+                <img src="{{ investigation.cover_image }}" alt=""/>
+            </div>
+            <h3>{{ investigation.name }}</h3>
 
+            {% if "manage_investigation" in investigation_perms %}
+                <a href="{{ investigation.id }}">{% trans "Edit" %}</a>
+            {% endif %}
+        </a>
       </li>
   {% endfor %}
+    </ul>
 </div>
+
 {% endblock %}

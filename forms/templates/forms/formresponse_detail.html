@@ -1,13 +1,14 @@
-{% extends "admin/base_site.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 
 {% block title %}{% trans "Validate Submission" %}{% endblock %}
+{% block headertitle %}{% trans "Validate Submission" %}{% endblock %}
 
-{% block content %}
-    <div id="content-main">
-        <h1>{% trans "Validate Submission" %}</h1>
+
+{% block main %}
+    <div class="formresponse-details">
         <h2>{% trans "Content of Response" %}</h2>
-        <table>
+        <table class="formresponse">
             {% for entry in formresponse.rendered_fields %}
                 <tr>
                     <th>{{ entry.title }}</th>
@@ -47,27 +48,4 @@
             {% endfor %}
         </ul>
     </div>
-
-    <style>
-        .commentList li {
-            list-style-type: none;
-            margin-top: 2em;
-        }
-
-        .comment {
-            width: 400px;
-            border: 1px solid black;
-        }
-
-        .comment .header {
-            display: flex;
-            justify-content: space-between;
-            background: lightblue;
-        }
-
-        .comment .header, .comment .text{
-            padding: .5em;
-        }
-
-    </style>
 {% endblock %}

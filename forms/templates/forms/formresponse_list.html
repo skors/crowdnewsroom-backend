@@ -1,14 +1,16 @@
-{% extends "admin/base_site.html" %}
+{% extends "./investigation_list.html" %}
 {% load i18n %}
 
 {% block title %}{% trans "Responses" %}{% endblock %}
+{% block headertitle %}
+    {% blocktrans with name=investigation.name %}
+        Responses for {{ name }}
+    {% endblocktrans %}
+{% endblock %}
 
-{% block content %}
-    <div id="content-main">
+{% block main %}
+    <div>
         <h1>
-        {% blocktrans with name=investigation.name %}
-            Responses for {{ name }}
-        {% endblocktrans %}
         </h1>
         <table>
             <tr>

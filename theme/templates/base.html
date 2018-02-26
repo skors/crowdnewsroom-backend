@@ -1,4 +1,6 @@
 {% load static %}
+{% load i18n %}
+{% load theme_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -6,13 +8,31 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{% block head-title %}akhaten{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/correctiv.css' %}" type="text/css" media="screen" title="no title" charset="utf-8">
+    <title>{% block head-title %}Crowndewsroom{% endblock %}</title>
     {% block head %}{% endblock %}
+    {% webpack_bundle "css" %}
   </head>
   <body>
 
-    {% include 'includes/header.html' %}
+    <header>
+        <nav>
+            <div class="wrapper">
+                 <a class="headerlogo" href="{% url 'index' %}"></a>
+
+                 {% if request.user.is_authenticated %}
+                     <div class="user">
+                        {% blocktrans with name=request.user %}<span class="name">{{ name }}</span>{% endblocktrans %}
+                         <img src="https://placehold.it/30x30" alt="">
+                     </div>
+                {% endif %}
+            </div>
+        </nav>
+        <div class="title">
+            <h2>
+                {% block headertitle %}Title{% endblock %}
+            </h2>
+        </div>
+    </header>
 
     <main class="page">
       {% include 'includes/messages.html' %}
@@ -20,5 +40,8 @@
     </main>
 
     {% include 'includes/footer.html' %}
+
+    {% webpack_bundle "js" %}
+
   </body>
 </html>

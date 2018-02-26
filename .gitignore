@@ -1,3 +1,5 @@
 venv/
 *.pyc
 crowdnewsroom/local_settings.py
+public/
+theme/node_modules/
