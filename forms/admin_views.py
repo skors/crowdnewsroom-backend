@@ -1,13 +1,26 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
+from django.views.generic.detail import SingleObjectMixin
 from guardian.mixins import PermissionRequiredMixin
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView
 from guardian.shortcuts import get_objects_for_user
+from django.utils.translation import gettext as _
+
 
 from forms.forms import CommentForm
 from forms.models import FormResponse, Investigation, Comment
+
+
+class BreadCrumbMixin(object):
+    def get_breadcrumbs(self):
+        return []
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['breadcrumbs'] = self.get_breadcrumbs()
+        return context
 
 
 class InvestigationListView(ListView, LoginRequiredMixin):
@@ -15,9 +28,16 @@ class InvestigationListView(ListView, LoginRequiredMixin):
         return get_objects_for_user(self.request.user, 'view_investigation', Investigation)
 
 
-class FormResponseListView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
+class FormResponseListView(PermissionRequiredMixin, LoginRequiredMixin, BreadCrumbMixin, ListView):
     permission_required = 'forms.view_investigation'
     return_403 = True
+
+    def get_breadcrumbs(self):
+        investigation = self.get_permission_object()
+        return [
+            (_("Investigations"), reverse("investigation_list")),
+            (investigation.name, reverse("investigation_responses", kwargs={"investigation_id": investigation.id})),
+        ]
 
     def get_permission_object(self):
         return Investigation.objects.get(id=self.kwargs.get("investigation_id"))
@@ -32,7 +52,7 @@ class FormResponseListView(PermissionRequiredMixin, LoginRequiredMixin, ListView
         return context
 
 
-class FormResponseDetailView(PermissionRequiredMixin, LoginRequiredMixin, DetailView):
+class FormResponseDetailView(PermissionRequiredMixin, LoginRequiredMixin, BreadCrumbMixin, DetailView):
     permission_required = 'forms.view_investigation'
     return_403 = True
     model = FormResponse
@@ -52,6 +72,15 @@ class FormResponseDetailView(PermissionRequiredMixin, LoginRequiredMixin, Detail
         context = super().get_context_data(**kwargs)
         context['form'] = CommentForm()
         return context
+
+    def get_breadcrumbs(self):
+        investigation = Investigation.objects.get(id=self.kwargs.get("investigation_id"))
+        return [
+            (_("Investigations"), reverse("investigation_list")),
+            (investigation.name, reverse("investigation_responses", kwargs={"investigation_id": investigation.id})),
+            (_("This response"), reverse("response_details", kwargs={"investigation_id": investigation.id,
+                                                                     "response_id": self.object.id})),
+        ]
 
 
 class CommentAddView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):

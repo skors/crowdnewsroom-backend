@@ -1,0 +1,7 @@
+<nav class="breadcrumbs">
+    <ol>
+        {% for name, url in breadcrumbs %}
+        <li><a href="{{url}}">{{ name }}</a></li>
+        {% endfor %}
+    </ol>
+</nav>
