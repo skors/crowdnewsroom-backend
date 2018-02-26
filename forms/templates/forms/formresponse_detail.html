@@ -1,11 +1,12 @@
 {% extends "admin/base_site.html" %}
+{% load i18n %}
 
-{% block title %}Validate Submission{% endblock %}
+{% block title %}{% trans "Validate Submission" %}{% endblock %}
 
 {% block content %}
     <div id="content-main">
-        <h1>Validate Submission</h1>
-        <h2>Content of Response</h2>
+        <h1>{% trans "Validate Submission" %}</h1>
+        <h2>{% trans "Content of Response" %}</h2>
         <table>
             {% for entry in formresponse.rendered_fields %}
                 <tr>
@@ -27,7 +28,7 @@
         <form action="{% url 'response_details_comments' investigation_id=formresponse.form_instance.form.investigation_id response_id=formresponse.id %}" method="post">
             {% csrf_token %}
             {{ form }}
-            <input type="submit" value="Submit"/>
+            <input type="submit" value="{% trans "Comment" %}"/>
         </form>
 
         <ul class="commentList">

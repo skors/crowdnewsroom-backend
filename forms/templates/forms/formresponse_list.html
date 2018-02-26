@@ -1,15 +1,20 @@
 {% extends "admin/base_site.html" %}
+{% load i18n %}
 
-{% block title %}Signatures{% endblock %}
+{% block title %}{% trans "Responses" %}{% endblock %}
 
 {% block content %}
     <div id="content-main">
-        <h1>Responses for {{ investigation.name }}</h1>
+        <h1>
+        {% blocktrans with name=investigation.name %}
+            Responses for {{ name }}
+        {% endblocktrans %}
+        </h1>
         <table>
             <tr>
-                <td>Link</td>
-                <td>Status</td>
-                <td>Comments</td>
+                <td>{% trans "Link" %}</td>
+                <td>{% trans "Status" %}</td>
+                <td>{% trans "Comments" %}</td>
             </tr>
             {% for response in formresponse_list %}
                 <tr>

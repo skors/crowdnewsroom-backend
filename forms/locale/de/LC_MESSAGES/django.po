@@ -1,0 +1,123 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-02-26 11:53+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: forms/models.py:13 forms/models.py:85 forms/models.py:111
+msgid "Draft"
+msgstr ""
+
+#: forms/models.py:14 forms/models.py:87
+msgid "Published"
+msgstr ""
+
+#: forms/models.py:15 forms/models.py:89
+msgid "Archived"
+msgstr ""
+
+#: forms/models.py:31
+msgid "View investigation"
+msgstr ""
+
+#: forms/models.py:32
+msgid "Manage investigation"
+msgstr ""
+
+#: forms/models.py:41
+msgid "Owner"
+msgstr ""
+
+#: forms/models.py:42
+msgid "Admin"
+msgstr ""
+
+#: forms/models.py:43
+msgid "Editor"
+msgstr ""
+
+#: forms/models.py:44
+msgid "Auditor"
+msgstr ""
+
+#: forms/models.py:45
+msgid "Viewer"
+msgstr ""
+
+#: forms/models.py:86
+msgid "Unlisted"
+msgstr ""
+
+#: forms/models.py:88
+msgid "Closed"
+msgstr ""
+
+#: forms/models.py:112
+msgid "Submitted"
+msgstr ""
+
+#: forms/models.py:113
+msgid "Verified"
+msgstr ""
+
+#: forms/models.py:114
+msgid "Invalid"
+msgstr ""
+
+#: forms/templates/forms/formresponse_detail.html:4
+#: forms/templates/forms/formresponse_detail.html:8
+msgid "Validate Submission"
+msgstr ""
+
+#: forms/templates/forms/formresponse_detail.html:9
+msgid "Content of Response"
+msgstr ""
+
+#: forms/templates/forms/formresponse_detail.html:31
+msgid "Comment"
+msgstr ""
+
+#: forms/templates/forms/formresponse_list.html:4
+msgid "Responses"
+msgstr ""
+
+#: forms/templates/forms/formresponse_list.html:9
+#, python-format
+msgid ""
+"\n"
+"            Responses for %(name)s\n"
+"        "
+msgstr ""
+
+#: forms/templates/forms/formresponse_list.html:15
+msgid "Link"
+msgstr ""
+
+#: forms/templates/forms/formresponse_list.html:16
+msgid "Status"
+msgstr ""
+
+#: forms/templates/forms/formresponse_list.html:17
+msgid "Comments"
+msgstr ""
+
+#: forms/templates/forms/investigation_list.html:11
+msgid "Your Investigations"
+msgstr ""
+
+#: forms/templates/forms/investigation_list.html:19
+msgid "Edit"
+msgstr ""

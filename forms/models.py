@@ -1,5 +1,6 @@
-from . import secrets# TODO: Replace with included module once updated to python 3.6
+from . import secrets  # TODO: Replace with included module once updated to python 3.6
 
+from django.utils.translation import gettext as _
 from django.contrib.auth.models import User, Group
 from django.db import models
 from django.contrib.postgres.fields import JSONField
@@ -9,9 +10,9 @@ from guardian.shortcuts import assign_perm
 
 class Investigation(models.Model):
     STATUSES = (
-        ('D', 'Draft'),
-        ('P', 'Published'),
-        ('A', 'Archived')
+        ('D', _('Draft')),
+        ('P', _('Published')),
+        ('A', _('Archived'))
     )
     name = models.CharField(max_length=200)
     cover_image = models.FileField(blank=True, null=True, default=None)
@@ -27,8 +28,8 @@ class Investigation(models.Model):
 
     class Meta:
         permissions = (
-            ('view_investigation', 'View investigation'),
-            ('manage_investigation', 'Manage investigation'),
+            ('view_investigation', _('View investigation')),
+            ('manage_investigation', _('Manage investigation')),
         )
 
     def __str__(self):
@@ -37,11 +38,11 @@ class Investigation(models.Model):
 
 class UserGroup(models.Model):
     ROLES = (
-        ('O', 'Owner'),
-        ('A', 'Admin'),
-        ('E', 'Editor'),
-        ('A', 'Auditor'),
-        ('V', 'Viewer')
+        ('O', _('Owner')),
+        ('A', _('Admin')),
+        ('E', _('Editor')),
+        ('A', _('Auditor')),
+        ('V', _('Viewer'))
     )
     investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
@@ -81,11 +82,11 @@ class Partner(models.Model):
 
 class Form(models.Model):
     STATUSES = (
-        ('D', 'Draft'),
-        ('U', 'Unlisted'),
-        ('P', 'Published'),
-        ('C', 'Closed'),
-        ('A', 'Archived')
+        ('D', _('Draft')),
+        ('U', _('Unlisted')),
+        ('P', _('Published')),
+        ('C', _('Closed')),
+        ('A', _('Archived'))
     )
     name = models.CharField(max_length=200)
     status = models.CharField(max_length=1, choices=STATUSES, default='D')
@@ -107,10 +108,10 @@ class FormInstance(models.Model):
 
 class FormResponse(models.Model):
     STATUSES = (
-        ('D', 'Draft'),
-        ('S', 'Submitted'),
-        ('V', 'Verified'),
-        ('I', 'Invalid')
+        ('D', _('Draft')),
+        ('S', _('Submitted')),
+        ('V', _('Verified')),
+        ('I', _('Invalid'))
     )
     json = JSONField()
     form_instance = models.ForeignKey(FormInstance, on_delete=models.CASCADE)
