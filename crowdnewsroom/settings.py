@@ -14,6 +14,7 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import dj_database_url
+import raven
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -42,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'guardian'
+    'guardian',
+    'raven.contrib.django.raven_compat',
 ]
 
 MIDDLEWARE = [
@@ -124,6 +126,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'public/static')
 
 LOGIN_REDIRECT_URL = "/forms/"
 LOGIN_URL = '/login'
+
+RAVEN_CONFIG = {
+    'dsn': os.environ.get("SENTRY_DNS"),
+    'release': raven.fetch_git_sha(os.path.abspath(os.curdir)),
+}
 
 try:
     from .local_settings import *  # noqa
