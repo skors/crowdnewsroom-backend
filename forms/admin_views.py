@@ -4,12 +4,12 @@ from django.views.generic.detail import SingleObjectMixin
 from guardian.mixins import PermissionRequiredMixin
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from guardian.shortcuts import get_objects_for_user
 from django.utils.translation import gettext as _
 
 
-from forms.forms import CommentForm
+from forms.forms import CommentForm, FormResponseStatusForm
 from forms.models import FormResponse, Investigation, Comment
 
 
@@ -70,7 +70,8 @@ class FormResponseDetailView(PermissionRequiredMixin, LoginRequiredMixin, BreadC
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = CommentForm()
+        context['comment_form'] = CommentForm()
+        context['status_form'] = FormResponseStatusForm(instance=self.object)
         return context
 
     def get_breadcrumbs(self):
@@ -99,3 +100,17 @@ class CommentAddView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
         response = FormResponse.objects.get(id=self.kwargs.get("response_id"))
         form.save_with_extra_props(form_response=response, author=self.request.user)
         return super().form_valid(form)
+
+
+class FormResponseStatusView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
+    permission_required = 'forms.manage_investigation'
+    return_403 = True
+    model = FormResponse
+    form_class = FormResponseStatusForm
+    pk_url_kwarg = "response_id"
+
+    def get_success_url(self):
+        return reverse("response_details", kwargs=self.kwargs)
+
+    def get_permission_object(self):
+        return Investigation.objects.get(id=self.kwargs.get("investigation_id"))

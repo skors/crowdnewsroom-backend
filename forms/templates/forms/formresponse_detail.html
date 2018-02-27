@@ -25,10 +25,17 @@
             {% endfor %}
         </table>
 
+        <form action="{% url 'response_details_status' investigation_id=formresponse.form_instance.form.investigation_id response_id=formresponse.id %}" method="post">
+            {% csrf_token %}
+            {{ status_form }}
+            <input type="submit" value="{% trans "Set status" %}"/>
+        </form>
+
+
         <h2>Comments</h2>
         <form action="{% url 'response_details_comments' investigation_id=formresponse.form_instance.form.investigation_id response_id=formresponse.id %}" method="post">
             {% csrf_token %}
-            {{ form }}
+            {{ comment_form }}
             <input type="submit" value="{% trans "Comment" %}"/>
         </form>
 
