@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.auth import views
+from django.http import HttpResponseRedirect
 from django.urls import path, include
 
 urlpatterns = [
@@ -22,4 +23,5 @@ urlpatterns = [
     path('forms/', include('forms.urls')),
     path('login/', views.LoginView.as_view(), name='login'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
+    path('', lambda r: HttpResponseRedirect('/forms/admin/investigations')),
 ]
