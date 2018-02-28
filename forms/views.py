@@ -8,10 +8,6 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Form, FormResponse, FormInstance
 
 
-def index(request):
-    return HttpResponse("Hello, this is the index!")
-
-
 def form(request, investigation_id, form_instance_id):
     form_instance = FormInstance.objects.get(id=form_instance_id)
     return JsonResponse(model_to_dict(form_instance))
