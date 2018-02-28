@@ -4,7 +4,7 @@
   <ul class="nav-primary__children">
   {% if request.user.is_authenticated %}
     <li class="nav-primary__child">
-      <a class="nav-primary__link" href="{% url 'index' %}">
+      <a class="nav-primary__link" href="{% url 'investigation_list' %}">
         {% trans 'Search' %}
       </a>
     </li>
