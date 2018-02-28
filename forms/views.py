@@ -20,7 +20,7 @@ def form(request, investigation_id, form_instance_id):
 @csrf_exempt
 def form_response(request, investigation_id, form_instance_id):
     if request.method == "POST":
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
         response = FormResponse()
         response.json = data
         response.form_instance_id = form_instance_id
