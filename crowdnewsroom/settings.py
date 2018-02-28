@@ -129,7 +129,7 @@ LOGIN_URL = '/login'
 
 RAVEN_CONFIG = {
     'dsn': os.environ.get("SENTRY_DNS"),
-    'release': raven.fetch_git_sha(os.path.abspath(os.curdir)),
+    'release': raven.fetch_git_sha(os.path.abspath(os.path.join(__file__, '../..'))),
 }
 
 try:
