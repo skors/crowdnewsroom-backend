@@ -1,3 +1,6 @@
+import os
+from django.core.mail import send_mail
+
 from . import secrets  # TODO: Replace with included module once updated to python 3.6
 
 from django.utils.translation import gettext as _
@@ -117,6 +120,7 @@ class FormResponse(models.Model):
     form_instance = models.ForeignKey(FormInstance, on_delete=models.CASCADE)
     status = models.CharField(max_length=1, choices=STATUSES, default='D')
     token = models.CharField(max_length=256, db_index=True, default=secrets.token_urlsafe)
+    email = models.EmailField()
     submission_date = models.DateTimeField()
 
     def rendered_fields(self):
