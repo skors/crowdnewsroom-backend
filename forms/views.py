@@ -27,7 +27,7 @@ class FormResponseSerializer(ModelSerializer):
 class FormResponseCreateSerializer(ModelSerializer):
     class Meta:
         model = FormResponse
-        fields = ("json", )
+        fields = ("json", "email")
 
     def create(self, validated_data, *args, **kwargs):
         fr = FormResponse(**validated_data)
