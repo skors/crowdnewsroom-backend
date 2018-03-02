@@ -1,14 +1,18 @@
+from django.conf.urls import url
 from django.urls import path
+from django.views.decorators.csrf import csrf_exempt
 
 from forms import admin_views
 from forms.admin_views import InvestigationListView, FormResponseListView, FormResponseDetailView, CommentAddView, \
     FormResponseStatusView
+from forms.views import FormInstanceDetail, ApiFormResponseDetail, FormResponseCreate
 from . import views
 
 urlpatterns = [
-    path('investigations/<int:investigation_id>/forms/<int:form_instance_id>', views.form, name="form"),
-    path('investigations/<int:investigation_id>/forms/<int:form_instance_id>/responses', views.form_response, name="form_response"),
-    path('responses/<token>', views.form_data, name="form_data"),
+    path('investigations/<int:investigation_id>/forms/<int:id>', FormInstanceDetail.as_view(), name="form"),
+    path('investigations/<int:investigation_id>/forms/<int:form_instance_id>/responses', FormResponseCreate.as_view(), name="form_response"),
+    path('form_instances/<pk>', FormInstanceDetail.as_view()),
+    path('responses/<token>', ApiFormResponseDetail.as_view()),
 
     path('admin/investigations', InvestigationListView.as_view(), name="investigation_list"),
     path('admin/investigations/<int:investigation_id>/responses', FormResponseListView.as_view(), name="investigation_responses"),
