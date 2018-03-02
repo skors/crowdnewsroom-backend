@@ -37,7 +37,6 @@ class FormResponseCreateSerializer(ModelSerializer):
 
     def create(self, validated_data, *args, **kwargs):
         fr = FormResponse(**validated_data)
-        print(validated_data)
         fr.submission_date = datetime.datetime.now()
         # TODO: There must be a better way to do this than the following line
         fr.form_instance_id = self.context['request'].parser_context["kwargs"]["form_instance_id"]
