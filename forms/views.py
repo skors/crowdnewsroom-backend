@@ -1,18 +1,9 @@
 import datetime
-import json
 
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.forms import model_to_dict
-from django.http import HttpResponse, JsonResponse, Http404
-from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import CreateView
-from guardian.mixins import PermissionRequiredMixin
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.serializers import HyperlinkedModelSerializer, Serializer, ModelSerializer
-from rest_framework.views import APIView
+from rest_framework import generics, mixins
+from rest_framework.serializers import ModelSerializer
 
-from .models import Form, FormResponse, FormInstance
+from .models import FormResponse, FormInstance
 
 
 class FormSerializer(ModelSerializer):
@@ -21,17 +12,10 @@ class FormSerializer(ModelSerializer):
         fields = "__all__"
 
 
-class FormInstanceDetail(APIView):
-    def get_object(self, pk):
-        try:
-            return FormInstance.objects.get(id=pk)
-        except FormInstance.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        form = self.get_object(pk)
-        serializer = FormSerializer(form)
-        return Response(serializer.data)
+class FormInstanceDetail(generics.RetrieveAPIView):
+    queryset = FormInstance
+    serializer_class = FormSerializer
+    lookup_field = "id"
 
 
 class FormResponseSerializer(ModelSerializer):
@@ -39,38 +23,31 @@ class FormResponseSerializer(ModelSerializer):
         model = FormResponse
         fields = "__all__"
 
-    def create(self, validated_data):
-        return
+
+class FormResponseCreateSerializer(ModelSerializer):
+    class Meta:
+        model = FormResponse
+        fields = ("json", )
+
+    def create(self, validated_data, *args, **kwargs):
+        fr = FormResponse(**validated_data)
+        print(validated_data)
+        fr.submission_date = datetime.datetime.now()
+        # TODO: There must be a better way to do this than the following line
+        fr.form_instance_id = self.context['request'].parser_context["kwargs"]["form_instance_id"]
+        fr.save()
+        return fr
 
 
-class ApiFormResponseDetail(APIView):
-    def get_object(self, pk):
-        try:
-            return FormResponse.objects.get(token=pk)
-        except FormInstance.DoesNotExist:
-            raise Http404
+class ApiFormResponseDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = FormResponse
+    serializer_class = FormResponseSerializer
+    lookup_field = "token"
 
-    def get(self, request, pk, format=None):
-        form = self.get_object(pk)
-        serializer = FormResponseSerializer(form)
-        return Response(serializer.data)
 
-    def post(self, request, format=None, **kwargs):
-        print(request.data)
-        serializer = FormResponseSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class FormResponseCreate(mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = FormResponse
+    serializer_class = FormResponseCreateSerializer
 
-@csrf_exempt
-def form_response(request, investigation_id, form_instance_id):
-    if request.method == "POST":
-        data = json.loads(request.body.decode('utf-8'))
-        response = FormResponse()
-        response.json = data
-        response.form_instance_id = form_instance_id
-        response.submission_date = datetime.datetime.now()
-        response.save()
-        return JsonResponse({"status": "ok", "token": response.token})
-
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
