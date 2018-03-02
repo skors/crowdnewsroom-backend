@@ -9,7 +9,7 @@ from forms.views import FormInstanceDetail, ApiFormResponseDetail, FormResponseC
 from . import views
 
 urlpatterns = [
-    path('investigations/<int:investigation_id>/forms/<int:id>', FormInstanceDetail.as_view(), name="form"),
+    path('investigations/<int:investigation_id>/forms/<int:form_id>', FormInstanceDetail.as_view(), name="form"),
     path('investigations/<int:investigation_id>/forms/<int:form_instance_id>/responses', FormResponseCreate.as_view(), name="form_response"),
     path('form_instances/<pk>', FormInstanceDetail.as_view()),
     path('responses/<token>', ApiFormResponseDetail.as_view()),

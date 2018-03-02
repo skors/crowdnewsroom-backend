@@ -13,9 +13,16 @@ class FormSerializer(ModelSerializer):
 
 
 class FormInstanceDetail(generics.RetrieveAPIView):
-    queryset = FormInstance
     serializer_class = FormSerializer
-    lookup_field = "id"
+    lookup_url_kwarg = "form_id"
+
+    def get_object(self, *args, **kwargs):
+        form_id = self.kwargs.get("form_id")
+        form_instance = FormInstance.objects\
+            .filter(form_id=form_id) \
+            .order_by("-version") \
+            .first()
+        return form_instance
 
 
 class FormResponseSerializer(ModelSerializer):
