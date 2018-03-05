@@ -3,3 +3,4 @@ venv/
 crowdnewsroom/local_settings.py
 public/
 theme/node_modules/
+*.mo
