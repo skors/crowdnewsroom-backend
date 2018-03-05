@@ -28,6 +28,7 @@ class FormResponseSerializer(ModelSerializer):
     class Meta:
         model = FormResponse
         fields = "__all__"
+        read_only_fields = ("submission_date", "form_instance")
 
 
 class FormResponseCreateSerializer(ModelSerializer):
