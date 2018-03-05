@@ -16,7 +16,7 @@ module.exports = (options) => {
       './src/scripts/index'
     ],
     output: {
-      publicPath: 'http://127.0.0.1:1337/',
+      publicPath: 'http://127.0.0.1:1339/',
       path: Path.join(__dirname, 'static', 'js'),
       filename: 'bundle-[hash].min.js'
     },

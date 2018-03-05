@@ -12,10 +12,10 @@ TEMPLATES = {
     'js': '<script type="text/javascript" src="{}"></script>',
     'css': '<link type="text/css" href="{}" rel="stylesheet" />'
 }
-HOT_SERVER = 'http://127.0.0.1:1337/{}'
+HOT_SERVER = 'http://127.0.0.1:1339/{}'
 
 
-def _check_webpack_running(port=1337):
+def _check_webpack_running(port=1339):
     """check if webpack is running"""
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     result = sock.connect_ex(('127.0.0.1', port))
