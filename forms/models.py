@@ -111,14 +111,13 @@ class FormInstance(models.Model):
 
 class FormResponse(models.Model):
     STATUSES = (
-        ('D', _('Draft')),
         ('S', _('Submitted')),
         ('V', _('Verified')),
         ('I', _('Invalid'))
     )
     json = JSONField()
     form_instance = models.ForeignKey(FormInstance, on_delete=models.CASCADE)
-    status = models.CharField(max_length=1, choices=STATUSES, default='D')
+    status = models.CharField(max_length=1, choices=STATUSES, default='S')
     token = models.CharField(max_length=256, db_index=True, default=secrets.token_urlsafe)
     email = models.EmailField()
     submission_date = models.DateTimeField()
