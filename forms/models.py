@@ -216,9 +216,10 @@ class FormResponse(models.Model):
 def execute_after_save(sender, instance, created, *args, **kwargs):
     form_response = instance
     if created:
-        contributor = User(email=form_response.email)
-        contributor.set_unusable_password()
-        contributor.save()
+        contributor, user_created = User.objects.get_or_create(email=form_response.email)
+        if user_created:
+            contributor.set_unusable_password()
+            contributor.save()
         assign_perm("edit_response", contributor, form_response)
 
 
