@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 from . import secrets  # TODO: Replace with included module once updated to python 3.6
 
 from django.utils.translation import gettext as _
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group, AbstractUser, BaseUserManager
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.dispatch import receiver
@@ -39,6 +39,13 @@ class Investigation(models.Model):
         return self.name
 
 
+@receiver(models.signals.post_save, sender=Investigation)
+def execute_after_save(sender, instance, created, *args, **kwargs):
+    investigation = instance
+    if created:
+        UserGroup.create_all_for(investigation)
+
+
 class UserGroup(models.Model):
     ROLES = (
         ('O', _('Owner')),
@@ -69,11 +76,48 @@ class UserGroup(models.Model):
             user_group.assign_permissions()
 
 
-@receiver(models.signals.post_save, sender=Investigation)
-def execute_after_save(sender, instance, created, *args, **kwargs):
-    investigation = instance
-    if created:
-        UserGroup.create_all_for(investigation)
+class UserManager(BaseUserManager):
+    """Define a model manager for User model with no username field."""
+
+    use_in_migrations = True
+
+    def _create_user(self, email, password, **extra_fields):
+        """Create and save a User with the given email and password."""
+        if not email:
+            raise ValueError('The given email must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, password=None, **extra_fields):
+        """Create and save a regular User with the given email and password."""
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(email, password, **extra_fields)
+
+    def create_superuser(self, email, password, **extra_fields):
+        """Create and save a SuperUser with the given email and password."""
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self._create_user(email, password, **extra_fields)
+
+
+class User(AbstractUser):
+    username = None
+    email = models.EmailField(_('email address'), unique=True)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    objects = UserManager()
 
 
 class Partner(models.Model):
@@ -133,6 +177,11 @@ class FormResponse(models.Model):
     email = models.EmailField()
     submission_date = models.DateTimeField()
 
+    class Meta:
+        permissions = (
+            ('edit_response', _('Edit response')),
+        )
+
     def rendered_fields(self):
         form_data = self.json.get("formData")
         ui_schema = self.json.get("uiSchema")
@@ -161,6 +210,16 @@ class FormResponse(models.Model):
     @classmethod
     def get_all_for_form(cls, form):
         return cls.objects.filter(form_instance__form=form)
+
+
+@receiver(models.signals.post_save, sender=FormResponse)
+def execute_after_save(sender, instance, created, *args, **kwargs):
+    form_response = instance
+    if created:
+        contributor = User(email=form_response.email)
+        contributor.set_unusable_password()
+        contributor.save()
+        assign_perm("edit_response", contributor, form_response)
 
 
 class Comment(models.Model):

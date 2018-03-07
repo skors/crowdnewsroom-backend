@@ -35,7 +35,7 @@ ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', "").split(",")
 
 INSTALLED_APPS = [
     'django_json_widget',
-    'forms.apps.FormsConfig',
+    'forms',
     'theme',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -100,6 +100,8 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend', # default
     'guardian.backends.ObjectPermissionBackend',
 )
+
+AUTH_USER_MODEL = 'forms.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
