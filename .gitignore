@@ -4,3 +4,5 @@ crowdnewsroom/local_settings.py
 public/
 theme/node_modules/
 *.mo
+.env
+.envrc_local
