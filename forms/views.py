@@ -1,5 +1,8 @@
 import datetime
 
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import JsonResponse
 from rest_framework import generics, mixins
 from rest_framework.serializers import ModelSerializer
 
@@ -52,3 +55,12 @@ class FormResponseCreate(mixins.CreateModelMixin, generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
+
+
+def user_detail_view(*args, **kwargs):
+    try:
+        UserModel = get_user_model()
+        UserModel.objects.get(email=kwargs.get("email"))
+        return JsonResponse({"exists": True})
+    except ObjectDoesNotExist:
+        return JsonResponse({"exists": False}, status=404)
