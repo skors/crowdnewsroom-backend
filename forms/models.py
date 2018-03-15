@@ -189,10 +189,14 @@ class FormResponse(models.Model):
         )
 
     def rendered_fields(self):
-        form_data = self.json.get("formData")
-        ui_schema = self.json.get("uiSchema")
-        for name, props in self.json.get("schema", {}).get("properties", {}).items():
-            row = {"title": props.get("title")}
+        form_data = self.json
+        ui_schema = self.form_instance.ui_schema_json
+        properties = {}
+        for step in self.form_instance.form_json:
+            properties.update(step["schema"].get("properties", {}))
+
+        for name, props in properties.items():
+            row = {"title": props.get("title", name)}
             if ui_schema.get(name, dict()).get("ui:widget") == "signatureWidget":
                 row["type"] = "image"
                 row["value"] = form_data.get(name, "")
