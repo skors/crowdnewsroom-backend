@@ -3,7 +3,8 @@ import datetime
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
-from rest_framework import generics, mixins
+from guardian.shortcuts import get_objects_for_user
+from rest_framework import generics, serializers
 from rest_framework.serializers import ModelSerializer
 
 from .models import FormResponse, FormInstance
@@ -25,36 +26,47 @@ class FormInstanceDetail(generics.RetrieveAPIView):
 
 
 class FormResponseSerializer(ModelSerializer):
+    password = serializers.CharField(write_only=True, required=False)
+
     class Meta:
         model = FormResponse
-        fields = "__all__"
-        read_only_fields = ("submission_date", "form_instance")
-
-
-class FormResponseCreateSerializer(ModelSerializer):
-    class Meta:
-        model = FormResponse
-        fields = ("json", "email", "form_instance")
+        read_only_fields = ("submission_date", "id")
+        fields = ("json", "email", "form_instance") + read_only_fields + ("password",)
 
     def create(self, validated_data, *args, **kwargs):
+        password = validated_data.pop("password")
+
         fr = FormResponse(**validated_data)
         fr.submission_date = datetime.datetime.now()
         fr.save()
+        fr.set_password_for_user(password)
         return fr
 
 
-class ApiFormResponseDetail(generics.RetrieveUpdateDestroyAPIView):
+class ApiFormResponseDetail(generics.UpdateAPIView):
     queryset = FormResponse
     serializer_class = FormResponseSerializer
-    lookup_field = "token"
+    lookup_field = "id"
 
 
-class FormResponseCreate(mixins.CreateModelMixin, generics.GenericAPIView):
+class FormResponseListCreate(generics.ListCreateAPIView):
     queryset = FormResponse
-    serializer_class = FormResponseCreateSerializer
+    serializer_class = FormResponseSerializer
+
+    def get_queryset(self):
+        responses = get_objects_for_user(self.request.user, "edit_response", FormResponse)
+        responses = responses.filter(form_instance__form_id=self.kwargs["form_id"])
+        return responses
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
+
+    def check_object_permissions(self, request, obj):
+        has_permission = request.user.has_perm("edit_response", obj)
+        if not has_permission:
+            self.permission_denied(
+                request, message='NOT allowed!'
+            )
 
 
 def user_detail_view(*args, **kwargs):

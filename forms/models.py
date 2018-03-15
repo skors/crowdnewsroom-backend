@@ -221,16 +221,12 @@ class FormResponse(models.Model):
     def get_all_for_form(cls, form):
         return cls.objects.filter(form_instance__form=form)
 
-
-@receiver(models.signals.post_save, sender=FormResponse)
-def execute_after_save(sender, instance, created, *args, **kwargs):
-    form_response = instance
-    if created:
-        contributor, user_created = User.objects.get_or_create(email=form_response.email)
+    def set_password_for_user(self, password):
+        contributor, user_created = User.objects.get_or_create(email=self.email)
         if user_created:
-            contributor.set_unusable_password()
+            contributor.set_password(password)
             contributor.save()
-        assign_perm("edit_response", contributor, form_response)
+        assign_perm("edit_response", contributor, self)
 
 
 class Comment(models.Model):
