@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'guardian',
     'raven.contrib.django.raven_compat',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -128,6 +129,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'public/static')
 
 LOGIN_REDIRECT_URL = "/forms/"
 LOGIN_URL = '/login'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
 
 RAVEN_CONFIG = {
     'dsn': os.environ.get("SENTRY_DNS"),

@@ -14,13 +14,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.contrib.auth import views
+from rest_framework.authtoken import views as djangorest_views
 from django.http import HttpResponseRedirect
-from django.urls import path, include
+from django.urls import path, include, re_path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('forms/', include('forms.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', lambda r: HttpResponseRedirect('/forms/admin/investigations')),
+    re_path(r'^api-token-auth/', djangorest_views.obtain_auth_token)
 ]
