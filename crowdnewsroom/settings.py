@@ -142,6 +142,9 @@ RAVEN_CONFIG = {
     'release': raven.fetch_git_sha(os.path.abspath(os.path.join(__file__, '../..'))),
 }
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'public/media')
+
 try:
     from .local_settings import *  # noqa
 except ImportError:

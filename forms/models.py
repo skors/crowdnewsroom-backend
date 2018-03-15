@@ -29,6 +29,12 @@ class Investigation(models.Model):
     methodology = models.TextField()
     faq = models.TextField()
 
+    @property
+    def cover_image_url(self):
+        if self.cover_image and hasattr(self.cover_image, 'url'):
+            return self.cover_image.url
+        return ""
+
     class Meta:
         permissions = (
             ('view_investigation', _('View investigation')),

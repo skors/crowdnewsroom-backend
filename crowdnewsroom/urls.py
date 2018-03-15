@@ -14,9 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.views import static
 from rest_framework.authtoken import views as djangorest_views
 from django.http import HttpResponseRedirect
 from django.urls import path, include, re_path
+
+from crowdnewsroom import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,4 +27,10 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('', lambda r: HttpResponseRedirect('/forms/admin/investigations')),
     re_path(r'^api-token-auth/', djangorest_views.obtain_auth_token)
+]
+
+if settings.DEBUG:
+    urlpatterns += [
+        path('media/<path:path>', static.serve,
+             {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
 ]
