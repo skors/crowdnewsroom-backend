@@ -32,10 +32,12 @@ class InvestigationListView(ListView, LoginRequiredMixin):
         return get_objects_for_user(self.request.user, 'view_investigation', Investigation)
 
 
-class FormListView(PermissionRequiredMixin, LoginRequiredMixin, BreadCrumbMixin, ListView):
+class InvestigationAuthMixin(PermissionRequiredMixin, LoginRequiredMixin):
     permission_required = 'forms.view_investigation'
     return_403 = True
 
+
+class FormListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
     @cached_property
     def investigation(self):
         return get_object_or_404(Investigation, id=self.kwargs.get("investigation_id"))
@@ -58,10 +60,7 @@ class FormListView(PermissionRequiredMixin, LoginRequiredMixin, BreadCrumbMixin,
         return context
 
 
-class FormResponseListView(PermissionRequiredMixin, LoginRequiredMixin, BreadCrumbMixin, ListView):
-    permission_required = 'forms.view_investigation'
-    return_403 = True
-
+class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
     @cached_property
     def investigation(self):
         return get_object_or_404(Investigation, id=self.kwargs.get("investigation_id"))
@@ -91,9 +90,7 @@ class FormResponseListView(PermissionRequiredMixin, LoginRequiredMixin, BreadCru
         return context
 
 
-class FormResponseDetailView(PermissionRequiredMixin, LoginRequiredMixin, BreadCrumbMixin, DetailView):
-    permission_required = 'forms.view_investigation'
-    return_403 = True
+class FormResponseDetailView(InvestigationAuthMixin, BreadCrumbMixin, DetailView):
     model = FormResponse
     pk_url_kwarg = "response_id"
 
@@ -133,9 +130,7 @@ class FormResponseDetailView(PermissionRequiredMixin, LoginRequiredMixin, BreadC
         ]
 
 
-class CommentAddView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
-    permission_required = 'forms.view_investigation'
-    return_403 = True
+class CommentAddView(InvestigationAuthMixin, CreateView):
     model = Comment
     form_class = CommentForm
 
@@ -151,9 +146,7 @@ class CommentAddView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class FormResponseStatusView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
-    permission_required = 'forms.manage_investigation'
-    return_403 = True
+class FormResponseStatusView(InvestigationAuthMixin, UpdateView):
     model = FormResponse
     form_class = FormResponseStatusForm
     pk_url_kwarg = "response_id"
