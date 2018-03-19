@@ -1,88 +1,378 @@
 [
-{
-  "model": "forms.investigation",
-  "pk": 1,
-  "fields": {
-    "name": "Signable Investigation"
-  }
-},
-{
-  "model": "forms.form",
-  "pk": 1,
-  "fields": {
-    "name": "The first form",
-    "investigation": 1
-  }
-},
-{
-  "model": "forms.forminstance",
-  "pk": 1,
-  "fields": {
-    "form_json": {
-      "type": "object",
-      "title": "An example form",
-      "required": [
-        "signature",
-        "email"
-      ],
-      "properties": {
-        "bio": {
-          "type": "string",
-          "title": "Your best family story"
-        },
-        "name": {
-          "type": "string",
-          "title": "Your name"
-        },
-        "email": {
-          "type": "string",
-          "title": "E-Mail"
-        },
-        "children": {
-          "type": "integer",
-          "title": "Number of children"
-        },
-        "signature": {
-          "type": "string",
-          "title": "Signature"
-        },
-        "newsletter": {
-          "type": "boolean",
-          "title": "Subscribe to newsletter"
+    {
+        "model": "forms.investigation",
+        "pk": 1,
+        "fields": {
+            "name": "Signable Investigation",
+            "cover_image": "kelly-sikkema-399338-unsplash.jpg",
+            "logo": "",
+            "short_description": ".",
+            "category": ".",
+            "research_questions": ".",
+            "status": "D",
+            "text": ".",
+            "methodology": ".",
+            "faq": "."
         }
-      },
-      "description": "Tell us something about your family"
     },
-    "ui_schema_json": {
-      "bio": {
-        "ui:widget": "textarea"
-      },
-      "name": {
-        "ui:autofocus": true,
-        "ui:emptyValue": ""
-      },
-      "email": {
-        "ui:help": "Provide your e-mail address so that we can contact you later if we have questions about your answers",
-        "ui:options": {
-          "inputType": "email"
+    {
+        "model": "forms.investigation",
+        "pk": 2,
+        "fields": {
+            "name": "Wem geh\u00f6rt Hamburg",
+            "cover_image": "Bild2.jpg",
+            "logo": "wghh-logo.png",
+            "short_description": ".",
+            "category": ".",
+            "research_questions": ".",
+            "status": "D",
+            "text": ".",
+            "methodology": ".",
+            "faq": "."
         }
-      },
-      "children": {
-        "ui:title": "Children",
-        "ui:widget": "updown",
-        "ui:description": "How many children do you have?"
-      },
-      "ui:order": [
-        "name",
-        "*",
-        "signature"
-      ],
-      "signature": {
-        "ui:widget": "signatureWidget"
-      }
     },
-    "version": 0,
-    "form": 1
-  }
-}
+    {
+        "model": "forms.form",
+        "pk": 1,
+        "fields": {
+            "name": "The first form",
+            "status": "D",
+            "investigation": 1
+        }
+    },
+    {
+        "model": "forms.form",
+        "pk": 2,
+        "fields": {
+            "name": "Mietformular",
+            "status": "D",
+            "investigation": 2
+        }
+    },
+    {
+        "model": "forms.forminstance",
+        "pk": 1,
+        "fields": {
+            "form_json": {
+                "type": "object",
+                "title": "An example form",
+                "required": [
+                    "signature",
+                    "email"
+                ],
+                "properties": {
+                    "bio": {
+                        "type": "string",
+                        "title": "Your best family story"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Your name"
+                    },
+                    "email": {
+                        "type": "string",
+                        "title": "E-Mail"
+                    },
+                    "children": {
+                        "type": "integer",
+                        "title": "Number of children"
+                    },
+                    "signature": {
+                        "type": "string",
+                        "title": "Signature"
+                    },
+                    "newsletter": {
+                        "type": "boolean",
+                        "title": "Subscribe to newsletter"
+                    }
+                },
+                "description": "Tell us something about your family"
+            },
+            "ui_schema_json": {
+                "bio": {
+                    "ui:widget": "textarea"
+                },
+                "name": {
+                    "ui:autofocus": true,
+                    "ui:emptyValue": ""
+                },
+                "email": {
+                    "ui:help": "Provide your e-mail address so that we can contact you later if we have questions about your answers",
+                    "ui:options": {
+                        "inputType": "email"
+                    }
+                },
+                "children": {
+                    "ui:title": "Children",
+                    "ui:widget": "updown",
+                    "ui:description": "How many children do you have?"
+                },
+                "ui:order": [
+                    "name",
+                    "*",
+                    "signature"
+                ],
+                "signature": {
+                    "ui:widget": "signatureWidget"
+                }
+            },
+            "version": 0,
+            "form": 1
+        }
+    },
+    {
+        "model": "forms.forminstance",
+        "pk": 2,
+        "fields": {
+            "form_json": [
+                {
+                    "schema": {
+                        "type": "object",
+                        "title": "Start",
+                        "properties": {
+                            "know_owner": {
+                                "type": "boolean",
+                                "enumNames": [
+                                    "Ja. Sie haben bereits Informationen \u00fcber ihren Eigent\u00fcmer (Brief Hausverwaltung) .",
+                                    "Nein.Sie fangen von Beginn an."
+                                ]
+                            }
+                        }
+                    },
+                    "conditions": {}
+                },
+                {
+                    "schema": {
+                        "type": "object",
+                        "title": "Mieterhoehung",
+                        "required": [
+                            "had_mieterhoehung"
+                        ],
+                        "properties": {
+                            "had_mieterhoehung": {
+                                "type": "boolean"
+                            }
+                        }
+                    },
+                    "conditions": {
+                        "know_owner": {
+                            "equal": false
+                        }
+                    }
+                },
+                {
+                    "schema": {
+                        "type": "object",
+                        "final": true,
+                        "title": "Eigent\u00fcmer",
+                        "required": [
+                            "owner_name"
+                        ],
+                        "properties": {
+                            "owner_name": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "conditions": {
+                        "know_owner": {
+                            "equal": true
+                        }
+                    }
+                },
+                {
+                    "schema": {
+                        "type": "object",
+                        "title": "When Mieterh\u00f6hung",
+                        "required": [
+                            "rent_increase_year"
+                        ],
+                        "properties": {
+                            "rent_increase_year": {
+                                "enum": [
+                                    "Before 2017",
+                                    "2017",
+                                    "2018"
+                                ],
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "conditions": {
+                        "had_mieterhoehung": {
+                            "equal": true
+                        }
+                    }
+                },
+                {
+                    "schema": {
+                        "type": "object",
+                        "title": "Eigentuemer from Mieterhoehung",
+                        "properties": {
+                            "see_eigentuemer_name": {
+                                "enum": [
+                                    "Ja",
+                                    "Nein",
+                                    "I can't find it"
+                                ],
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "conditions": {
+                        "rent_increase_year": {
+                            "not": {
+                                "equal": "Before 2017"
+                            }
+                        }
+                    }
+                },
+                {
+                    "schema": {
+                        "type": "object",
+                        "final": true,
+                        "title": "Vermieter/Eigentuemer",
+                        "properties": {
+                            "owner_name": {
+                                "type": "string"
+                            },
+                            "vermieter_name": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "conditions": {
+                        "see_eigentuemer_name": {
+                            "equal": "Ja"
+                        }
+                    }
+                },
+                {
+                    "schema": {
+                        "type": "object",
+                        "title": "Vermieter",
+                        "required": [
+                            "know_vermieter",
+                            "vermieter_name",
+                            "vermieter_could_be_owner"
+                        ],
+                        "properties": {
+                            "know_vermieter": {
+                                "type": "boolean",
+                                "enumValues": [
+                                    "Ja",
+                                    "Nein"
+                                ]
+                            },
+                            "vermieter_name": {
+                                "type": "string"
+                            },
+                            "vermieter_could_be_owner": {
+                                "type": "boolean",
+                                "enumValues": [
+                                    "Ja",
+                                    "Nein"
+                                ]
+                            }
+                        }
+                    },
+                    "conditions": {
+                        "rent_increase_year": {
+                            "or": {
+                                "equal": "Before 2017",
+                                "see_eigentuemer_name": {
+                                    "not": {
+                                        "equal": "Ja"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "schema": {
+                        "type": "object",
+                        "final": true,
+                        "title": "Vermieter bekannt",
+                        "properties": {
+                            "vermieter_begruendung": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "conditions": {
+                        "vermieter_could_be_owner": {
+                            "equal": true
+                        }
+                    }
+                },
+                {
+                    "schema": {
+                        "type": "object",
+                        "final": true,
+                        "title": "Grundbuchamt",
+                        "properties": {
+                            "city": {
+                                "type": "string"
+                            },
+                            "number": {
+                                "type": "string"
+                            },
+                            "street": {
+                                "type": "string"
+                            },
+                            "lastName": {
+                                "type": "string"
+                            },
+                            "firstName": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "conditions": {
+                        "vermieter_could_be_owner": {
+                            "equal": false
+                        }
+                    }
+                }
+            ],
+            "ui_schema_json": {
+                "know_owner": {
+                    "ui:title": "Do you know your Eigent\u00fcmer?",
+                    "ui:widget": "radio"
+                },
+                "owner_name": {
+                    "ui:help": " Type it in as it is written on your Bescheinigung ",
+                    "ui:title": " What is the name of your Eingent\u00fcmer?"
+                },
+                "know_vermieter": {
+                    "ui:title": "Do you know your Vemieter?",
+                    "ui:widget": "radio"
+                },
+                "had_mieterhoehung": {
+                    "ui:widget": "radio"
+                },
+                "vermieter_could_be_owner": {
+                    "ui:widget": "radio"
+                }
+            },
+            "version": 1,
+            "form": 2
+        }
+    },
+    {
+        "model": "forms.formresponse",
+        "pk": 39,
+        "fields": {
+            "json": {
+                "know_owner": true,
+                "owner_name": "test"
+            },
+            "form_instance": 2,
+            "status": "S",
+            "token": "CKjaTugF5rJlpyBDmSsovcZTrMmFlRRRlQMNRkH6eq8",
+            "email": "knut.huehne@correctiv.org",
+            "submission_date": "2018-03-15T15:58:48.949Z"
+        }
+    }
 ]
