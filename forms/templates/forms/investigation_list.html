@@ -8,6 +8,14 @@
 
 {% block main %}
 <div class="investigations">
+
+    <div class="add-investigation">
+        {% trans "Create a new investigation" %}
+        <button type="button" class="btn btn-light">
+            <i class="fa fa-plus"></i>
+        </button>
+    </div>
+
     <ul>
     {% for investigation in investigation_list %}
       {% get_obj_perms request.user for investigation as "investigation_perms" %}
