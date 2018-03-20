@@ -9,22 +9,31 @@
 {% endblock %}
 
 {% block main %}
-    <div>
-        <table>
+  <div class="formresponse-list">
+    <table class="table">
+        <tr>
+            <td>{% trans "Response" %}</td>
+            <td>{% trans "Status" %}</td>
+            <td>{% trans "Comments" %}</td>
+        </tr>
+        {% for response in formresponse_list %}
             <tr>
-                <td>{% trans "Link" %}</td>
-                <td>{% trans "Status" %}</td>
-                <td>{% trans "Comments" %}</td>
+                <td>
+                    <a href="{% url "response_details" investigation.id form.id response.id %}"
+                        style="text-decoration: none">
+                        <i class="fa {{response.icon_class }}"></i>
+                        {{ response.email }} - {{ response.submission_date }}
+                    </a>
+                </td>
+                <td>{{ response.get_status_display }}</td>
+                <td>{{ response.comment_set.count }}</td>
             </tr>
-            {% for response in formresponse_list %}
-                <tr>
-                    <td><a href="{% url "response_details" investigation.id form.id response.id %}">{{ response.email }} - {{ response.submission_date }}</a></td>
-                    <td>{{ response.get_status_display }}</td>
-                    <td>{{ response.comment_set.count }}</td>
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
-    <a href="{% url "form_responses_csv" investigation.id form.id %}">{% trans "Download data as csv" %}</a>
+        {% endfor %}
+    </table>
+    <a href="{% url "form_responses_csv" investigation.id form.id %}">
+      <i class="fa fa-download"></i>
+      {% trans "Download data as csv" %}
+      </a>
+  </div>
 
 {% endblock %}

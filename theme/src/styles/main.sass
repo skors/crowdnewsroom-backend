@@ -1,7 +1,11 @@
 $content-width: 800px
 @import 'colors'
+@import '../../node_modules/bootstrap/scss/bootstrap'
+@import '../../node_modules/font-awesome/css/font-awesome.css'
 @import 'investigation_list'
 @import 'formresponse_details'
+@import 'formresponse_list'
+@import 'forms_list'
 
 @font-face
   font-family: 'Roboto Thin'
@@ -26,19 +30,13 @@ html
 *, *:before, *:after
   box-sizing: inherit
 
+
 ul, ol
   padding: 0
   list-style-type: none
   display: flex
   flex-wrap: wrap
   margin: 0
-
-.breadcrumbs
-  li:not(:first-child)
-    &::before
-      content: " > "
-      padding: 0 1ch
-
 
 body
   display: flex
@@ -53,6 +51,7 @@ body
     flex-wrap: wrap
     border-bottom: 5px solid $blue
     min-height: 300px
+    background-size: cover
 
     .title
       text-align: center
@@ -68,6 +67,7 @@ body
         font-size: 48px
         font-family: "Rovoto", sans-serif
         font-weight: 700
+        text-shadow: 10px 0 15px black
 
 
     nav

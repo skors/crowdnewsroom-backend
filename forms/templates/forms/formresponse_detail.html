@@ -7,7 +7,7 @@
 
 {% block main %}
     <div class="formresponse-details">
-        <h2>{% trans "Content of Response" %}</h2>
+        <h2 style="margin: 1em auto">{% trans "Content of Response" %}</h2>
         <table class="formresponse">
             <tr>
                 <th>E-Mail</th>
@@ -29,31 +29,35 @@
             {% endfor %}
         </table>
 
-        <form action="{% url 'response_details_status' investigation_id=formresponse.form_instance.form.investigation_id form_id=formresponse.form_instance.form.id response_id=formresponse.id %}" method="post">
+        <h2 style="margin: 1em auto">Status</h2>
+        <form action="{% url 'response_details_status' investigation_id=formresponse.form_instance.form.investigation_id form_id=formresponse.form_instance.form.id response_id=formresponse.id %}"
+              method="post" >
             {% csrf_token %}
             {{ status_form }}
-            <input type="submit" value="{% trans "Set status" %}"/>
+            <input type="submit" class="btn btn-primary" value="{% trans "Set status" %}"/>
         </form>
 
 
-        <h2>Comments</h2>
+        <h2 style="margin: 1em auto">Comments</h2>
         <form action="{% url 'response_details_comments' investigation_id=formresponse.form_instance.form.investigation_id form_id=formresponse.form_instance.form.id response_id=formresponse.id %}" method="post">
-            {% csrf_token %}
-            {{ comment_form }}
-            <input type="submit" value="{% trans "Comment" %}"/>
+            <div class="form-group">
+                {% csrf_token %}
+                {{ comment_form }}
+                <input type="submit" class="btn btn-primary" value="{% trans "Comment" %}"/>
+            </div>
         </form>
 
-        <ul class="commentList">
+        <ul>
             {% for comment in formresponse.comment_set.all reversed %}
                 <li>
-                    <div class="comment">
-                        <div class="header">
-                            <span class="author">{{ comment.author.first_name }} {{ comment.author.last_name }}</span>
-                            <span class="date">{{ comment.date }}</span>
-                        </div>
-                        <div class="text">
-                            {{ comment.text }}
-                        </div>
+                    <div class="card">
+                      <div class="card-header">
+                          <span class="author">{{ comment.author.first_name }} {{ comment.author.last_name }}</span>
+                          <span class="date float-right">{{ comment.date }}</span>
+                      </div>
+                      <div class="card-body">
+                          {{ comment.text }}
+                      </div>
                     </div>
                 </li>
             {% endfor %}
