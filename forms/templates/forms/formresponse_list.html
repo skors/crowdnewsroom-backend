@@ -1,5 +1,6 @@
 {% extends "./investigation_list.html" %}
 {% load i18n %}
+{% load forms_tags %}
 
 {% block title %}{% trans "Responses" %}{% endblock %}
 {% block headertitle %}
@@ -21,7 +22,7 @@
                 <td>
                     <a href="{% url "response_details" investigation.id form.id response.id %}"
                         style="text-decoration: none">
-                        <i class="fa {{response.icon_class }}"></i>
+                        <i class="fa {% response_icon response.status %}"></i>
                         {{ response.email }} - {{ response.submission_date }}
                     </a>
                 </td>
