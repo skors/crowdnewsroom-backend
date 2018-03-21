@@ -17,7 +17,7 @@ def create_form_csv(form_id, investigation_id, request, io_object):
     writer.writeheader()
     for form_response in responses:
         try:
-            row = form_response.json["formData"]
+            row = form_response.json
             path = reverse("response_details", kwargs={"investigation_id": investigation_id,
                                                        "form_id": form_id,
                                                        "response_id": form_response.id})
@@ -37,7 +37,10 @@ def create_form_csv(form_id, investigation_id, request, io_object):
 
 
 def get_keys(form_instance):
-    keys = set(form_instance.form_json["properties"].keys())
+    keys = set()
+    for step in form_instance.form_json:
+        for prop in step["schema"]["properties"]:
+            keys.add(prop)
     file_keys = _get_file_keys(form_instance)
     non_file_fields = keys - file_keys
     extra_fields = {"url", "version", "status", "email", "submission_date"}
