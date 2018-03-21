@@ -130,7 +130,7 @@ class FormResponseDetailView(InvestigationAuthMixin, BreadCrumbMixin, DetailView
             (self.investigation.name, reverse("form_list", kwargs={"investigation_id": self.investigation.id})),
             (self.form.name, reverse("form_responses", kwargs={"investigation_id": self.investigation.id,
                                                                "form_id": self.form.id})),
-            (_("This response"), reverse("response_details", kwargs={"investigation_id": self.investigation.id,
+            (self.object.email, reverse("response_details", kwargs={"investigation_id": self.investigation.id,
                                                                      "form_id": self.form.id,
                                                                      "response_id": self.object.id})),
         ]
