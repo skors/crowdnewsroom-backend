@@ -1,4 +1,4 @@
-# Crowdnewsroom
+# Crowdnewsroom [![Build Status](https://travis-ci.org/correctiv/crowdnewsroom-backend.svg?branch=master)](https://travis-ci.org/correctiv/crowdnewsroom-backend)
 
 This is the backend for the crowdnewsroom.
 
