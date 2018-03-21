@@ -27,7 +27,12 @@ class BreadCrumbMixin(object):
         return context
 
 
-class InvestigationListView(ListView, LoginRequiredMixin):
+class InvestigationListView(LoginRequiredMixin, BreadCrumbMixin, ListView):
+    def get_breadcrumbs(self):
+        return [
+            (_("Investigations"), reverse("investigation_list")),
+        ]
+
     def get_queryset(self):
         return get_objects_for_user(self.request.user, 'view_investigation', Investigation)
 
