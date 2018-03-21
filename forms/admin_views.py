@@ -121,6 +121,7 @@ class FormResponseDetailView(InvestigationAuthMixin, BreadCrumbMixin, DetailView
         context = super().get_context_data(**kwargs)
         context['comment_form'] = CommentForm()
         context['status_form'] = FormResponseStatusForm(instance=self.object)
+        context['investigation'] = self.investigation
         return context
 
     def get_breadcrumbs(self):
