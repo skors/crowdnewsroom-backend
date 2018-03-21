@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django import forms
 from django.contrib.postgres import fields
 from django_json_widget.widgets import JSONEditorWidget
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
@@ -30,15 +29,14 @@ class UserAdmin(DjangoUserAdmin):
     ordering = ('email',)
 
 
-
-class FormAdmin(admin.ModelAdmin):
+class FormInstanceAdmin(admin.ModelAdmin):
     formfield_overrides = {
         fields.JSONField: {'widget': JSONEditorWidget}
     }
 
 
-admin.site.register(Form, FormAdmin)
+admin.site.register(FormInstance, FormInstanceAdmin)
 admin.site.register(Investigation)
 admin.site.register(FormResponse)
 admin.site.register(Partner)
-admin.site.register(FormInstance)
+admin.site.register(Form)

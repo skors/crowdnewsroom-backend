@@ -2,8 +2,8 @@ dj-database-url==0.4.2
 Django==2.0.1
 django-cors-headers==2.1.0
 django-guardian==1.4.9
+django-json-widget==0.1.1
 djangorestframework==3.7.7
 psycopg2==2.7.3.2
 pytz==2017.3
--e git+git@github.com:k-nut/django-json-widget.git@vendorize-jsoneditor#egg=django_json_widget
 raven==6.5.0
