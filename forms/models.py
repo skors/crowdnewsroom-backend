@@ -1,4 +1,3 @@
-import os
 from django.core.mail import send_mail
 
 from . import secrets  # TODO: Replace with included module once updated to python 3.6
