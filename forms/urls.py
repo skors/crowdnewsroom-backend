@@ -2,9 +2,11 @@ from django.urls import path
 
 from forms.admin_views import InvestigationListView, FormResponseListView, FormResponseDetailView, CommentAddView, \
     FormResponseStatusView, form_response_csv_view, FormListView
-from forms.views import FormInstanceDetail, ApiFormResponseDetail, FormResponseListCreate, user_detail_view
+from forms.views import FormInstanceDetail, ApiFormResponseDetail, FormResponseListCreate, user_detail_view, \
+    InvestigationDetail
 
 urlpatterns = [
+    path('investigations/<int:investigation_id>', InvestigationDetail.as_view(), name="investigation"),
     path('investigations/<int:investigation_id>/forms/<int:form_id>', FormInstanceDetail.as_view(), name="form"),
     path('investigations/<int:investigation_id>/forms/<int:form_id>/responses', FormResponseListCreate.as_view(), name="form_response"),
     path('investigations/<int:investigation_id>/forms/<int:form_id>/responses/<int:id>', ApiFormResponseDetail.as_view(), name="form_response_update"),

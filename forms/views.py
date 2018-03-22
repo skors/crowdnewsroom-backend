@@ -7,7 +7,21 @@ from guardian.shortcuts import get_objects_for_user
 from rest_framework import generics, serializers
 from rest_framework.serializers import ModelSerializer
 
-from .models import FormResponse, FormInstance
+from .models import FormResponse, FormInstance, Investigation
+
+
+class InvestigationSerializer(ModelSerializer):
+    class Meta:
+        model = Investigation
+        fields = "__all__"
+
+
+class InvestigationDetail(generics.RetrieveAPIView):
+    # TODO: This should filter to make sure to only return
+    # Investigations that are published and not in draft or unlisted state
+    queryset = Investigation
+    serializer_class = InvestigationSerializer
+    lookup_url_kwarg = "investigation_id"
 
 
 class FormSerializer(ModelSerializer):
