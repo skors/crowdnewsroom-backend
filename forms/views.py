@@ -26,20 +26,15 @@ class FormInstanceDetail(generics.RetrieveAPIView):
 
 
 class FormResponseSerializer(ModelSerializer):
-    password = serializers.CharField(write_only=True, required=False)
-
     class Meta:
         model = FormResponse
-        read_only_fields = ("submission_date", "id")
-        fields = ("json", "email", "form_instance") + read_only_fields + ("password",)
+        read_only_fields = ("submission_date", "id", "status")
+        fields = ("json", "form_instance") + read_only_fields
 
     def create(self, validated_data, *args, **kwargs):
-        password = validated_data.pop("password")
-
         fr = FormResponse(**validated_data)
         fr.submission_date = datetime.datetime.now()
         fr.save()
-        fr.set_password_for_user(password)
         return fr
 
 
