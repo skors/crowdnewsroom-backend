@@ -229,6 +229,20 @@ class FormResponse(models.Model):
         assign_perm("edit_response", contributor, self)
 
 
+@receiver(models.signals.post_save, sender=FormResponse)
+def send_email(sender, instance, created, *args, **kwargs):
+    form_response = instance
+    if created:
+        email = form_response.json.get("email")
+        if email:
+            send_mail(subject=_("Thank you for your submission!"),
+                      message="this was really nice!",
+                      from_email="editors@crowdnewsroom.org",
+                      recipient_list=[email])
+        else:
+            print("not sending a mail")
+
+
 class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     date = models.DateTimeField()
