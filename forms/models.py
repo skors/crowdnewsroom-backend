@@ -237,7 +237,8 @@ def send_email(sender, instance, created, *args, **kwargs):
     form_response = instance
     if created:
         email = form_response.json.get("email")
-        if email:
+        confirm_summary = form_response.json.get("confirm_summary")
+        if email and confirm_summary:
             send_mail(subject=_("Thank you for your submission!"),
                       message="this was really nice!",
                       from_email="editors@crowdnewsroom.org",
