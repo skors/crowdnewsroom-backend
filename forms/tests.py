@@ -1,3 +1,5 @@
+from unittest.mock import MagicMock, PropertyMock, patch
+
 from django.test import TestCase
 from django.utils import timezone
 
@@ -68,3 +70,80 @@ class UserGroupTestCase(TestCase):
         expected = "Thank you for participating in a crowdnewsroom investigation!"
         self.assertEqual(email, expected)
 
+    def test_formresponse_email_fields(self):
+        investigation = Investigation.objects.create(name="Example Investigation")
+        form = Form.objects.create(name="My first Form", investigation=investigation)
+        form_instance = FormInstance.objects.create(form=form,
+                                                    ui_schema_json={
+                                                        "signature": {
+                                                            "ui:title": "Signature",
+                                                            "ui:widget": "signatureWidget"
+                                                        },
+                                                        "name": {
+                                                            "ui:title": "Your name"
+                                                        },
+                                                        "get_updates": {
+                                                            "ui:title": "Do you want updates?"
+                                                        }
+                                                    },
+                                                    form_json=[
+                                                            {
+                                                                "schema": {
+                                                                    "type": "object",
+                                                                    "title": "First Step",
+                                                                    "properties": {
+                                                                        "name": {
+                                                                            "type": "string",
+                                                                        }
+                                                                    }
+                                                                },
+                                                            },
+                                                            {
+                                                                "schema": {
+                                                                    "type": "object",
+                                                                    "title": "Second Step",
+                                                                    "properties": {
+                                                                        "signature": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "get_updates": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    }
+                                                                },
+                                                            }]
+                                                    )
+        response = FormResponse.objects.create(json={
+            "name": "Patrick",
+            "signature": "data-url: abc",
+            "get_updates": True,
+        },
+                                               submission_date=timezone.now(),
+                                               form_instance=form_instance,
+                                               )
+
+        result = response.email_fields
+        expected = """Your name: Patrick
+Signature: <File>
+Do you want updates?: Yes"""
+        self.assertEqual(result, expected)
+
+    def test_formresponse_render_response_email(self):
+        investigation = Investigation.objects.create(name="Example Investigation")
+        form = Form.objects.create(name="My first Form",
+                                   investigation=investigation)
+        form_instance = FormInstance.objects.create(form=form,
+                                                    form_json={},
+                                                    email_template="""This is your response:
+{{field_list}}"""
+                                                    )
+        with patch("forms.models.FormResponse.email_fields", new_callable=PropertyMock) as mock_email_fields:
+            mock_email_fields.return_value = "<FIELDS>"
+            response = FormResponse.objects.create(json={},
+                                                   submission_date=timezone.now(),
+                                                   form_instance=form_instance)
+            email = generate_email(response)
+
+        expected = """This is your response:
+<FIELDS>"""
+        self.assertEqual(email, expected)

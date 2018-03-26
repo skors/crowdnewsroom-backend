@@ -1,5 +1,6 @@
 from django.core.mail import send_mail
 from django.template import Engine, Context
+from django.utils.safestring import mark_safe
 
 from . import secrets  # TODO: Replace with included module once updated to python 3.6
 
@@ -197,17 +198,26 @@ class FormResponse(models.Model):
             properties.update(step["schema"].get("properties", {}))
 
         for name, props in properties.items():
-            row = {"title": props.get("title", name)}
+            title = ui_schema.get(name, {}).get("ui:title", name)
+            row = {"title": title}
             if ui_schema.get(name, dict()).get("ui:widget") == "signatureWidget":
                 row["type"] = "image"
                 row["value"] = form_data.get(name, "")
             elif props.get("type") == "boolean":
                 row["type"] = "text"
-                row["value"] = "Yes" if form_data.get(name) else "No"
+                row["value"] = _("Yes") if form_data.get(name) else _("No")
             else:
                 row["type"] = "text"
                 row["value"] = form_data.get(name, "")
             yield row
+
+    @property
+    def email_fields(self):
+        entries = []
+        for row in self.rendered_fields():
+            value = row["value"] if row["type"] == "text" else _("<File>")
+            entries.append("{}: {}".format(row["title"], value))
+        return "\n".join(entries)
 
     @property
     def json_email(self):
@@ -234,9 +244,10 @@ class FormResponse(models.Model):
         assign_perm("edit_response", contributor, self)
 
 
-def generate_email(form_response):
+def generate_email(form_response: FormResponse):
     template = Engine().from_string(form_response.form_instance.email_template)
-    context = Context(dict(response=form_response.json))
+    context = Context(dict(response=form_response.json,
+                           field_list=mark_safe(form_response.email_fields)))
     return template.render(context=context)
 
 
