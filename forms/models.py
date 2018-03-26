@@ -207,6 +207,10 @@ class FormResponse(models.Model):
                 row["value"] = form_data.get(name, "")
             yield row
 
+    @property
+    def json_email(self):
+        return self.json.get("email", "")
+
     @classmethod
     def belongs_to_investigation(cls, form_response_id, investigation_id):
         response = FormResponse.objects.select_related('form_instance__form__investigation').get(id=form_response_id)

@@ -23,7 +23,7 @@
                     <a href="{% url "response_details" investigation.id form.id response.id %}"
                         style="text-decoration: none">
                         <i class="fa {% response_icon response.status %}"></i>
-                        {{ response.email }} - {{ response.submission_date }}
+                        {{ response.json_email }} - {{ response.submission_date }}
                     </a>
                 </td>
                 <td>{{ response.get_status_display }}</td>
