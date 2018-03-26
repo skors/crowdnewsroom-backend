@@ -1,5 +1,6 @@
 from unittest.mock import MagicMock, PropertyMock, patch
 
+import sys
 from django.test import TestCase
 from django.utils import timezone
 
@@ -126,7 +127,15 @@ class UserGroupTestCase(TestCase):
         expected = """Your name: Patrick
 Signature: <File>
 Do you want updates?: Yes"""
-        self.assertEqual(result, expected)
+
+        # starting from py3.6 we can actually assert
+        # results to be in insertion order
+        if sys.version_info[1] >= 6:
+            self.assertEqual(result, expected)
+
+        # we can always assert that at least the correct lines
+        # are rendered (without taking order into account)
+        self.assertEqual(sorted(result.split('\n')), sorted(expected.split('\n')))
 
     def test_formresponse_render_response_email(self):
         investigation = Investigation.objects.create(name="Example Investigation")
