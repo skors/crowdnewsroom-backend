@@ -1,4 +1,5 @@
 from django.core.mail import send_mail
+from django.template import Engine, Context
 
 from . import secrets  # TODO: Replace with included module once updated to python 3.6
 
@@ -157,6 +158,7 @@ class FormInstance(models.Model):
     ui_schema_json = JSONField(default={})
     version = models.IntegerField(default=0)
     form = models.ForeignKey(Form, on_delete=models.CASCADE)
+    email_template = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"))
 
     def __str__(self):
         return "{} - Instance version {}".format(self.form.name, self.version)
@@ -232,6 +234,12 @@ class FormResponse(models.Model):
         assign_perm("edit_response", contributor, self)
 
 
+def generate_email(form_response):
+    template = Engine().from_string(form_response.form_instance.email_template)
+    context = Context(dict(response=form_response.json))
+    return template.render(context=context)
+
+
 @receiver(models.signals.post_save, sender=FormResponse)
 def send_email(sender, instance, created, *args, **kwargs):
     form_response = instance
@@ -240,11 +248,9 @@ def send_email(sender, instance, created, *args, **kwargs):
         confirm_summary = form_response.json.get("confirm_summary")
         if email and confirm_summary:
             send_mail(subject=_("Thank you for your submission!"),
-                      message="this was really nice!",
+                      message=generate_email(form_response),
                       from_email="editors@crowdnewsroom.org",
                       recipient_list=[email])
-        else:
-            print("not sending a mail")
 
 
 class Comment(models.Model):
