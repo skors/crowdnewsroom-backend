@@ -128,7 +128,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'public/static')
 
 LOGIN_REDIRECT_URL = "/forms/"
-LOGIN_URL = '/login'
+LOGIN_URL = '/accounts/login'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
