@@ -14,7 +14,6 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import dj_database_url
-import raven
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -44,11 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'guardian',
-    'raven.contrib.django.raven_compat',
     'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
+    'bugsnag.django.middleware.BugsnagMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -137,9 +136,9 @@ REST_FRAMEWORK = {
     )
 }
 
-RAVEN_CONFIG = {
-    'dsn': os.environ.get("SENTRY_DNS"),
-    'release': raven.fetch_git_sha(os.path.abspath(os.path.join(__file__, '../..'))),
+BUGSNAG = {
+    'api_key': os.environ.get('BUGSNAG_API_KEY'),
+    'project_root': os.environ.get('BUGSNAG_PROJECT_ROOT'),
 }
 
 MEDIA_URL = '/media/'
