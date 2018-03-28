@@ -42,7 +42,7 @@ class FormInstanceDetail(generics.RetrieveAPIView):
 class FormResponseSerializer(ModelSerializer):
     class Meta:
         model = FormResponse
-        read_only_fields = ("submission_date", "id", "status")
+        read_only_fields = ("submission_date", "id", "status", "redirect_url")
         fields = ("json", "form_instance") + read_only_fields
 
     def create(self, validated_data, *args, **kwargs):

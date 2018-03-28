@@ -160,6 +160,7 @@ class FormInstance(models.Model):
     version = models.IntegerField(default=0)
     form = models.ForeignKey(Form, on_delete=models.CASCADE)
     email_template = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"))
+    redirect_url_template = models.TextField(default="https://forms.crowdnewsroom.org")
 
     def __str__(self):
         return "{} - Instance version {}".format(self.form.name, self.version)
@@ -210,6 +211,13 @@ class FormResponse(models.Model):
                 row["type"] = "text"
                 row["value"] = form_data.get(name, "")
             yield row
+
+    @property
+    def redirect_url(self):
+        url_template = self.form_instance.redirect_url_template
+        template = Engine().from_string(url_template)
+        context = Context(dict(response=self.json))
+        return template.render(context=context)
 
     @property
     def email_fields(self):
