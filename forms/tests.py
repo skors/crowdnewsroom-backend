@@ -4,7 +4,7 @@ import sys
 from django.test import TestCase
 from django.utils import timezone
 
-from forms.models import Investigation, UserGroup, FormResponse, generate_email, Form, FormInstance
+from forms.models import Investigation, UserGroup, FormResponse, generate_emails, Form, FormInstance
 
 
 class UserGroupTestCase(TestCase):
@@ -41,7 +41,7 @@ class UserGroupTestCase(TestCase):
                                                form_instance=form_instance,
                                                )
 
-        email = generate_email(response)
+        email, html_email = generate_emails(response)
         expected = """
     Danke, dass sie bei WGHH mitgemacht haben!
     
@@ -67,7 +67,7 @@ class UserGroupTestCase(TestCase):
                                                form_instance=form_instance,
                                                )
 
-        email = generate_email(response)
+        email, html_email = generate_emails(response)
         expected = "Thank you for participating in a crowdnewsroom investigation!"
         self.assertEqual(email, expected)
 
@@ -151,7 +151,7 @@ Do you want updates?: Yes"""
             response = FormResponse.objects.create(json={},
                                                    submission_date=timezone.now(),
                                                    form_instance=form_instance)
-            email = generate_email(response)
+            email, html_email = generate_emails(response)
 
         expected = """This is your response:
 <FIELDS>"""
