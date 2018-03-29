@@ -22,11 +22,11 @@ class Investigation(models.Model):
     cover_image = models.FileField(blank=True, null=True, default=None)
     logo = models.FileField(blank=True, null=True, default=None)
     short_description = models.TextField()
-    category = models.TextField() # What is this?
+    category = models.TextField()  # What is this?
     research_questions = models.TextField()
     status = models.CharField(max_length=1, choices=STATUSES, default='D')
     # The following fields might be separate?
-    text = models.TextField() # or is this the same as short_description?
+    text = models.TextField()  # or is this the same as short_description?
     methodology = models.TextField()
     faq = models.TextField()
 
@@ -160,6 +160,7 @@ class FormInstance(models.Model):
     version = models.IntegerField(default=0)
     form = models.ForeignKey(Form, on_delete=models.CASCADE)
     email_template = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"))
+    email_template_html = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"));
     redirect_url_template = models.TextField(default="https://forms.crowdnewsroom.org")
 
     def __str__(self):
@@ -252,11 +253,13 @@ class FormResponse(models.Model):
         assign_perm("edit_response", contributor, self)
 
 
-def generate_email(form_response: FormResponse):
-    template = Engine().from_string(form_response.form_instance.email_template)
+def generate_emails(form_response: FormResponse):
+    plaintext_template = Engine().from_string(form_response.form_instance.email_template)
+    html_template = Engine().from_string(form_response.form_instance.email_template_html)
     context = Context(dict(response=form_response.json,
                            field_list=mark_safe(form_response.email_fields)))
-    return template.render(context=context)
+    return (plaintext_template.render(context=context),
+            html_template.render(context=context))
 
 
 @receiver(models.signals.post_save, sender=FormResponse)
@@ -266,10 +269,12 @@ def send_email(sender, instance, created, *args, **kwargs):
         email = form_response.json.get("email")
         confirm_summary = form_response.json.get("confirm_summary")
         if email and confirm_summary:
+            message, html_message = generate_emails(form_response)
             send_mail(subject=_("Thank you for your submission!"),
-                      message=generate_email(form_response),
+                      message=message,
                       from_email="editors@crowdnewsroom.org",
-                      recipient_list=[email])
+                      recipient_list=[email],
+                      html_message=html_message)
 
 
 class Comment(models.Model):
