@@ -131,6 +131,7 @@
             "form_json": [
                 {
                     "schema": {
+                        "slug": "start",
                         "type": "object",
                         "title": "Start",
                         "properties": {
@@ -148,6 +149,7 @@
                 {
                     "schema": {
                         "type": "object",
+                        "slug": "mieterhoehung",
                         "title": "Mieterhoehung",
                         "required": [
                             "had_mieterhoehung"
@@ -167,6 +169,7 @@
                 {
                     "schema": {
                         "type": "object",
+                        "slug": "eigentuemer",
                         "final": true,
                         "title": "Eigent\u00fcmer",
                         "required": [
@@ -187,6 +190,7 @@
                 {
                     "schema": {
                         "type": "object",
+                        "slug": "when-mieterhoehung",
                         "title": "When Mieterh\u00f6hung",
                         "required": [
                             "rent_increase_year"
@@ -211,6 +215,7 @@
                 {
                     "schema": {
                         "type": "object",
+                        "slug": "eigentuemer-aus-mieterhoehung",
                         "title": "Eigentuemer from Mieterhoehung",
                         "properties": {
                             "see_eigentuemer_name": {
@@ -234,6 +239,7 @@
                 {
                     "schema": {
                         "type": "object",
+                        "slug": "vermieter-eigentuemer",
                         "final": true,
                         "title": "Vermieter/Eigentuemer",
                         "properties": {
@@ -254,6 +260,7 @@
                 {
                     "schema": {
                         "type": "object",
+                        "slug": "vermieter",
                         "title": "Vermieter",
                         "required": [
                             "know_vermieter",
@@ -296,6 +303,7 @@
                 {
                     "schema": {
                         "type": "object",
+                        "slug": "vermieter-bekannt",
                         "final": true,
                         "title": "Vermieter bekannt",
                         "properties": {
@@ -314,6 +322,7 @@
                     "schema": {
                         "type": "object",
                         "final": true,
+                        "slug": "grundbuchamt",
                         "title": "Grundbuchamt",
                         "properties": {
                             "city": {
