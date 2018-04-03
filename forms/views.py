@@ -2,7 +2,7 @@ import datetime
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from guardian.shortcuts import get_objects_for_user
 from rest_framework import generics, serializers
 from rest_framework.serializers import ModelSerializer
@@ -37,7 +37,10 @@ class FormInstanceDetail(generics.RetrieveAPIView):
 
     def get_object(self, *args, **kwargs):
         form_slug = self.kwargs.get("form_slug")
-        return FormInstance.get_latest_for_form(form_slug)
+        form_instance = FormInstance.get_latest_for_form(form_slug)
+        if form_instance is None:
+            raise Http404
+        return form_instance
 
 
 class FormResponseSerializer(ModelSerializer):
