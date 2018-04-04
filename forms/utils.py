@@ -5,9 +5,9 @@ from django.urls import reverse
 from forms.models import FormInstance, FormResponse
 
 
-def create_form_csv(form_id, investigation_id, request, io_object):
-    form_instances = FormInstance.objects.filter(form_id=form_id)
-    responses = FormResponse.objects.filter(form_instance__form_id=form_id).all()
+def create_form_csv(form, investigation_slug, request, io_object):
+    form_instances = FormInstance.objects.filter(form_id=form.id)
+    responses = FormResponse.objects.filter(form_instance__form_id=form.id).all()
 
     fields = set()
     for instance in form_instances:
@@ -18,8 +18,8 @@ def create_form_csv(form_id, investigation_id, request, io_object):
     for form_response in responses:
         try:
             row = form_response.json
-            path = reverse("response_details", kwargs={"investigation_id": investigation_id,
-                                                       "form_id": form_id,
+            path = reverse("response_details", kwargs={"investigation_slug": investigation_slug,
+                                                       "form_slug": form.slug,
                                                        "response_id": form_response.id})
             url = request.build_absolute_uri(path)
             meta_data = {"meta_version": form_response.form_instance.version,
@@ -48,10 +48,18 @@ def get_keys(form_instance):
     return fields
 
 
-def _get_file_keys(form_instance):
+def _get_file_keys(form_instance: FormInstance):
     file_widgets = ['signatureWidget', 'fileWidget']
-    non_property_keys = ["ui:order"]
-    return {key for (key, value)
-            in form_instance.ui_schema_json.items()
-            if key not in non_property_keys
-            and value.get("ui:widget") in file_widgets}
+
+    file_keys = set()
+
+    ui_schema = form_instance.ui_schema_json
+    for step in form_instance.form_json:
+        schema = step["schema"]
+        for (property_name, property_values) in schema["properties"].items():
+            if ui_schema.get(schema["slug"], {}).get("ui:widget") in file_widgets:
+                file_keys.add(property_name)
+            elif property_values.get("format") == "data-url":
+                file_keys.add(property_name)
+
+    return file_keys

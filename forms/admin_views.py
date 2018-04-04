@@ -166,7 +166,7 @@ class FormResponseStatusView(InvestigationAuthMixin, UpdateView):
 
 
 @login_required(login_url="/admin/login")
-@permission_required('forms.view_investigation', (Investigation, 'id', 'investigation_id'), return_403=True)
+@permission_required('forms.view_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
 def form_response_csv_view(request, *args, **kwargs):
     form_slug = kwargs.get("form_slug")
     investigation_slug = kwargs.get("investigation_slug")
@@ -179,7 +179,7 @@ def form_response_csv_view(request, *args, **kwargs):
     filename = 'crowdnewsroom_download_{}_{}.csv'.format(investigation_slug, form_slug)
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
 
-    create_form_csv(form_slug, investigation_slug, request, response)
+    create_form_csv(form, investigation_slug, request, response)
 
     return response
 
