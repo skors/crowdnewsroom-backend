@@ -116,6 +116,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+LANGUAGE_CODE = 'de'
+
 DATABASES = {
     'default': dj_database_url.config("DATABASE_URL")
 }

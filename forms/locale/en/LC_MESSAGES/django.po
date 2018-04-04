@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-05 10:04+0000\n"
+"POT-Creation-Date: 2018-04-04 16:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,96 +17,133 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-#: forms/admin_views.py:38 forms/admin_views.py:80
+
+#: admin.py:16
+msgid "Personal info"
+msgstr ""
+
+#: admin.py:17
+msgid "Permissions"
+msgstr ""
+
+#: admin.py:19
+msgid "Important dates"
+msgstr ""
+
+#: admin_views.py:34 admin_views.py:53 admin_views.py:80 admin_views.py:130
 msgid "Investigations"
 msgstr ""
 
-#: forms/admin_views.py:82
-msgid "This response"
-msgstr ""
-
-#: forms/models.py:16 forms/models.py:88
+#: models.py:19 models.py:143
 msgid "Draft"
 msgstr ""
 
-#: forms/models.py:17 forms/models.py:90
+#: models.py:20 models.py:145
 msgid "Published"
 msgstr ""
 
-#: forms/models.py:18 forms/models.py:92
+#: models.py:21 models.py:147
 msgid "Archived"
 msgstr ""
 
-#: forms/models.py:34
+#: models.py:45
 msgid "View investigation"
 msgstr ""
 
-#: forms/models.py:35
+#: models.py:46
 msgid "Manage investigation"
 msgstr ""
 
-#: forms/models.py:44
+#: models.py:62
 msgid "Owner"
 msgstr ""
 
-#: forms/models.py:45
+#: models.py:63
 msgid "Admin"
 msgstr ""
 
-#: forms/models.py:46
+#: models.py:64
 msgid "Editor"
 msgstr ""
 
-#: forms/models.py:47
+#: models.py:65
 msgid "Auditor"
 msgstr ""
 
-#: forms/models.py:48
+#: models.py:66
 msgid "Viewer"
 msgstr ""
 
-#: forms/models.py:89
+#: models.py:126
+msgid "email address"
+msgstr ""
+
+#: models.py:144
 msgid "Unlisted"
 msgstr ""
 
-#: forms/models.py:91
+#: models.py:146
 msgid "Closed"
 msgstr ""
 
-#: forms/models.py:114
-msgid "Pending"
+#: models.py:167 models.py:168
+msgid "Thank you for participating in a crowdnewsroom investigation!"
 msgstr ""
 
-#: forms/models.py:115
+#: models.py:184
+msgid "Submitted"
+msgstr ""
+
+#: models.py:185
 msgid "Verified"
 msgstr ""
 
-#: forms/models.py:116
+#: models.py:186
 msgid "Invalid"
 msgstr ""
 
-#: forms/templates/forms/formresponse_detail.html:4
-#: forms/templates/forms/formresponse_detail.html:5
+#: models.py:197
+msgid "Edit response"
+msgstr ""
+
+#: models.py:221
+msgid "Yes"
+msgstr ""
+
+#: models.py:221
+msgid "No"
+msgstr ""
+
+#: models.py:238
+msgid "<File>"
+msgstr ""
+
+#: models.py:284
+msgid "Thank you for your submission!"
+msgstr ""
+
+#: templates/forms/form_list.html:7
+msgid "Forms for investigation"
+msgstr ""
+
+#: templates/forms/formresponse_detail.html:5
+#: templates/forms/formresponse_detail.html:6
 msgid "Validate Submission"
 msgstr ""
 
-#: forms/templates/forms/formresponse_detail.html:10
+#: templates/forms/formresponse_detail.html:12
 msgid "Content of Response"
 msgstr ""
 
-#: forms/templates/forms/formresponse_detail.html:35
-msgid "Set status"
-msgstr ""
-
-#: forms/templates/forms/formresponse_detail.html:43
+#: templates/forms/formresponse_detail.html:60
 msgid "Comment"
 msgstr ""
 
-#: forms/templates/forms/formresponse_list.html:4
+#: templates/forms/formresponse_list.html:5
 msgid "Responses"
 msgstr ""
 
-#: forms/templates/forms/formresponse_list.html:6
+#: templates/forms/formresponse_list.html:7
 #, python-format
 msgid ""
 "\n"
@@ -114,22 +151,30 @@ msgid ""
 "    "
 msgstr ""
 
-#: forms/templates/forms/formresponse_list.html:17
-msgid "Link"
+#: templates/forms/formresponse_list.html:16
+msgid "Response"
 msgstr ""
 
-#: forms/templates/forms/formresponse_list.html:18
+#: templates/forms/formresponse_list.html:17
 msgid "Status"
 msgstr ""
 
-#: forms/templates/forms/formresponse_list.html:19
+#: templates/forms/formresponse_list.html:18
 msgid "Comments"
 msgstr ""
 
-#: forms/templates/forms/investigation_list.html:7
+#: templates/forms/formresponse_list.html:36
+msgid "Download data as csv"
+msgstr ""
+
+#: templates/forms/investigation_list.html:7
 msgid "Your Investigations"
 msgstr ""
 
-#: forms/templates/forms/investigation_list.html:23
+#: templates/forms/investigation_list.html:13
+msgid "Create a new investigation"
+msgstr ""
+
+#: templates/forms/investigation_list.html:31
 msgid "Edit"
 msgstr ""
