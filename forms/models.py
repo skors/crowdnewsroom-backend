@@ -1,3 +1,5 @@
+import smtplib
+
 from django.core.mail import send_mail
 from django.template import Engine, Context
 from django.urls import reverse
@@ -281,11 +283,15 @@ def send_email(sender, instance, created, *args, **kwargs):
         confirm_summary = form_response.json.get("confirm_summary")
         if email and confirm_summary:
             message, html_message = generate_emails(form_response)
-            send_mail(subject=_("Thank you for your submission!"),
-                      message=message,
-                      from_email="editors@crowdnewsroom.org",
-                      recipient_list=[email],
-                      html_message=html_message)
+            try:
+                send_mail(subject=_("Thank you for your submission!"),
+                          message=message,
+                          from_email="editors@crowdnewsroom.org",
+                          recipient_list=[email],
+                          html_message=html_message)
+            except smtplib.SMTPException:
+                # TODO: Notify bugsnag here? Or do something else..
+                pass
 
 
 class Comment(models.Model):
