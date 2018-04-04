@@ -72,8 +72,11 @@ class UserGroupTestCase(TestCase):
         self.assertEqual(email, expected)
 
     def test_formresponse_email_fields(self):
-        investigation = Investigation.objects.create(name="Example Investigation")
-        form = Form.objects.create(name="My first Form", investigation=investigation)
+        investigation = Investigation.objects.create(name="Example Investigation",
+                                                     slug="example-investigation")
+        form = Form.objects.create(name="My first Form",
+                                   slug="my-first-form",
+                                   investigation=investigation)
         form_instance = FormInstance.objects.create(form=form,
                                                     ui_schema_json={
                                                         "signature": {
