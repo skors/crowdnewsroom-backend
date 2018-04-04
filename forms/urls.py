@@ -1,7 +1,7 @@
 from django.urls import path
 
 from forms.admin_views import InvestigationListView, FormResponseListView, FormResponseDetailView, CommentAddView, \
-    FormResponseStatusView, form_response_csv_view, FormListView
+    FormResponseStatusView, form_response_csv_view, FormListView, form_response_file_view
 from forms.views import FormInstanceDetail, ApiFormResponseDetail, FormResponseListCreate, user_detail_view, \
     InvestigationDetail
 
@@ -19,4 +19,5 @@ urlpatterns = [
     path('admin/investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses/<int:response_id>', FormResponseDetailView.as_view(), name="response_details"),
     path('admin/investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses/<int:response_id>/comments', CommentAddView.as_view(), name="response_details_comments"),
     path('admin/investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses/<int:response_id>/status', FormResponseStatusView.as_view(), name="response_details_status"),
+    path('admin/investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses/<int:response_id>/files/<file_field>', form_response_file_view, name="response_file"),
 ]

@@ -1,7 +1,6 @@
-import uuid
-
 from django.core.mail import send_mail
 from django.template import Engine, Context
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from . import secrets  # TODO: Replace with included module once updated to python 3.6
@@ -208,9 +207,15 @@ class FormResponse(models.Model):
         for name, props in properties.items():
             title = ui_schema.get(name, {}).get("ui:title", name)
             row = {"title": title}
-            if ui_schema.get(name, dict()).get("ui:widget") == "signatureWidget":
-                row["type"] = "image"
-                row["value"] = form_data.get(name, "")
+            if (ui_schema.get(name, dict()).get("ui:widget") == "signatureWidget"
+                    or props.get("format") == "data-url"):
+                row["type"] = "link"
+                row["value"] = reverse("response_file",
+                                       kwargs={"investigation_slug": self.form_instance.form.investigation.slug,
+                                               "form_slug": self.form_instance.form.slug,
+                                               "response_id": self.id,
+                                               "file_field": name
+                                               })
             elif props.get("type") == "boolean":
                 row["type"] = "text"
                 row["value"] = _("Yes") if form_data.get(name) else _("No")

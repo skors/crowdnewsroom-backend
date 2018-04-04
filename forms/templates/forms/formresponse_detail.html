@@ -43,9 +43,9 @@
                         <td>{{ entry.value }}</td>
                     {% endif %}
 
-                    {% if entry.type == "image" %}
+                    {% if entry.type == "link" %}
                         <td>
-                            <img src="{{ entry.value }}"/>
+                            <a href="{{entry.value}}">Download</a>
                         </td>
                     {% endif %}
                 </tr>

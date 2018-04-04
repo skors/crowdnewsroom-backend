@@ -1,3 +1,4 @@
+import base64
 import csv
 
 from django.contrib.auth.decorators import login_required
@@ -182,5 +183,32 @@ def form_response_csv_view(request, *args, **kwargs):
 
     return response
 
+
+@login_required(login_url="/admin/login")
+@permission_required('forms.view_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
+def form_response_file_view(request, *args, **kwargs):
+    form_slug = kwargs.get("form_slug")
+    investigation_slug = kwargs.get("investigation_slug")
+    response_id = kwargs.get("response_id")
+    file_field = kwargs.get("file_field")
+
+    form = get_object_or_404(Form, slug=form_slug)
+    form_response = get_object_or_404(FormResponse, id=response_id)
+    if form.investigation.slug != investigation_slug or form_response.form_instance.form != form:
+        raise HttpResponse(status_code=403)
+
+    file = form_response.json.get(file_field)
+    if not file:
+        raise Http404()
+    try:
+        header, content = file.split(";base64,")
+        file_type, filename = header.split(";name=")
+    except AttributeError:
+        raise Http404()
+
+    response = HttpResponse(content_type=file_type)
+    response.write(base64.b64decode(content))
+    response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
+    return response
 
 
