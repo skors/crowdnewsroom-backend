@@ -1,10 +1,13 @@
-from unittest.mock import MagicMock, PropertyMock, patch
+from unittest.mock import PropertyMock, patch
 
 import sys
 from django.test import TestCase
 from django.utils import timezone
+from django.utils.translation import activate
 
 from forms.models import Investigation, UserGroup, FormResponse, generate_emails, Form, FormInstance
+
+activate("en")
 
 
 class UserGroupTestCase(TestCase):
