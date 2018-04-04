@@ -33,6 +33,7 @@ class Investigation(models.Model, UniqueSlugMixin):
     text = models.TextField()  # or is this the same as short_description?
     methodology = models.TextField()
     faq = models.TextField()
+    data_privacy_url = models.URLField(null=True)
 
     @property
     def cover_image_url(self):
