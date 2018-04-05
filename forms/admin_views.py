@@ -201,7 +201,14 @@ def form_response_file_view(request, *args, **kwargs):
         raise Http404()
     try:
         header, content = file.split(";base64,")
-        file_type, filename = header.split(";name=")
+        if ";name=" in header:
+            file_type, filename = header.split(";name=")
+        # TODO: It is probably not safe here to assume that this is
+        # always going to be a signature. Maybe check the uiSchema
+        # to make sure.
+        else:
+            file_type = header
+            filename = "signature.png"
     except AttributeError:
         raise Http404()
 
