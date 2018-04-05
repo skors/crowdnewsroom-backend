@@ -82,15 +82,19 @@ class UserGroupTestCase(TestCase):
                                    investigation=investigation)
         form_instance = FormInstance.objects.create(form=form,
                                                     ui_schema_json={
-                                                        "signature": {
-                                                            "ui:title": "Signature",
-                                                            "ui:widget": "signatureWidget"
+                                                        "second-step": {
+                                                            "signature": {
+                                                                "ui:title": "Signature",
+                                                                "ui:widget": "signatureWidget"
+                                                            },
+                                                            "get_updates": {
+                                                                "ui:title": "Do you want updates?"
+                                                            }
                                                         },
-                                                        "name": {
-                                                            "ui:title": "Your name"
-                                                        },
-                                                        "get_updates": {
-                                                            "ui:title": "Do you want updates?"
+                                                        "first-step": {
+                                                            "name": {
+                                                                "ui:title": "Your name"
+                                                            }
                                                         }
                                                     },
                                                     form_json=[
@@ -98,6 +102,7 @@ class UserGroupTestCase(TestCase):
                                                                 "schema": {
                                                                     "type": "object",
                                                                     "title": "First Step",
+                                                                    "slug": "first-step",
                                                                     "properties": {
                                                                         "name": {
                                                                             "type": "string",
@@ -109,6 +114,7 @@ class UserGroupTestCase(TestCase):
                                                                 "schema": {
                                                                     "type": "object",
                                                                     "title": "Second Step",
+                                                                    "slug": "second-step",
                                                                     "properties": {
                                                                         "signature": {
                                                                             "type": "string"

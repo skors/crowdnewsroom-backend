@@ -201,15 +201,19 @@ class FormResponse(models.Model):
 
     def rendered_fields(self):
         form_data = self.json
-        ui_schema = self.form_instance.ui_schema_json
+
+        flat_ui_schema = {}
+        for (key, values) in self.form_instance.ui_schema_json.items():
+            flat_ui_schema.update(values)
+
         properties = {}
         for step in self.form_instance.form_json:
             properties.update(step["schema"].get("properties", {}))
 
         for name, props in properties.items():
-            title = ui_schema.get(name, {}).get("ui:title", name)
+            title = flat_ui_schema.get(name, {}).get("ui:title", name)
             row = {"title": title}
-            if (ui_schema.get(name, dict()).get("ui:widget") == "signatureWidget"
+            if (flat_ui_schema.get(name, dict()).get("ui:widget") == "signatureWidget"
                     or props.get("format") == "data-url"):
                 row["type"] = "link"
                 row["value"] = reverse("response_file",
