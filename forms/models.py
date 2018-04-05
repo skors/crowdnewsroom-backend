@@ -151,7 +151,7 @@ class Form(models.Model, UniqueSlugMixin):
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
     status = models.CharField(max_length=1, choices=STATUSES, default='D')
-    investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
+    investigation: Investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -165,7 +165,7 @@ class FormInstance(models.Model):
     form_json = JSONField()
     ui_schema_json = JSONField(default={})
     version = models.IntegerField(default=0)
-    form = models.ForeignKey(Form, on_delete=models.CASCADE)
+    form: Form = models.ForeignKey(Form, on_delete=models.CASCADE)
     email_template = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"))
     email_template_html = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"));
     redirect_url_template = models.TextField(default="https://forms.crowdnewsroom.org")
@@ -188,7 +188,7 @@ class FormResponse(models.Model):
         ('I', _('Invalid'))
     )
     json = JSONField()
-    form_instance = models.ForeignKey(FormInstance, on_delete=models.CASCADE)
+    form_instance: FormInstance = models.ForeignKey(FormInstance, on_delete=models.CASCADE)
     status = models.CharField(max_length=1, choices=STATUSES, default='S')
     token = models.CharField(max_length=256, db_index=True, default=secrets.token_urlsafe)
     email = models.EmailField()
@@ -249,10 +249,8 @@ class FormResponse(models.Model):
     def json_email(self):
         return self.json.get("email", "")
 
-    @classmethod
-    def belongs_to_investigation(cls, form_response_id, investigation_slug):
-        response = FormResponse.objects.select_related('form_instance__form__investigation').get(id=form_response_id)
-        return response.form_instance.form.investigation.slug == investigation_slug
+    def belongs_to_investigation(self, investigation_slug):
+        return self.form_instance.form.investigation.slug == investigation_slug
 
     @classmethod
     def get_all_for_investigation(cls, investigation_slug):

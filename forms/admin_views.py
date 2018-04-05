@@ -113,7 +113,8 @@ class FormResponseDetailView(InvestigationAuthMixin, BreadCrumbMixin, DetailView
     def dispatch(self, request, *args, **kwargs):
         form_response_id = self.kwargs[self.pk_url_kwarg]
         investigation_slug = self.kwargs["investigation_slug"]
-        if not FormResponse.belongs_to_investigation(form_response_id, investigation_slug):
+        form_response = get_object_or_404(FormResponse, id=form_response_id)
+        if not form_response.belongs_to_investigation(investigation_slug):
             raise Http404()
         return super().dispatch(request, *args, **kwargs)
 

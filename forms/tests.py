@@ -2,10 +2,11 @@ from unittest.mock import PropertyMock, patch
 
 import sys
 from django.test import TestCase
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import activate
 
-from forms.models import Investigation, UserGroup, FormResponse, generate_emails, Form, FormInstance
+from forms.models import Investigation, UserGroup, FormResponse, generate_emails, Form, FormInstance, User
 
 activate("en")
 
@@ -98,42 +99,42 @@ class UserGroupTestCase(TestCase):
                                                         }
                                                     },
                                                     form_json=[
-                                                            {
-                                                                "schema": {
-                                                                    "type": "object",
-                                                                    "title": "First Step",
-                                                                    "slug": "first-step",
-                                                                    "properties": {
-                                                                        "name": {
-                                                                            "type": "string",
-                                                                        }
+                                                        {
+                                                            "schema": {
+                                                                "type": "object",
+                                                                "title": "First Step",
+                                                                "slug": "first-step",
+                                                                "properties": {
+                                                                    "name": {
+                                                                        "type": "string",
                                                                     }
-                                                                },
+                                                                }
                                                             },
-                                                            {
-                                                                "schema": {
-                                                                    "type": "object",
-                                                                    "title": "Second Step",
-                                                                    "slug": "second-step",
-                                                                    "properties": {
-                                                                        "signature": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "get_updates": {
-                                                                            "type": "boolean"
-                                                                        }
+                                                        },
+                                                        {
+                                                            "schema": {
+                                                                "type": "object",
+                                                                "title": "Second Step",
+                                                                "slug": "second-step",
+                                                                "properties": {
+                                                                    "signature": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "get_updates": {
+                                                                        "type": "boolean"
                                                                     }
-                                                                },
-                                                            }]
+                                                                }
+                                                            },
+                                                        }]
                                                     )
         response = FormResponse.objects.create(json={
             "name": "Patrick",
             "signature": "data-url: abc",
             "get_updates": True,
         },
-                                               submission_date=timezone.now(),
-                                               form_instance=form_instance,
-                                               )
+            submission_date=timezone.now(),
+            form_instance=form_instance,
+        )
 
         result = response.email_fields
         expected = """Your name: Patrick
@@ -168,3 +169,39 @@ Do you want updates?: Yes"""
         expected = """This is your response:
 <FIELDS>"""
         self.assertEqual(email, expected)
+
+
+def url_for_response(id):
+    return reverse('response_details',
+                   kwargs={"investigation_slug": "first-investigation",
+                           "form_slug": "first-form",
+                           "response_id": id})
+
+
+class FormResponseDetailView(TestCase):
+    def test_one(self):
+        investigation = Investigation.objects.create(name="First Investigation", slug="first-investigation")
+        form = Form.objects.create(name="First Form",
+                                   slug="first-form",
+                                   investigation=investigation)
+        form_instance = FormInstance.objects.create(form=form,
+                                                    form_json={})
+        form_response = FormResponse.objects.create(form_instance=form_instance,
+                                                    submission_date=timezone.now(),
+                                                    json={})
+
+        url = url_for_response(form_response.id)
+        NON_EXISTING_ID = 9999
+
+        User.objects.create_superuser('admin@crowdnewsroom.org', 'password')
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+
+        self.client.login(email='admin@crowdnewsroom.org', password='password')
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(url_for_response(NON_EXISTING_ID))
+        self.assertEqual(response.status_code, 404)
