@@ -56,36 +56,6 @@ class FormResponseSerializer(ModelSerializer):
         return fr
 
 
-class ApiFormResponseDetail(generics.UpdateAPIView):
+class FormResponseListCreate(generics.CreateAPIView):
     queryset = FormResponse
     serializer_class = FormResponseSerializer
-    lookup_field = "id"
-
-
-class FormResponseListCreate(generics.ListCreateAPIView):
-    queryset = FormResponse
-    serializer_class = FormResponseSerializer
-
-    def get_queryset(self):
-        responses = get_objects_for_user(self.request.user, "edit_response", FormResponse)
-        responses = responses.filter(form_instance__form_slug=self.kwargs["form_slug"])
-        return responses
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-    def check_object_permissions(self, request, obj):
-        has_permission = request.user.has_perm("edit_response", obj)
-        if not has_permission:
-            self.permission_denied(
-                request, message='NOT allowed!'
-            )
-
-
-def user_detail_view(*args, **kwargs):
-    try:
-        UserModel = get_user_model()
-        UserModel.objects.get(email=kwargs.get("email"))
-        return JsonResponse({"exists": True})
-    except ObjectDoesNotExist:
-        return JsonResponse({"exists": False}, status=404)

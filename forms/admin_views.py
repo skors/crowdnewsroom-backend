@@ -1,5 +1,4 @@
 import base64
-import csv
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -14,7 +13,7 @@ from guardian.shortcuts import get_objects_for_user
 from django.utils.translation import gettext as _
 
 from forms.forms import CommentForm, FormResponseStatusForm
-from forms.models import FormResponse, Investigation, Comment, FormInstance, Form
+from forms.models import FormResponse, Investigation, Comment, Form
 from forms.utils import create_form_csv
 
 
