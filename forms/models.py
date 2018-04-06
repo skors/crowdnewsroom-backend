@@ -151,7 +151,7 @@ class Form(models.Model, UniqueSlugMixin):
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
     status = models.CharField(max_length=1, choices=STATUSES, default='D')
-    investigation: Investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
+    investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -165,7 +165,7 @@ class FormInstance(models.Model):
     form_json = JSONField()
     ui_schema_json = JSONField(default={})
     version = models.IntegerField(default=0)
-    form: Form = models.ForeignKey(Form, on_delete=models.CASCADE)
+    form = models.ForeignKey(Form, on_delete=models.CASCADE)
     email_template = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"))
     email_template_html = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"));
     redirect_url_template = models.TextField(default="https://forms.crowdnewsroom.org")
@@ -188,7 +188,7 @@ class FormResponse(models.Model):
         ('I', _('Invalid'))
     )
     json = JSONField()
-    form_instance: FormInstance = models.ForeignKey(FormInstance, on_delete=models.CASCADE)
+    form_instance = models.ForeignKey(FormInstance, on_delete=models.CASCADE)
     status = models.CharField(max_length=1, choices=STATUSES, default='S')
     token = models.CharField(max_length=256, db_index=True, default=secrets.token_urlsafe)
     email = models.EmailField()
