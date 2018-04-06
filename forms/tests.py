@@ -4,6 +4,7 @@ import sys
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.text import slugify
 from django.utils.translation import activate
 
 from forms.models import Investigation, UserGroup, FormResponse, generate_emails, Form, FormInstance, User
@@ -171,37 +172,54 @@ Do you want updates?: Yes"""
         self.assertEqual(email, expected)
 
 
-def url_for_response(id):
+def url_for_response(response_id,
+                     investigation_slug="first-investigation",
+                     form_slug="first-form"):
     return reverse('response_details',
-                   kwargs={"investigation_slug": "first-investigation",
-                           "form_slug": "first-form",
-                           "response_id": id})
+                   kwargs={"investigation_slug": investigation_slug,
+                           "form_slug": form_slug,
+                           "response_id": response_id})
+
+
+def create_entries(name):
+    investigation_name = "{} Investigation".format(name)
+    investigation = Investigation.objects.create(name=investigation_name, slug=slugify(investigation_name))
+
+    investigation_name = "{} Form".format(name)
+    form = Form.objects.create(name=investigation_name,
+                               slug=slugify(investigation_name),
+                               investigation=investigation)
+    form_instance = FormInstance.objects.create(form=form,
+                                                form_json={})
+    return FormResponse.objects.create(form_instance=form_instance,
+                                       submission_date=timezone.now(),
+                                       json={})
 
 
 class FormResponseDetailView(TestCase):
-    def test_one(self):
-        investigation = Investigation.objects.create(name="First Investigation", slug="first-investigation")
-        form = Form.objects.create(name="First Form",
-                                   slug="first-form",
-                                   investigation=investigation)
-        form_instance = FormInstance.objects.create(form=form,
-                                                    form_json={})
-        form_response = FormResponse.objects.create(form_instance=form_instance,
-                                                    submission_date=timezone.now(),
-                                                    json={})
-
-        url = url_for_response(form_response.id)
-        NON_EXISTING_ID = 9999
-
+    def setUp(self):
+        self.form_response_1 = create_entries("First")
+        self.form_response_2 = create_entries("Second")
         User.objects.create_superuser('admin@crowdnewsroom.org', 'password')
 
+    def test_returns_403_when_not_logged_in(self):
+        url = url_for_response(self.form_response_1.id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
+    def test_200_when_authorized(self):
         self.client.login(email='admin@crowdnewsroom.org', password='password')
 
+        url = url_for_response(self.form_response_1.id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+    def test_404_when_not_existing(self):
+        NON_EXISTING_ID = 9999
         response = self.client.get(url_for_response(NON_EXISTING_ID))
+        self.assertEqual(response.status_code, 404)
+
+    def test_404_when_wrong_investigation(self):
+        self.client.login(email='admin@crowdnewsroom.org', password='password')
+        response = self.client.get(url_for_response(self.form_response_2.id, "first-investigation", "second-form"))
         self.assertEqual(response.status_code, 404)
