@@ -66,6 +66,8 @@ class FormListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
 
 
 class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
+    paginate_by = 25
+
     @cached_property
     def investigation(self):
         return get_object_or_404(Investigation, slug=self.kwargs.get("investigation_slug"))
