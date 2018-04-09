@@ -254,7 +254,9 @@ class FormResponse(models.Model):
 
     @classmethod
     def get_all_for_investigation(cls, investigation_slug):
-        return cls.objects.filter(form_instance__form__investigation__slug=investigation_slug)
+        return cls.objects\
+            .filter(form_instance__form__investigation__slug=investigation_slug)\
+            .order_by("-submission_date")
 
     @classmethod
     def get_all_for_form(cls, form):
