@@ -19,12 +19,17 @@
             <div class="wrapper">
                  <a class="headerlogo" href="{% url 'investigation_list' %}"></a>
 
+                <div class="dropdown">
                  {% if request.user.is_authenticated %}
-                     <div class="user">
+                     <a class="user" href="#">
                         {% blocktrans with name=request.user %}<span class="name">{{ name }}</span>{% endblocktrans %}
-                         <img src="https://placehold.it/30x30" alt="">
-                     </div>
+                     </a>
+                    <ul class="dropdown-content">
+                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                        <li><a href="{% url 'password_change' %}">Change password</a></li>
+                    </ul>
                 {% endif %}
+                </div>
             </div>
         </nav>
         <div class="title">
