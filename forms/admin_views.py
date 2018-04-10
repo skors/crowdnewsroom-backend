@@ -193,6 +193,7 @@ def form_response_file_view(request, *args, **kwargs):
     investigation_slug = kwargs.get("investigation_slug")
     response_id = kwargs.get("response_id")
     file_field = kwargs.get("file_field")
+    file_index = kwargs.get("file_index")
 
     form = get_object_or_404(Form, slug=form_slug)
     form_response = get_object_or_404(FormResponse, id=response_id)
@@ -202,6 +203,12 @@ def form_response_file_view(request, *args, **kwargs):
     file = form_response.json.get(file_field)
     if not file:
         raise Http404()
+
+    if file_index is not None:
+        if file_index >= len(file):
+            raise Http404
+        file = file[file_index]
+
     try:
         header, content = file.split(";base64,")
         if ";name=" in header:

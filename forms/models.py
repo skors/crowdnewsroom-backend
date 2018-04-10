@@ -222,6 +222,19 @@ class FormResponse(models.Model):
                                                "response_id": self.id,
                                                "file_field": name
                                                })
+            elif props.get("type") == "array" and props["items"]["format"] == "data-url":
+                for index, part in enumerate(form_data.get(name)):
+                    row = {"title": title}
+                    row["type"] = "link"
+                    row["value"] = reverse("response_file_array",
+                                           kwargs={"investigation_slug": self.form_instance.form.investigation.slug,
+                                                   "form_slug": self.form_instance.form.slug,
+                                                   "response_id": self.id,
+                                                   "file_field": name,
+                                                   "file_index": index
+                                                   })
+                    yield row
+                continue
             elif props.get("type") == "boolean":
                 row["type"] = "text"
                 row["value"] = _("Yes") if form_data.get(name) else _("No")
