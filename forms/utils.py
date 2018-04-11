@@ -61,5 +61,8 @@ def _get_file_keys(form_instance: FormInstance):
                 file_keys.add(property_name)
             elif property_values.get("format") == "data-url":
                 file_keys.add(property_name)
+            elif property_values.get("type") == "array" \
+                    and property_values.get("items", {}).get("format") == "data-url":
+                file_keys.add(property_name)
 
     return file_keys
