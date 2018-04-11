@@ -6,3 +6,5 @@ theme/node_modules/
 *.mo
 .env
 .envrc_local
+.coverage
+coverage.xml

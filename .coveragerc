@@ -1,0 +1,4 @@
+[run]
+omit =
+    */migrations/*
+    */local_settings.py
