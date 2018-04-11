@@ -8,6 +8,7 @@ from django.utils.text import slugify
 from django.utils.translation import activate
 
 from forms.models import Investigation, UserGroup, FormResponse, generate_emails, Form, FormInstance, User
+from forms.utils import _get_file_keys
 
 activate("en")
 
@@ -223,3 +224,53 @@ class FormResponseDetailView(TestCase):
         self.client.login(email='admin@crowdnewsroom.org', password='password')
         response = self.client.get(url_for_response(self.form_response_2.id, "first-investigation", "second-form"))
         self.assertEqual(response.status_code, 404)
+
+
+class Utils(TestCase):
+    def setUp(self):
+        investigation_name = "First Investigation"
+        investigation = Investigation.objects.create(name=investigation_name, slug=slugify(investigation_name))
+
+        form_name = "First Form"
+        self.form = Form.objects.create(name=form_name,
+                                   slug=slugify(form_name),
+                                   investigation=investigation)
+
+    def test_get_file_keys_finds_file(self):
+        form_instance = FormInstance.objects.create(form=self.form,
+                                                    form_json=[{
+                                                        "schema": {
+                                                            "slug": "first",
+                                                            "properties": {
+                                                                "string": {"type": "string"},
+                                                                "file": {"type": "string",
+                                                                         "format": "data-url"}
+                                                            }
+                                                        }
+                                                    }])
+
+        expected = {"file"}
+        file_keys = _get_file_keys(form_instance)
+        self.assertEqual(file_keys, expected)
+
+
+    def test_get_file_keys_finds_file_array(self):
+        form_instance = FormInstance.objects.create(form=self.form,
+                                                    form_json=[{
+                                                        "schema": {
+                                                            "slug": "first",
+                                                            "properties": {
+                                                                "files": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string",
+                                                                        "format": "data-url"
+                                                                    }
+                                                                },
+                                                            }
+                                                        }
+                                                    }])
+
+        expected = {"files"}
+        file_keys = _get_file_keys(form_instance)
+        self.assertEqual(file_keys, expected)
