@@ -49,6 +49,7 @@ def get_keys(form_instance):
 
 
 def _get_file_keys(form_instance: FormInstance):
+    # TODO: Signature does not work
     file_widgets = ['signatureWidget', 'fileWidget']
 
     file_keys = set()
@@ -57,7 +58,7 @@ def _get_file_keys(form_instance: FormInstance):
     for step in form_instance.form_json:
         schema = step["schema"]
         for (property_name, property_values) in schema["properties"].items():
-            if ui_schema.get(schema["slug"], {}).get("ui:widget") in file_widgets:
+            if ui_schema.get(schema["slug"], {}).get(property_name, {}).get("ui:widget") in file_widgets:
                 file_keys.add(property_name)
             elif property_values.get("format") == "data-url":
                 file_keys.add(property_name)

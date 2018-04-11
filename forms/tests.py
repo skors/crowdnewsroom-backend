@@ -274,3 +274,27 @@ class Utils(TestCase):
         expected = {"files"}
         file_keys = _get_file_keys(form_instance)
         self.assertEqual(file_keys, expected)
+
+    def test_get_file_keys_finds_signature(self):
+        form_instance = FormInstance.objects.create(form=self.form,
+                                                    form_json=[{
+                                                        "schema": {
+                                                            "slug": "first",
+                                                            "properties": {
+                                                                "signature": {"type": "string"},
+                                                            }
+                                                        }
+                                                    }],
+                                                    ui_schema_json={
+                                                        "first": {
+                                                            "signature": {
+                                                                "ui:widget": "signatureWidget"
+                                                            }
+                                                        }
+                                                    })
+
+        expected = {"signature"}
+        file_keys = _get_file_keys(form_instance)
+        self.assertEqual(file_keys, expected)
+
+
