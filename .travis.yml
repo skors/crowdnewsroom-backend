@@ -4,8 +4,12 @@ python:
   - "3.6"
 install:
   - pip install -r requirements.txt
+  - pip install coverage codecov
 script:
-  - python manage.py test
+  - coverage run --source='.' manage.py test
+after_script:
+  - coverage report
+  - codecov
 services:
   - postgresql
 addons:
