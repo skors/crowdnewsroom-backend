@@ -10,7 +10,6 @@ from django.utils.safestring import mark_safe
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATES = {
     'js': '<script type="text/javascript" src="{}"></script>',
-    'chart-js': '<script type="text/javascript" src="{}"></script>',
     'css': '<link type="text/css" href="{}" rel="stylesheet" />'
 }
 HOT_SERVER = 'http://127.0.0.1:1339/{}'
@@ -36,8 +35,6 @@ def get_bundles():
     """return bundle file names"""
     bundle_data = get_bundle_data()
     return {
-        'chart-js': [b['name'] for b in bundle_data['chunks']['chart']
-                     if b['name'].endswith('.js')],
         'js': [b['name'] for b in bundle_data['chunks']['main']
                if b['name'].endswith('.js')],
         'css': [b['name'] for b in bundle_data['chunks']['main']
@@ -64,6 +61,5 @@ def get_tags(bundles=None, use_hot=None, part='js'):
 CACHED_BUNDLES = get_bundles()
 CACHED_TAGS = {
     'js': get_tags(CACHED_BUNDLES, False),
-    'css': get_tags(CACHED_BUNDLES, False, 'css'),
-    'chart-js': get_tags(CACHED_BUNDLES, False, 'chart-js')
+    'css': get_tags(CACHED_BUNDLES, False, 'css')
 }

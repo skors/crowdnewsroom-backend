@@ -10,18 +10,15 @@ module.exports = (options) => {
 
   const webpackConfig = {
     devtool: options.devtool,
-    entry: {
-      main: [
-       `webpack-dev-server/client?http://localhost:${options.port}`,
-       'webpack/hot/dev-server',
-       './src/scripts/index',
-       ],
-      chart: './src/scripts/charts'
-    },
+    entry: [
+      `webpack-dev-server/client?http://localhost:${options.port}`,
+      'webpack/hot/dev-server',
+      './src/scripts/index'
+    ],
     output: {
       publicPath: 'http://127.0.0.1:1339/',
       path: Path.join(__dirname, 'static', 'js'),
-      filename: 'bundle-[name]-[hash].min.js'
+      filename: 'bundle-[hash].min.js'
     },
     plugins: [
       new Webpack.DefinePlugin({
@@ -56,10 +53,7 @@ module.exports = (options) => {
   }
 
   if (options.isProduction) {
-    webpackConfig.entry =  {
-      main: './src/scripts/index',
-      chart: './src/scripts/charts'
-    },
+    webpackConfig.entry = ['./src/scripts/index']
 
     webpackConfig.plugins.push(
       new Webpack.optimize.OccurenceOrderPlugin(),

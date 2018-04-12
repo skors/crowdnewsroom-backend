@@ -12,8 +12,7 @@ def webpack_bundle(part='js'):
     if get_use_hot():
         # return only js bundle because css is included
         # and injected into <head> via js
-        is_js = part in ["js", "chart-js"]
-        return get_tags(use_hot=True, part=part) if is_js else ''
+        return get_tags(use_hot=True, part='js') if part == 'js' else ''
     if settings.DEBUG:
         # get last build because webpack is not running
         return get_tags(use_hot=False, part=part)
