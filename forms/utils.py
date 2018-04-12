@@ -36,11 +36,8 @@ def create_form_csv(form, investigation_slug, request, io_object):
             print("Skipping row")
 
 
-def get_keys(form_instance):
-    keys = set()
-    for step in form_instance.form_json:
-        for prop in step["schema"]["properties"]:
-            keys.add(prop)
+def get_keys(form_instance: FormInstance):
+    keys = form_instance.json_properties
     file_keys = _get_file_keys(form_instance)
     non_file_fields = keys - file_keys
     extra_fields = {"url", "version", "status", "email", "submission_date"}
