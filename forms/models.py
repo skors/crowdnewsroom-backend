@@ -1,7 +1,6 @@
 import smtplib
 
 from django.core.mail import send_mail
-from django.db.models import Count
 from django.template import Engine, Context
 from django.urls import reverse
 from django.utils.safestring import mark_safe
@@ -15,7 +14,6 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.dispatch import receiver
 from guardian.shortcuts import assign_perm
-from django.db.models.functions import TruncDate
 
 
 class Investigation(models.Model, UniqueSlugMixin):
@@ -169,14 +167,6 @@ class Form(models.Model, UniqueSlugMixin):
             keys |= instance.json_properties
         return keys
 
-    def submissions_by_date(self):
-        return FormResponse.objects \
-            .filter(form_instance__form=self) \
-            .annotate(date=TruncDate('submission_date')) \
-            .values('date') \
-            .annotate(c=Count('id')) \
-            .values('date', 'c')
-
 
 class FormInstance(models.Model):
     form_json = JSONField()
@@ -296,8 +286,8 @@ class FormResponse(models.Model):
 
     @classmethod
     def get_all_for_investigation(cls, investigation_slug):
-        return cls.objects \
-            .filter(form_instance__form__investigation__slug=investigation_slug) \
+        return cls.objects\
+            .filter(form_instance__form__investigation__slug=investigation_slug)\
             .order_by("-submission_date")
 
     @classmethod
