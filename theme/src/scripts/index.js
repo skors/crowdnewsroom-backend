@@ -1,10 +1,11 @@
-'use strict'
+"use strict";
 
 if (module.hot) {
-  module.hot.accept()
+  module.hot.accept();
 }
 
-import 'babel-polyfill'
+
+import "babel-polyfill";
 
 // style
-import '../styles/main.sass'
+import "../styles/main.sass";
