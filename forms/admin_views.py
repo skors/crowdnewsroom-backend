@@ -88,7 +88,15 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
         return self.investigation
 
     def get_queryset(self):
-        return FormResponse.get_all_for_investigation(self.kwargs.get("investigation_slug"))
+        has_filter = self.request.GET.get("has")
+        investigation_responses = FormResponse.get_all_for_investigation(self.kwargs.get("investigation_slug"))
+
+        if has_filter:
+            key = "json__{}__isnull".format(has_filter)
+            filter = {key: True}
+            return investigation_responses.exclude(**filter)
+
+        return investigation_responses
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)

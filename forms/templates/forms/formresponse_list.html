@@ -12,6 +12,17 @@
 
 {% block main %}
   <div class="formresponse-list">
+      <form action="" method="GET">
+          <label for="has_filter">{% trans "Only show responses that have" %}</label>
+          <select id="has_filter" name="has" onChange="this.form.submit()">
+              <option value="">---</option>
+              {% for property in form.instance_properties %}
+              <option value="{{property}}"
+                      {% if request.GET.has == property %} selected {% endif %}
+              >{{property}}</option>
+              {% endfor %}
+          </select>
+      </form>
     <table class="table">
         <tr>
             <td>{% trans "Response" %}</td>

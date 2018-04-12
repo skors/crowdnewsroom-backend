@@ -160,6 +160,13 @@ class Form(models.Model, UniqueSlugMixin):
     def get_all_for_investigation(cls, investigation_slug):
         return cls.objects.filter(investigation__slug=investigation_slug).all()
 
+    @property
+    def instance_properties(self):
+        keys = set()
+        for instance in FormInstance.objects.filter(form=self).all():
+            keys |= instance.json_properties
+        return keys
+
 
 class FormInstance(models.Model):
     form_json = JSONField()
@@ -179,6 +186,14 @@ class FormInstance(models.Model):
             .filter(form__slug=form_slug) \
             .order_by("-version") \
             .first()
+
+    @property
+    def json_properties(self):
+        keys = set()
+        for step in self.form_json:
+            for prop in step["schema"]["properties"]:
+                keys.add(prop)
+        return keys
 
 
 class FormResponse(models.Model):
@@ -215,13 +230,17 @@ class FormResponse(models.Model):
             row = {"title": title}
             if (flat_ui_schema.get(name, dict()).get("ui:widget") == "signatureWidget"
                     or props.get("format") == "data-url"):
-                row["type"] = "link"
-                row["value"] = reverse("response_file",
-                                       kwargs={"investigation_slug": self.form_instance.form.investigation.slug,
-                                               "form_slug": self.form_instance.form.slug,
-                                               "response_id": self.id,
-                                               "file_field": name
-                                               })
+                if form_data.get(name):
+                    row["type"] = "link"
+                    row["value"] = reverse("response_file",
+                                           kwargs={"investigation_slug": self.form_instance.form.investigation.slug,
+                                                   "form_slug": self.form_instance.form.slug,
+                                                   "response_id": self.id,
+                                                   "file_field": name
+                                                   })
+                else:
+                    row["type"] = "text"
+                    row["value"] = ""
             elif props.get("type") == "array" and props["items"]["format"] == "data-url":
                 for index, part in enumerate(form_data.get(name)):
                     row = {"title": title}
