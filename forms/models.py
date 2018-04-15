@@ -242,7 +242,7 @@ class FormResponse(models.Model):
                     row["type"] = "text"
                     row["value"] = ""
             elif props.get("type") == "array" and props["items"]["format"] == "data-url":
-                for index, part in enumerate(form_data.get(name)):
+                for index, part in enumerate(form_data.get(name, [])):
                     row = {"title": title}
                     row["type"] = "link"
                     row["value"] = reverse("response_file_array",
