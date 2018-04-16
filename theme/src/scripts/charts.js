@@ -5,6 +5,7 @@ if (module.hot) {
 }
 
 import Chart from "chart.js";
+import moment from "moment";
 
 const timeFormat = "MM/DD/YYYY HH:mm";
 
@@ -34,6 +35,21 @@ window.makeChart = (labels, values) => {
               }
             }
           ]
+        },
+        tooltips: {
+            callbacks: {
+                label: (tooltipItem, data) => {
+                    const count = tooltipItem.yLabel;
+                    const unit = count === 1 ? "Contribution": "Contributions";
+                    return `${count} ${unit}`;
+                },
+                title: (tooltipItem, data) => {
+                    if (tooltipItem.length) {
+                        return moment(tooltipItem[0].xLabel).format("ddd DD.MM.YYYY");
+                    }
+                    return "?"
+                }
+            }
         }
       }
     };
