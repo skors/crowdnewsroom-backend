@@ -17,10 +17,7 @@ window.makeChart = (labels, values) => {
         datasets: [
           {
             label: "Contributions",
-            backgroundColor: color("red")
-              .alpha(0.5)
-              .rgbString(),
-            borderColor: "red",
+            backgroundColor: "rgb(74, 144, 226)",
             fill: false,
             data: values
           }
