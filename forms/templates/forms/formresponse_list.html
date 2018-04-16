@@ -18,7 +18,7 @@
               <option value="">---</option>
               {% for property in form.instance_properties %}
               <option value="{{property}}"
-                      {% if request.GET.has == property %} selected {% endif %}
+                      {% if has_query_param == property %} selected {% endif %}
               >{{property}}</option>
               {% endfor %}
           </select>
@@ -47,13 +47,13 @@
         <div class="responses-pagination">
             <div class="page-links">
                 {% if page_obj.has_previous %}
-                    <a href="?page={{ page_obj.previous_page_number }}">{% trans "previous" %}</a>
+                    <a href="?has={{ has_query_param }}&page={{ page_obj.previous_page_number }}">{% trans "previous" %}</a>
                 {% endif %}
                 <span class="page-current">
                     Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
                 </span>
                 {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}">{% trans "next" %}</a>
+                    <a href="?has={{ has_query_param }}&page={{ page_obj.next_page_number }}">{% trans "next" %}</a>
                 {% endif %}
             </div>
             <div class="total">

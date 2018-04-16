@@ -102,6 +102,7 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['investigation'] = self.investigation
         context['form'] = self.form
+        context['has_query_param'] = self.request.GET.get("has")
         return context
 
 
