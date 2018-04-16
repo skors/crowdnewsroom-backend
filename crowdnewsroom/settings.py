@@ -140,6 +140,7 @@ BUGSNAG = {
     'api_key': os.environ.get('BUGSNAG_API_KEY'),
     'project_root': os.environ.get('BUGSNAG_PROJECT_ROOT'),
     'ignore_classes': ["django.http.Http404"],
+    'release_stage': os.environ.get("RELEASE_STAGE", "other")
 }
 
 MEDIA_URL = '/media/'
