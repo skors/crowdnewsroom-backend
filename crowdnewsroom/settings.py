@@ -139,6 +139,7 @@ REST_FRAMEWORK = {
 BUGSNAG = {
     'api_key': os.environ.get('BUGSNAG_API_KEY'),
     'project_root': os.environ.get('BUGSNAG_PROJECT_ROOT'),
+    'ignore_classes': ["django.http.Http404"],
 }
 
 MEDIA_URL = '/media/'
