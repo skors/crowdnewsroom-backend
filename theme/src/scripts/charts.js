@@ -24,27 +24,11 @@ window.makeChart = (labels, values) => {
         ]
       },
       options: {
+        legend: {display: false},
         scales: {
-          xAxes: [
-            {
-              type: "time",
-              time: {
-                format: timeFormat,
-                //round: 'day'
-                tooltipFormat: "ll HH:mm"
-              },
-              scaleLabel: {
-                display: true,
-                labelString: "Date"
-              }
-            }
-          ],
+          xAxes: [ { type: "time", } ],
           yAxes: [
             {
-              scaleLabel: {
-                display: true,
-                labelString: "Count"
-              },
               ticks: {
                 beginAtZero: true
               }
