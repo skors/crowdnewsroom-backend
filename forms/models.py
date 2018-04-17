@@ -142,6 +142,15 @@ class Partner(models.Model):
     investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
 
 
+class Tag(models.Model):
+    name = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True)
+    investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.name
+
+
 class Form(models.Model, UniqueSlugMixin):
     STATUSES = (
         ('D', _('Draft')),
@@ -219,6 +228,7 @@ class FormResponse(models.Model):
     token = models.CharField(max_length=256, db_index=True, default=secrets.token_urlsafe)
     email = models.EmailField()
     submission_date = models.DateTimeField()
+    tags = models.ManyToManyField(Tag)
 
     class Meta:
         permissions = (
@@ -346,3 +356,4 @@ class Comment(models.Model):
     date = models.DateTimeField()
     form_response = models.ForeignKey(FormResponse, on_delete=models.CASCADE)
     text = models.TextField()
+
