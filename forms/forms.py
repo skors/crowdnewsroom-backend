@@ -22,3 +22,9 @@ class FormResponseStatusForm(ModelForm):
     class Meta:
         model = FormResponse
         fields = ["status"]
+
+class FormResponseTagsForm(ModelForm):
+
+    class Meta:
+        model = FormResponse
+        fields = ["tags"]

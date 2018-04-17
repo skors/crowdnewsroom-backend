@@ -12,7 +12,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from guardian.shortcuts import get_objects_for_user
 from django.utils.translation import gettext as _
 
-from forms.forms import CommentForm, FormResponseStatusForm
+from forms.forms import CommentForm, FormResponseStatusForm, FormResponseTagsForm
 from forms.models import FormResponse, Investigation, Comment, Form
 from forms.utils import create_form_csv
 
@@ -132,6 +132,7 @@ class FormResponseDetailView(InvestigationAuthMixin, BreadCrumbMixin, DetailView
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['comment_form'] = CommentForm()
+        context['tags_form'] = FormResponseTagsForm()
         context['status_form'] = FormResponseStatusForm(instance=self.object)
         context['investigation'] = self.investigation
         return context
@@ -167,6 +168,18 @@ class CommentAddView(InvestigationAuthMixin, CreateView):
 class FormResponseStatusView(InvestigationAuthMixin, UpdateView):
     model = FormResponse
     form_class = FormResponseStatusForm
+    pk_url_kwarg = "response_id"
+
+    def get_success_url(self):
+        return reverse("response_details", kwargs=self.kwargs)
+
+    def get_permission_object(self):
+        return Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
+
+
+class FormResponseTagsView(InvestigationAuthMixin, UpdateView):
+    model = FormResponse
+    form_class = FormResponseTagsForm
     pk_url_kwarg = "response_id"
 
     def get_success_url(self):
