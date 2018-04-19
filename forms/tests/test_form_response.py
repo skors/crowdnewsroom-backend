@@ -1,6 +1,8 @@
-from django.test import TestCase
+from django.test import TestCase, Client
+from django.urls import reverse
 
-from forms.tests.factories import FormResponseFactory
+from forms.models import User, FormResponse, UserGroup
+from forms.tests.factories import FormResponseFactory, FormInstanceFactory, UserFactory
 
 
 class FormReponseTest(TestCase):
@@ -46,3 +48,102 @@ class FormReponseTest(TestCase):
 
         expected = []
         self.assertListEqual(list(self.response.rendered_fields()), expected)
+
+
+def make_url(form):
+    params = {
+        "form_slug": form.slug,
+        "investigation_slug": form.investigation.slug
+    }
+
+    return reverse("form_responses_edit", kwargs=params)
+
+
+class FormReponseBatchEditTest(TestCase):
+    def setUp(self):
+        form_instances = [FormInstanceFactory.create() for _ in range(2)]
+        investigations = [instance.form.investigation for instance in form_instances]
+
+        responses = [[], []]
+        for index, instance in enumerate(form_instances):
+            for _ in range(5):
+                response = FormResponseFactory.create(form_instance=instance)
+                responses[index].append(response)
+
+        user = UserFactory.create()
+        admin_user_group = UserGroup.objects.filter(investigation=investigations[0],
+                                                    role="A").first()
+        admin_user_group.group.user_set.add(user)
+
+        self.responses = responses
+        self.admin_user = user
+
+        self.client = Client()
+        self.client.force_login(self.admin_user)
+
+    def test_archive_multiple_allowed(self):
+        responses = self.responses[0]
+        form = responses[0].form_instance.form
+
+        payload = {
+            "selected_responses": [str(r.id) for r in responses],
+            "action": "mark_invalid"
+        }
+        self.client.post(make_url(form), data=payload)
+
+        updated_responses = FormResponse.objects.filter(form_instance__form=form).all()
+        statuses = [response.status for response in updated_responses]
+
+        self.assertListEqual(statuses, ["I"] * 5)
+
+    def test_verify_multiple_allowed(self):
+        responses = self.responses[0]
+        form = responses[0].form_instance.form
+
+        payload = {
+            "selected_responses": [str(r.id) for r in responses],
+            "action": "mark_verified"
+        }
+        self.client.post(make_url(form), data=payload)
+
+        updated_responses = FormResponse.objects.filter(form_instance__form=form).all()
+        statuses = [response.status for response in updated_responses]
+
+        self.assertListEqual(statuses, ["V"] * 5)
+
+    def test_edit_disallowed(self):
+        responses = self.responses[0]
+        form = self.responses[1][0].form_instance.form
+
+        payload = {
+            "selected_responses": [str(r.id) for r in responses],
+            "action": "mark_invalid"
+        }
+
+        self.client.post(make_url(form), data=payload)
+
+        updated_responses = FormResponse.objects.filter(form_instance__form=form).all()
+        statuses = [response.status for response in updated_responses]
+
+        self.assertListEqual(statuses, ["S"] * 5)
+
+    def test_edit_disallowed_and_allowed(self):
+        owned_responses = self.responses[0]
+        other_responses = self.responses[1]
+        responses = owned_responses + other_responses
+        form = owned_responses[0].form_instance.form
+
+        payload = {
+            "selected_responses": [str(r.id) for r in responses],
+            "action": "mark_invalid"
+        }
+
+        self.client.post(make_url(form), data=payload)
+
+        updated_responses = FormResponse.objects.all()
+        statuses = [response.status for response in updated_responses]
+
+        self.assertListEqual(statuses,
+                             ["S"] * 5 + ["I"] * 5,
+                             "Should edit the ones for which user"
+                             " has permission and leave others untouched")

@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.urls import path, re_path, register_converter
 
 from forms.admin_views import InvestigationListView, FormResponseListView, FormResponseDetailView, CommentAddView, \
-    FormResponseStatusView, form_response_csv_view, FormListView, form_response_file_view
+    FormResponseStatusView, form_response_csv_view, FormListView, form_response_file_view, form_response_batch_edit
 from forms.views import FormInstanceDetail, FormResponseListCreate, InvestigationDetail
 
 
@@ -25,6 +25,7 @@ urlpatterns = [
 
     path('admin/investigations', InvestigationListView.as_view(), name="investigation_list"),
     path('admin/investigations/<slug:investigation_slug>/forms', FormListView.as_view(), name="form_list"),
+    path('admin/investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses/batch_edit', form_response_batch_edit, name="form_responses_edit"),
     path('admin/investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses',
          lambda r, **kwargs: HttpResponseRedirect('./responses/inbox'),
          ),
