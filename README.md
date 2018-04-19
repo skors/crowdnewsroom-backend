@@ -56,6 +56,12 @@ python manage.py loaddata investigation_and_form
 python manage.py runserver
 ```
 
+## Test
+You can run the test suite with
+```bash
+python manage.py test forms.tests
+```
+
 ## License
 The source code for this project is published under [GNU AGPL License](https://github.com/correctiv/crowdnewsroom-backend/blob/master/LICENSE)
 
