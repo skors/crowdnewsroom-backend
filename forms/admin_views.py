@@ -102,7 +102,7 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
         if has_filter:
             key = "json__{}__isnull".format(has_filter)
             filter = {key: True}
-            return investigation_responses.exclude(**filter)
+            investigation_responses = investigation_responses.exclude(**filter)
 
         investigation_responses = investigation_responses.filter(status=mapping[bucket])
 
