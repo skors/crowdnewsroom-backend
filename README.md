@@ -29,6 +29,12 @@ docker exec -it crowdnewsroom-docker createdb -U postgres crowdnewsroom
 
 Move `crowdnewsroom/local_settings.py.example` to `crowdnewsroom/local_settings.py` and update the settings according to your local environment, in case you are not using docker.
 
+You also need to set a couple of environment variables. Namely:
+```
+DJANGO_SECRET_KEY='<your generated secret key>'
+DJANGO_ALLOWED_HOSTS='localhost' # can be comma-separated
+```
+
 ### Run migrations
 ```bash
 python manage.py migrate
