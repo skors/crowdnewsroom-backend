@@ -15,6 +15,27 @@
       <div style="width:100%; height: 400px;">
           <canvas id="canvas"></canvas>
       </div>
+      <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.kwargs.bucket == 'inbox' %} active {% endif %}" href="inbox">
+            <i class="fa {% response_icon 'S' %}"></i>
+            Inbox
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.kwargs.bucket == 'verified' %} active {% endif %}" href="verified">
+            <i class="fa {% response_icon 'V' %}"></i>
+            Verified
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.kwargs.bucket == 'trash' %} active {% endif %}" href="trash">
+            <i class="fa {% response_icon 'I' %}"></i>
+            Trash
+        </a>
+      </li>
+    </ul>
+    <div class="p-3 pt-4">
       <form action="" method="GET">
           <label for="has_filter">{% trans "Only show responses that have" %}</label>
           <select id="has_filter" name="has" onChange="this.form.submit()">
@@ -26,37 +47,46 @@
               {% endfor %}
           </select>
       </form>
+    </div>
     <table class="table">
-        <tr>
-            <td>{% trans "Response" %}</td>
-            <td>{% trans "Status" %}</td>
-            <td>{% trans "Comments" %}</td>
-        </tr>
+        <thead>
+            <tr>
+                <th scope="col">{% trans "Email" %}</th>
+                <th scope="col">{% trans "Submission Date" %}</th>
+                <th scope="col">{% trans "Comments" %}</th>
+            </tr>
+        </thead>
+        <tbody>
         {% for response in formresponse_list %}
             <tr>
                 <td>
                     <a href="{% url "response_details" investigation.slug form.slug response.id %}"
                         style="text-decoration: none">
                         <i class="fa {% response_icon response.status %}"></i>
-                        {{ response.json_email }} - {{ response.submission_date | localtime }}
+                        {% if response.json_email %}
+                            {{ response.json_email }}
+                        {% else %}
+                            <i> {% trans "No Email Provided" %}</i>
+                        {% endif %}
                     </a>
                 </td>
-                <td>{{ response.get_status_display }}</td>
+                <td>{{ response.submission_date | localtime }}</td>
                 <td>{{ response.comment_set.count }}</td>
             </tr>
         {% endfor %}
+        </tbody>
     </table>
       {% if is_paginated %}
         <div class="responses-pagination">
             <div class="page-links">
                 {% if page_obj.has_previous %}
-                    <a href="?has={{ has_query_param }}&page={{ page_obj.previous_page_number }}">{% trans "previous" %}</a>
+                    <a href="?page={{ page_obj.previous_page_number }}{{query_params}}">{% trans "previous" %}</a>
                 {% endif %}
                 <span class="page-current">
                     Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
                 </span>
                 {% if page_obj.has_next %}
-                    <a href="?has={{ has_query_param }}&page={{ page_obj.next_page_number }}">{% trans "next" %}</a>
+                    <a href="?page={{ page_obj.next_page_number }}{{query_params}}">{% trans "next" %}</a>
                 {% endif %}
             </div>
             <div class="total">
