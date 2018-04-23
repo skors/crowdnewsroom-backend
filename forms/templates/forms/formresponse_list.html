@@ -49,6 +49,15 @@
       </form>
     </div>
     <form action="batch_edit" method="POST">
+        <div id="bulk-actions" class="p-3">
+            <select name="action">
+                <option value="mark_submitted">{% trans "Move to inbox" %}</option>
+                <option value="mark_verified">{% trans "Mark as verified" %}</option>
+                <option value="mark_invalid">{% trans "Move to trash" %}</option>
+            </select>
+            {% csrf_token %}
+            <input type="submit" data-template="{% trans 'Apply to COUNT submission(s)' %}">
+        </div>
         <table class="table">
             <thead>
             <tr>
@@ -77,13 +86,6 @@
             </tr>
             {% endfor %}
             </tbody>
-            <select name="action">
-                <option value="mark_submitted">{% trans "Move to inbox" %}</option>
-                <option value="mark_verified">{% trans "Mark as verified" %}</option>
-                <option value="mark_invalid">{% trans "Move to trash" %}</option>
-            </select>
-            {% csrf_token %}
-            <input type="submit">
         </table>
     </form>
       {% if is_paginated %}
@@ -123,6 +125,26 @@ const values  = [
 ];
 window.addEventListener("load", function(event){
     makeChart(labels, values);
+
+    var bulkActions = document.querySelector("#bulk-actions");
+    bulkActions.classList.add("d-none");
+
+    function updateFilterVisibility(){
+        var selectedCount = document.querySelectorAll("form input[type='checkbox']:checked").length;
+        if (selectedCount > 0){
+            bulkActions.classList.remove("d-none");
+            var submitButton = bulkActions.querySelector("input[type='submit']");
+            submitButton.value = submitButton.dataset.template.replace("COUNT", selectedCount);
+        } else {
+            bulkActions.classList.add("d-none");
+        }
+    }
+
+    document.querySelectorAll("form input[type='checkbox']").forEach(function(input) {
+        input.onclick = updateFilterVisibility;
+    });
+
+    updateFilterVisibility();
 });
 </script>
 
