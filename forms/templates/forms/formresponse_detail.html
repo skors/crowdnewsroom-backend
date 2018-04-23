@@ -53,12 +53,20 @@
         </table>
 
         <h2>Tags</h2>
-        <form action="{% url 'response_details_tags' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id %}"
-            method="post">
-            <div class="form-group">
-                {% csrf_token %} {{ tags_form }}
-                <input type="submit" class="btn btn-primary" value="{% trans " Add tag " %}"/>
-            </div>
+
+<!--         <form action="{% url 'response_details_tags' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id %}" method="post">
+           {% csrf_token %}
+           {{ tags_form }}
+           <input type="submit" class="btn btn-primary" value="{% trans " Submit Tags " %}"/>
+        </form> -->
+
+        <form action="/forms/admin/investigations/wem-gehoert-hamburg/forms/mietformular/responses/40/tags" method="post">
+           <input type="hidden" name="csrfmiddlewaretoken" value="3wScU4fKv2jQK6M2V9LPHHcOTU8ErWr7Klv8ubtaINJTHj5idniHMSRRo14q2smV">
+           <label for="id_tags">Tags:</label><select name="tags" required="" id="id_tags" multiple="multiple">
+            {% for tag in formresponse.taglist %}
+                <option value="{{ tag.id }}" {% if tag in formresponse.selected_tags %}selected{% endif %}>{{ tag.name }}</option>
+            {% endfor %}
+           <input type="submit" class="btn btn-primary" value=" Submit Tags ">
         </form>
 
         <h2>Comments</h2>

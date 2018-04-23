@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, MultipleChoiceField
 from django.utils import timezone
 
 from forms.models import Comment, FormResponse
@@ -22,6 +22,7 @@ class FormResponseStatusForm(ModelForm):
     class Meta:
         model = FormResponse
         fields = ["status"]
+
 
 class FormResponseTagsForm(ModelForm):
 

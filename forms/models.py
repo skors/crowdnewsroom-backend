@@ -162,7 +162,7 @@ class Tag(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
     investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
-    
+
     def __str__(self):
         return self.name
 
@@ -320,6 +320,14 @@ class FormResponse(models.Model):
 
     def belongs_to_investigation(self, investigation_slug):
         return self.form_instance.form.investigation.slug == investigation_slug
+
+    @property
+    def taglist(self):
+        return list(Tag.objects.all())
+
+    @property
+    def selected_tags(self):
+        return list(self.tags.all())
 
     @classmethod
     def get_all_for_investigation(cls, investigation_slug):
