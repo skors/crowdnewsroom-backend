@@ -5,6 +5,15 @@ from django.utils.text import slugify
 from forms import models
 
 
+class UserFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.User
+
+    first_name = factory.Faker("first_name")
+    last_name = factory.Faker("last_name")
+    email = factory.Faker("email")
+
+
 class InvestigationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Investigation
