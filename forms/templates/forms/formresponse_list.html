@@ -42,7 +42,7 @@
               <option value="">---</option>
               {% for property in form.instance_properties %}
               <option value="{{property}}"
-                      {% if has_query_param == property %} selected {% endif %}
+                      {% if has_param == property %} selected {% endif %}
               >{{property}}</option>
               {% endfor %}
           </select>

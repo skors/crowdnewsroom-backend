@@ -119,7 +119,7 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
         else:
             context['query_params'] = ""
 
-        context['get_params'] = self.request.GET.get("has")
+        context['has_param'] = has_param
         return context
 
 
