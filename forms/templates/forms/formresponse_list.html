@@ -71,7 +71,7 @@
             <tr>
                 <td>
                     <input type="checkbox" value="{{response.id}}" name="selected_responses">
-                    <a href="{% url "response_details" investigation.slug form.slug response.id %}"
+                    <a href="{% url 'response_details' investigation.slug form.slug response.id %}"
                        style="text-decoration: none">
                         <i class="fa {% response_icon response.status %}"></i>
                         {% if response.json_email %}
@@ -106,7 +106,7 @@
             </div>
         </div>
     {% endif %}
-    <a href="{% url "form_responses_csv" investigation.slug form.slug %}">
+    <a href="{% url 'form_responses_csv' investigation.slug form.slug %}">
       <i class="fa fa-download"></i>
       {% trans "Download data as csv" %}
       </a>
