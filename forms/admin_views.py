@@ -187,6 +187,11 @@ class CommentAddView(InvestigationAuthMixin, CreateView):
 def form_response_batch_edit(request, *args, **kwargs):
     action = request.POST.get("action")
     ids = [int(id) for id in request.POST.getlist("selected_responses", [])]
+    referer = request.META.get("HTTP_REFERER", "/")
+    box = referer.split("/")[-1]
+    return_bucket = "inbox"
+    if box in ["inbox", "verified", "trash"]:
+        return_bucket = box
     investigation = Investigation.objects.get(slug=kwargs["investigation_slug"])
 
     # need to also filter for investigation to
@@ -200,8 +205,8 @@ def form_response_batch_edit(request, *args, **kwargs):
     elif action == "mark_verified":
         form_responses.update(status="V")
     return HttpResponseRedirect(reverse("form_responses", kwargs={"investigation_slug": kwargs["investigation_slug"],
-                                                      "form_slug": kwargs["form_slug"],
-                                                      "bucket": "inbox"}))
+                                                                  "form_slug": kwargs["form_slug"],
+                                                                  "bucket": return_bucket}))
 
 
 class FormResponseStatusView(InvestigationAuthMixin, UpdateView):
