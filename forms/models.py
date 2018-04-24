@@ -323,7 +323,8 @@ class FormResponse(models.Model):
 
     @property
     def taglist(self):
-        return list(Tag.objects.all())
+        investigation = self.form_instance.form.investigation
+        return list(Tag.objects.filter(investigation=investigation).all())
 
     @property
     def selected_tags(self):
