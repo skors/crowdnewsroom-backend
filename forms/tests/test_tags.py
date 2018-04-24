@@ -11,7 +11,7 @@ class TagTest(TestCase):
         tag = TagFactory.create()
         form_response = FormResponseFactory.create()
         form_response.tags.set([tag])
-        self.assertEqual(form_response.selected_tags, [tag])
+        self.assertEqual(list(form_response.tags.all()), [tag])
 
     def test_tag_in_investigation(self):
         investigation = InvestigationFactory.create()

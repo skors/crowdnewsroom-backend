@@ -326,10 +326,6 @@ class FormResponse(models.Model):
         investigation = self.form_instance.form.investigation
         return list(Tag.objects.filter(investigation=investigation).all())
 
-    @property
-    def selected_tags(self):
-        return list(self.tags.all())
-
     @classmethod
     def get_all_for_investigation(cls, investigation_slug):
         return cls.objects \

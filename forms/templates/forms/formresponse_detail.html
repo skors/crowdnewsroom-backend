@@ -57,7 +57,7 @@
            {% csrf_token %}
            <label for="id_tags">Tags:</label><select name="tags" required="" id="id_tags" multiple="multiple">
             {% for tag in formresponse.taglist %}
-                <option value="{{ tag.id }}" {% if tag in formresponse.selected_tags %}selected{% endif %}>{{ tag.name }}</option>
+                <option value="{{ tag.id }}" {% if tag in formresponse.tags.all %}selected{% endif %}>{{ tag.name }}</option>
             {% endfor %}
            <input type="submit" class="btn btn-primary" value="Submit Tags">
         </form>
