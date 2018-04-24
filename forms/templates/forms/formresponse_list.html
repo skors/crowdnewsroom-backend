@@ -84,8 +84,8 @@
                 </td>
                 <td>{{ response.submission_date | localtime }}</td>
                 <td>{{ response.comment_set.count }}</td>
-                  {% for tag in response.selected_tags %}
                 <td>
+                  {% for tag in response.tags.all %}
                     <span class="badge badge-primary">{{ tag.name }}</span>
                   {% endfor %}
                 </td>
