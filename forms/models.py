@@ -319,14 +319,10 @@ class FormResponse(models.Model):
         return self.form_instance.form.investigation.slug == investigation_slug
 
     @classmethod
-    def get_all_for_investigation(cls, investigation_slug):
-        return cls.objects \
-            .filter(form_instance__form__investigation__slug=investigation_slug) \
-            .order_by("-submission_date")
-
-    @classmethod
     def get_all_for_form(cls, form):
-        return cls.objects.filter(form_instance__form=form)
+        return cls.objects\
+                .filter(form_instance__form=form) \
+                .order_by("-submission_date")
 
     def set_password_for_user(self, password):
         contributor, user_created = User.objects.get_or_create(email=self.email)

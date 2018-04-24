@@ -109,7 +109,7 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
         return self.investigation
 
     def get_queryset(self):
-        investigation_responses = FormResponse.get_all_for_investigation(self.kwargs.get("investigation_slug"))
+        investigation_responses = FormResponse.get_all_for_form(self.form)
         filter_params = _get_filter_params(self.kwargs, self.request.GET)
         investigation_responses = investigation_responses.filter(**filter_params)
         return investigation_responses
