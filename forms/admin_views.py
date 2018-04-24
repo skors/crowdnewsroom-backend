@@ -149,7 +149,7 @@ class FormResponseDetailView(InvestigationAuthMixin, BreadCrumbMixin, DetailView
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['comment_form'] = CommentForm()
-        context['tags_form'] = FormResponseTagsForm()
+        context['tags_form'] = FormResponseTagsForm(instance=self.object)
         context['status_form'] = FormResponseStatusForm(instance=self.object)
         context['investigation'] = self.investigation
         return context

@@ -53,12 +53,9 @@
         </table>
 
         <h2>Tags</h2>
-        <form action="{% url 'response_details_tags' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id %}" method="post">
-           {% csrf_token %}
-           <label for="id_tags">Tags:</label><select name="tags" required="" id="id_tags" multiple="multiple">
-            {% for tag in formresponse.taglist %}
-                <option value="{{ tag.id }}" {% if tag in formresponse.tags.all %}selected{% endif %}>{{ tag.name }}</option>
-            {% endfor %}
+        <form id="tags-form" action="{% url 'response_details_tags' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id %}" method="post">
+            {{ tags_form }}
+            {% csrf_token %}
            <input type="submit" class="btn btn-primary" value="Submit Tags">
         </form>
 

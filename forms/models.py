@@ -324,7 +324,7 @@ class FormResponse(models.Model):
     @property
     def taglist(self):
         investigation = self.form_instance.form.investigation
-        return list(Tag.objects.filter(investigation=investigation).all())
+        return Tag.objects.filter(investigation=investigation)
 
     @classmethod
     def get_all_for_investigation(cls, investigation_slug):

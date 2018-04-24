@@ -29,3 +29,7 @@ class FormResponseTagsForm(ModelForm):
     class Meta:
         model = FormResponse
         fields = ["tags"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['tags'].queryset = self.instance.taglist
