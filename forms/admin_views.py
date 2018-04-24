@@ -105,6 +105,11 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
                                                                "bucket": "inbox"})),
         ]
 
+    def dispatch(self, request, *args, **kwargs):
+        if not self.form.investigation == self.investigation:
+            raise Http404()
+        return super().dispatch(request, *args, **kwargs)
+
     def get_permission_object(self):
         return self.investigation
 
