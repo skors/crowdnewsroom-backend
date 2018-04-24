@@ -230,6 +230,15 @@ class FormResponseTagsView(InvestigationAuthMixin, UpdateView):
     form_class = FormResponseTagsForm
     pk_url_kwarg = "response_id"
 
+    def post(self, request, *args, **kwargs):
+        if request.POST.get("tags"):
+            return super().post(request, *args, **kwargs)
+        else:
+            instance = self.get_object()
+            instance.tags.clear()
+            redirect = reverse("response_details", kwargs=self.kwargs)
+            return HttpResponseRedirect(redirect_to=redirect)
+
     def get_success_url(self):
         return reverse("response_details", kwargs=self.kwargs)
 
