@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 from guardian.decorators import permission_required
 from guardian.mixins import PermissionRequiredMixin
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from guardian.shortcuts import get_objects_for_user
@@ -119,7 +119,7 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
         else:
             context['query_params'] = ""
 
-        context['get_params'] = self.request.GET.get("has")
+        context['has_param'] = has_param
         return context
 
 
@@ -181,6 +181,33 @@ class CommentAddView(InvestigationAuthMixin, CreateView):
         response = FormResponse.objects.get(id=self.kwargs.get("response_id"))
         form.save_with_extra_props(form_response=response, author=self.request.user)
         return super().form_valid(form)
+
+
+@login_required(login_url="/admin/login")
+@permission_required('forms.view_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
+def form_response_batch_edit(request, *args, **kwargs):
+    action = request.POST.get("action")
+    ids = [int(id) for id in request.POST.getlist("selected_responses", [])]
+    referer = request.META.get("HTTP_REFERER", "/")
+    box = referer.split("/")[-1]
+    return_bucket = "inbox"
+    if box in ["inbox", "verified", "trash"]:
+        return_bucket = box
+    investigation = Investigation.objects.get(slug=kwargs["investigation_slug"])
+
+    # need to also filter for investigation to
+    # make sure that we only edit responses that user is allowed to edit
+    form_responses = FormResponse.objects.filter(id__in=ids,
+                                                 form_instance__form__investigation=investigation)
+    if action == "mark_invalid":
+        form_responses.update(status="I")
+    elif action == "mark_submitted":
+        form_responses.update(status="S")
+    elif action == "mark_verified":
+        form_responses.update(status="V")
+    return HttpResponseRedirect(reverse("form_responses", kwargs={"investigation_slug": kwargs["investigation_slug"],
+                                                                  "form_slug": kwargs["form_slug"],
+                                                                  "bucket": return_bucket}))
 
 
 class FormResponseStatusView(InvestigationAuthMixin, UpdateView):

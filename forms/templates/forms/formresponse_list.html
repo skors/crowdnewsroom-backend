@@ -42,27 +42,38 @@
               <option value="">---</option>
               {% for property in form.instance_properties %}
               <option value="{{property}}"
-                      {% if has_query_param == property %} selected {% endif %}
+                      {% if has_param == property %} selected {% endif %}
               >{{property}}</option>
               {% endfor %}
           </select>
       </form>
     </div>
-    <table class="table">
-        <thead>
+    <form action="batch_edit" method="POST">
+        <div id="bulk-actions" class="p-3">
+            <select name="action">
+                <option value="mark_submitted">{% trans "Move to inbox" %}</option>
+                <option value="mark_verified">{% trans "Mark as verified" %}</option>
+                <option value="mark_invalid">{% trans "Move to trash" %}</option>
+            </select>
+            {% csrf_token %}
+            <input type="submit" data-template="{% trans 'Apply to COUNT submission(s)' %}">
+        </div>
+        <table class="table">
+            <thead>
             <tr>
                 <th scope="col">{% trans "Email" %}</th>
                 <th scope="col">{% trans "Submission Date" %}</th>
                 <th scope="col">{% trans "Comments" %}</th>
                 <th scope="col">{% trans "Tags" %}</th>
             </tr>
-        </thead>
-        <tbody>
-        {% for response in formresponse_list %}
+            </thead>
+            <tbody>
+            {% for response in formresponse_list %}
             <tr>
                 <td>
-                    <a href="{% url "response_details" investigation.slug form.slug response.id %}"
-                        style="text-decoration: none">
+                    <input type="checkbox" value="{{response.id}}" name="selected_responses">
+                    <a href="{% url 'response_details' investigation.slug form.slug response.id %}"
+                       style="text-decoration: none">
                         <i class="fa {% response_icon response.status %}"></i>
                         {% if response.json_email %}
                             {{ response.json_email }}
@@ -79,9 +90,10 @@
                   {% endfor %}
                 </td>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            {% endfor %}
+            </tbody>
+        </table>
+    </form>
       {% if is_paginated %}
         <div class="responses-pagination">
             <div class="page-links">
@@ -100,7 +112,7 @@
             </div>
         </div>
     {% endif %}
-    <a href="{% url "form_responses_csv" investigation.slug form.slug %}">
+    <a href="{% url 'form_responses_csv' investigation.slug form.slug %}">
       <i class="fa fa-download"></i>
       {% trans "Download data as csv" %}
       </a>
@@ -119,6 +131,26 @@ const values  = [
 ];
 window.addEventListener("load", function(event){
     makeChart(labels, values);
+
+    var bulkActions = document.querySelector("#bulk-actions");
+    bulkActions.classList.add("d-none");
+
+    function updateFilterVisibility(){
+        var selectedCount = document.querySelectorAll("form input[type='checkbox']:checked").length;
+        if (selectedCount > 0){
+            bulkActions.classList.remove("d-none");
+            var submitButton = bulkActions.querySelector("input[type='submit']");
+            submitButton.value = submitButton.dataset.template.replace("COUNT", selectedCount);
+        } else {
+            bulkActions.classList.add("d-none");
+        }
+    }
+
+    document.querySelectorAll("form input[type='checkbox']").forEach(function(input) {
+        input.onclick = updateFilterVisibility;
+    });
+
+    updateFilterVisibility();
 });
 </script>
 
