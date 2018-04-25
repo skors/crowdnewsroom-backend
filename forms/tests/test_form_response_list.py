@@ -43,8 +43,7 @@ class FormReponseListViewTest(TestCase):
 
         response = self.client.get(
             "/forms/admin/investigations/{}/forms/{}/responses/inbox?tag=avocado".format(form.investigation.slug, form.slug))
-        self.assertEquals(len(response.context_data["formresponse_list"]), 1)
-        self.assertEquals(
-            response.context_data["formresponse_list"].first().tags.first(),
-            form_response.tags.first()
+        self.assertListEqual(
+            list(response.context_data["formresponse_list"].all()),
+            [form_response]
         )
