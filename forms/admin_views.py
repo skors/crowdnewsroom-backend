@@ -124,13 +124,14 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
         context['investigation'] = self.investigation
         context['form'] = self.form
 
-        allowed_params = ['has']
+        allowed_params = ['has', 'tag']
 
         context['query_params'] = '&'.join(['{}={}'.format(k, v)
                                             for k, v
                                             in self.request.GET.items()
                                             if k in allowed_params])
         context['has_param'] = self.request.GET.get('has')
+        context['tag_param'] = self.request.GET.get('tag')
 
         csv_base = reverse("form_responses_csv", kwargs={
             "investigation_slug": self.investigation.slug,

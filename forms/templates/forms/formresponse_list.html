@@ -60,7 +60,7 @@
             <select id="tag_filter" name="tag" onChange="this.form.submit()">
                 <option value="">---</option>
                 {% for tag in investigation.tags %}
-                <option value="{{tag.slug}}" {% if has_param == tag %} selected {% endif %}>{{tag.name}}</option>
+                <option value="{{tag.slug}}" {% if tag_param == tag.slug %} selected {% endif %}>{{tag.name}}</option>
                 {% endfor %}
             </select>
         </div>
