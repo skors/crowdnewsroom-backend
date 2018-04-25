@@ -47,3 +47,11 @@ class FormResponseFactory(factory.django.DjangoModelFactory):
     submission_date = timezone.now()
     json = {}
 
+
+class TagFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.Tag
+
+    name = factory.Sequence(lambda n: 'Tag %s' % n)
+    slug = factory.LazyAttribute(lambda a: slugify(a.name))
+    investigation = factory.SubFactory(InvestigationFactory)

@@ -13,7 +13,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from guardian.shortcuts import get_objects_for_user
 from django.utils.translation import gettext as _
 
-from forms.forms import CommentForm, FormResponseStatusForm
+from forms.forms import CommentForm, FormResponseStatusForm, FormResponseTagsForm
 from forms.models import FormResponse, Investigation, Comment, Form
 from forms.utils import create_form_csv
 
@@ -168,6 +168,7 @@ class FormResponseDetailView(InvestigationAuthMixin, BreadCrumbMixin, DetailView
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['comment_form'] = CommentForm()
+        context['tags_form'] = FormResponseTagsForm(instance=self.object)
         context['status_form'] = FormResponseStatusForm(instance=self.object)
         context['investigation'] = self.investigation
         return context
@@ -238,6 +239,27 @@ class FormResponseStatusView(InvestigationAuthMixin, UpdateView):
         kwargs = self.kwargs
         kwargs.pop("response_id")
         return reverse("form_responses", kwargs=kwargs)
+
+    def get_permission_object(self):
+        return Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
+
+
+class FormResponseTagsView(InvestigationAuthMixin, UpdateView):
+    model = FormResponse
+    form_class = FormResponseTagsForm
+    pk_url_kwarg = "response_id"
+
+    def post(self, request, *args, **kwargs):
+        if request.POST.get("tags"):
+            return super().post(request, *args, **kwargs)
+        else:
+            instance = self.get_object()
+            instance.tags.clear()
+            redirect = reverse("response_details", kwargs=self.kwargs)
+            return HttpResponseRedirect(redirect_to=redirect)
+
+    def get_success_url(self):
+        return reverse("response_details", kwargs=self.kwargs)
 
     def get_permission_object(self):
         return Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))

@@ -4,7 +4,7 @@ from django_json_widget.widgets import JSONEditorWidget
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import ugettext_lazy as _
 
-from .models import User, Investigation, Form, FormResponse, FormInstance, Partner
+from .models import User, Investigation, Form, FormResponse, FormInstance, Partner, Tag
 
 
 @admin.register(User)
@@ -35,8 +35,21 @@ class FormInstanceAdmin(admin.ModelAdmin):
     }
 
 
+class TagInline(admin.StackedInline):
+    model = Tag
+    max_num = 3
+
+
+class InvestigationAdmin(admin.ModelAdmin):
+    list_select_related = True
+    inlines = [
+        TagInline,
+    ]
+
+
 admin.site.register(FormInstance, FormInstanceAdmin)
-admin.site.register(Investigation)
+admin.site.register(Investigation, InvestigationAdmin)
 admin.site.register(FormResponse)
 admin.site.register(Partner)
 admin.site.register(Form)
+admin.site.register(Tag)

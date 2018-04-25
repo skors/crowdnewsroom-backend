@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, MultipleChoiceField, CheckboxSelectMultiple
 from django.utils import timezone
 
 from forms.models import Comment, FormResponse
@@ -22,3 +22,15 @@ class FormResponseStatusForm(ModelForm):
     class Meta:
         model = FormResponse
         fields = ["status"]
+
+
+class FormResponseTagsForm(ModelForm):
+
+    class Meta:
+        model = FormResponse
+        fields = ["tags"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['tags'].widget = CheckboxSelectMultiple()
+        self.fields['tags'].queryset = self.instance.taglist
