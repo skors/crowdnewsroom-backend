@@ -33,10 +33,12 @@ class FormReponseTest(TestCase):
         base_url = '/forms/admin/investigations/{}/forms/{}'.format(form.investigation.slug, form.slug)
         url_template = '{}/responses/{{}}/files/files/{{}}'.format(base_url)
         expected = [
-            {'title': 'files',
+            {'json_name': 'files-0',
+             'title': 'files 0',
              'type': 'link',
              'value': url_template.format(self.response.id, 0)},
-            {'title': 'files',
+            {'json_name': 'files-1',
+             'title': 'files 1',
              'type': 'link',
              'value': url_template.format(self.response.id, 1)}
         ]
