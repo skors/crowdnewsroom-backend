@@ -59,7 +59,7 @@ python manage.py runserver
 ## Test
 You can run the test suite with
 ```bash
-python manage.py test forms.tests
+python manage.py test
 ```
 
 ## License
