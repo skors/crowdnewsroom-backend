@@ -277,7 +277,8 @@ class FormResponse(models.Model):
                     row["value"] = ""
             elif props.get("type") == "array" and props["items"]["format"] == "data-url":
                 for index, part in enumerate(form_data.get(name, [])):
-                    row = {"title": title}
+                    row = {"title": "{} {}".format(title, index),
+                           "json_name": "{}-{}".format(name,index)}
                     row["type"] = "link"
                     row["value"] = reverse("response_file_array",
                                            kwargs={"investigation_slug": self.form_instance.form.investigation.slug,
