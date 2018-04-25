@@ -340,3 +340,27 @@ def form_response_file_view(request, *args, **kwargs):
     response.write(file_content)
     response['Content-Disposition'] = 'inline; filename="{}"'.format(filename)
     return response
+
+
+@login_required(login_url="/admin/login")
+@permission_required('forms.view_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
+def form_response_json_edit_view(request, *args, **kwargs):
+    form_slug = kwargs.get("form_slug")
+    investigation_slug = kwargs.get("investigation_slug")
+    response_id = kwargs.get("response_id")
+
+    form = get_object_or_404(Form, slug=form_slug)
+    if form.investigation.slug != investigation_slug:
+        raise HttpResponse(status_code=403)
+
+    pattern = re.compile("json__([\w_]+)")
+    form_response = get_object_or_404(FormResponse, id=response_id)
+    for key, value in request.POST.items():
+        match = pattern.match(key)
+        if match:
+            json_key = match.group(1)
+            original = form_response.json
+            original.update({json_key: value})
+            form_response.json = original
+            form_response.save()
+    return HttpResponseRedirect(reverse("response_details", kwargs=kwargs))

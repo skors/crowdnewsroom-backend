@@ -40,7 +40,18 @@
                 <tr>
                     <th>{{ entry.title }}</th>
                     {% if entry.type == "text" %}
-                        <td>{{ entry.value }}</td>
+                        <td>{{ entry.value }}
+                        {% if entry.data_type == "string" %}
+                            <i class="fa fa-edit edit-inline-button" title="edit"></i>
+                            <span class="edit-inline">
+                                <form action="{{formresponse.id}}/edit" method="POST">
+                                    {% csrf_token %}
+                                    <input type="text" name="json__{{entry.json_name}}">
+                                    <input type="submit">
+                                </form>
+                            </span>
+                        {% endif %}
+                        </td>
                     {% endif %}
 
                     {% if entry.type == "link" %}
@@ -84,4 +95,19 @@
             {% endfor %}
         </ul>
     </div>
+
+
+<script>
+    var editElements = document.querySelectorAll(".edit-inline");
+    editElements.forEach(function(element) { element.classList.add("d-none"); });
+
+    function toggleEdit(event) {
+        var button = event.target;
+        button.parentElement.querySelector(".edit-inline").classList.toggle("d-none");
+    }
+
+    document.querySelectorAll(".edit-inline-button").forEach(function(button){
+     button.addEventListener("click", toggleEdit);
+    });
+</script>
 {% endblock %}
