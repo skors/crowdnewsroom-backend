@@ -42,6 +42,7 @@
     </ul>
     <div class="p-3 pt-4">
       <form action="" method="GET">
+        <div>
           <label for="has_filter">{% trans "Only show responses that have" %}</label>
           <select id="has_filter" name="has" onChange="this.form.submit()">
               <option value="">---</option>
@@ -51,6 +52,20 @@
               >{{property}}</option>
               {% endfor %}
           </select>
+        </div>
+        
+        {% if investigation.tags %}
+        <div>
+            <label for="tag_filter">{% trans "Show responses tagged" %}</label>
+            <select id="tag_filter" name="tag" onChange="this.form.submit()">
+                <option value="">---</option>
+                {% for tag in investigation.tags %}
+                <option value="{{tag.slug}}" {% if tag_param == tag.slug %} selected {% endif %}>{{tag.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+
       </form>
     </div>
     <form action="batch_edit" method="POST">
