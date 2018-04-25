@@ -46,6 +46,9 @@ class Investigation(models.Model, UniqueSlugMixin):
             return self.cover_image.url
         return ""
 
+    def tags(self):
+        return list(Tag.objects.filter(investigation=self).all())
+
     class Meta:
         permissions = (
             ('view_investigation', _('View investigation')),
