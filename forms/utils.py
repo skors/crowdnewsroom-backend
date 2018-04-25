@@ -1,5 +1,6 @@
 import csv
 
+import bugsnag
 from django.urls import reverse
 
 from forms.models import FormInstance, FormResponse
@@ -42,7 +43,9 @@ def create_form_csv(form, investigation_slug, build_absolute_uri, io_object, fil
             row.update(meta_data)
             writer.writerow(row)
 
-        except TypeError:
+        except TypeError as e:
+            bugsnag.notify(e)
             print("Skipping row")
-        except KeyError:
+        except KeyError as e:
+            bugsnag.notify(e)
             print("Skipping row")
