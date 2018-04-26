@@ -46,7 +46,9 @@
                             <span class="edit-inline">
                                 <form action="{{formresponse.id}}/edit" method="POST">
                                     {% csrf_token %}
-                                    <input type="text" name="json__{{entry.json_name}}">
+                                    <input type="text"
+                                           name="json__{{entry.json_name}}"
+                                           value="{{ entry.value}}">
                                     <input type="submit">
                                 </form>
                             </span>
