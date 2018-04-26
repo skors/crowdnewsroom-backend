@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-26 11:53+0100\n"
+"POT-Creation-Date: 2018-04-26 12:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,22 +17,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-#: theme/templates/includes/footer.html:11
+
+#: theme/templates/base.html:25
 #, python-format
-msgid "Logged in as <strong>%(name)s</strong>"
+msgid "<span class=\"name\">%(name)s</span>"
 msgstr ""
 
-#: theme/templates/includes/footer.html:13
-#: theme/templates/includes/nav-primary.html:13
-msgid "Logout"
-msgstr ""
-
-#: theme/templates/includes/footer.html:24
-msgid "Impress"
+#: theme/templates/includes/footer.html:8
+msgid "Imprint"
 msgstr ""
 
 #: theme/templates/includes/nav-primary.html:8
 msgid "Search"
+msgstr ""
+
+#: theme/templates/includes/nav-primary.html:13
+msgid "Logout"
 msgstr ""
 
 #: theme/templates/includes/pagination.html:8
