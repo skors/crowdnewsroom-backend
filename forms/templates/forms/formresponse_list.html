@@ -20,21 +20,21 @@
       <li class="nav-item">
         <a class="nav-link {% if request.resolver_match.kwargs.bucket == 'inbox' %} active {% endif %}" href="inbox">
             <i class="fa {% response_icon 'S' %}"></i>
-            Inbox
+            {% trans "Inbox" %}
             ({{ counts.S | default:0 }})
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link {% if request.resolver_match.kwargs.bucket == 'verified' %} active {% endif %}" href="verified">
             <i class="fa {% response_icon 'V' %}"></i>
-            Verified
+            {% trans "Verified" %}
             ({{ counts.V | default:0 }})
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link {% if request.resolver_match.kwargs.bucket == 'trash' %} active {% endif %}" href="trash">
             <i class="fa {% response_icon 'I' %}"></i>
-            Trash
+            {% trans "Trash" %}
             ({{ counts.I | default:0 }})
         </a>
       </li>
@@ -128,7 +128,7 @@
                 {% endif %}
             </div>
             <div class="total">
-                Total results: {{ paginator.count }}
+                {% trans "Total results:" %} {{ paginator.count }}
             </div>
         </div>
     {% endif %}

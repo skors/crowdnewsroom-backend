@@ -52,19 +52,19 @@
             {% endfor %}
         </table>
 
-        <h2>Tags</h2>
+        <h2>{% trans "Tags" %}</h2>
         <form id="tags-form" action="{% url 'response_details_tags' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id %}" method="post">
             {{ tags_form }}
             {% csrf_token %}
            <input type="submit" class="btn btn-primary" value="Submit Tags">
         </form>
 
-        <h2>Comments</h2>
+        <h2>{% trans "Comments" %}</h2>
         <form action="{% url 'response_details_comments' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id %}" method="post">
             <div class="form-group">
                 {% csrf_token %}
                 {{ comment_form }}
-                <input type="submit" class="btn btn-primary" value="{% trans "Comment" %}"/>
+                <input type="submit" class="btn btn-primary" value="{% trans 'submit comment' %}"/>
             </div>
         </form>
 

@@ -27,18 +27,36 @@
                         <h3 class="text-primary"><a href="{% url 'form_list' investigation.slug %}">{{investigation.name}}</a></h3>
                         <div class="buttons">
                             {% if "manage_investigation" in investigation_perms %}
-                            <button class="btn btn-secondary">Edit</button>
+                            <button class="btn btn-secondary">{% trans "Edit" %}</button>
                             {% endif %}
                             <a class="btn btn-primary"
-                               href="{% url 'form_list' investigation.slug %}">View</a>
+                               href="{% url 'form_list' investigation.slug %}">{% trans "View" %}</a>
                         </div>
                     </div>
 
                     {% with stats=investigation.submission_stats %}
                     <ul class="list-unstyled card-text icon-list">
-                        <li><i class="fas fa-chart-line text-primary"></i> {{ stats.total }} {% trans "submissions in total" %}</li>
-                        <li><i class="fas fa-calendar-alt text-primary"></i> {{ stats.yesterday }} {% trans "submissions in the last 24 hours" %}</li>
-                        <li><i class="fas fa-check-square text-primary"></i> {{ stats.to_verify }} {% trans "submissions left to verify" %}</li>
+                        <li><i class="fas fa-chart-line text-primary"></i>
+                            {% blocktrans count counter=stats.total %}
+                                {{ counter }} submission in total
+                                {% plural %}
+                                {{ counter }} submissions in total
+                            {% endblocktrans %}
+                        </li>
+                        <li><i class="fas fa-calendar-alt text-primary"></i>
+                            {% blocktrans count counter=stats.yesterday %}
+                                {{ counter }} submission in the last 24 hours
+                                {% plural %}
+                                {{ counter }} submissions the last 24 hours
+                            {% endblocktrans %}
+                        </li>
+                        <li><i class="fas fa-check-square text-primary"></i>
+                            {% blocktrans count counter=stats.to_verify %}
+                                {{ counter }} submission left to verify
+                                {% plural %}
+                                {{ counter }} submissions left to verify
+                            {% endblocktrans %}
+                        </li>
                     </ul>
                     {% endwith %}
                 </div>

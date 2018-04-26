@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-05 10:04+0000\n"
+"POT-Creation-Date: 2018-04-26 12:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,13 +17,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-#: theme/templates/base.html:24
+
+#: theme/templates/base.html:25
 #, python-format
 msgid "<span class=\"name\">%(name)s</span>"
 msgstr ""
 
-#: theme/templates/includes/footer.html:9
-msgid "Impress"
+#: theme/templates/includes/footer.html:8
+msgid "Imprint"
 msgstr ""
 
 #: theme/templates/includes/nav-primary.html:8
