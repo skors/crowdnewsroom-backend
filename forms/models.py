@@ -261,6 +261,16 @@ class FormResponse(models.Model):
             ('edit_response', _('Edit response')),
         )
 
+    def all_json_properties(self):
+        properties = {}
+        for step in self.form_instance.form_json:
+            properties.update(step["schema"].get("properties", {}))
+        return properties
+
+    @property
+    def valid_keys(self):
+        return self.all_json_properties().keys()
+
     def rendered_fields(self):
         form_data = self.json
 
@@ -268,11 +278,7 @@ class FormResponse(models.Model):
         for (key, values) in self.form_instance.ui_schema_json.items():
             flat_ui_schema.update(values)
 
-        properties = {}
-        for step in self.form_instance.form_json:
-            properties.update(step["schema"].get("properties", {}))
-
-        for name, props in properties.items():
+        for name, props in self.all_json_properties().items():
             title = flat_ui_schema.get(name, {}).get("ui:title", name)
             row = {"title": title, "json_name": name, "data_type": props.get("type")}
             if (flat_ui_schema.get(name, dict()).get("ui:widget") == "signatureWidget"
