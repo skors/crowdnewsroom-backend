@@ -360,7 +360,11 @@ def form_response_json_edit_view(request, *args, **kwargs):
         if match:
             json_key = match.group(1)
             original = form_response.json
-            original.update({json_key: value})
-            form_response.json = original
-            form_response.save()
+            if json_key in form_response.json.keys():
+                original.update({json_key: value})
+                form_response.json = original
+                form_response.save()
+            else:
+                return HttpResponse(status=400)
+
     return HttpResponseRedirect(reverse("response_details", kwargs=kwargs))
