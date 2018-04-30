@@ -26,6 +26,7 @@ urlpatterns = [
     path('forms/', include('forms.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', lambda r: HttpResponseRedirect('/forms/admin/investigations')),
+    path('i18n/', include('django.conf.urls.i18n')),
     re_path(r'^api-token-auth/', djangorest_views.obtain_auth_token)
 ]
 

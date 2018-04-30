@@ -1,15 +1,14 @@
 import sys
 from unittest.mock import patch, PropertyMock
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
-from django.utils.translation import activate
 
-from forms.models import Investigation, Form, FormInstance, FormResponse, generate_emails
-
-activate("en")
+from forms.models import FormResponse, generate_emails
+from forms.tests.factories import FormResponseFactory, FormInstanceFactory
 
 
+@override_settings(LANGUAGE_CODE='en', LANGUAGES=(('en', 'English'),))
 class EmailTestCase(TestCase):
     def test_formresponse_email(self):
         email_template = """
@@ -21,19 +20,14 @@ class EmailTestCase(TestCase):
     Liebe Grüße,
     das WGHH Team
     """
-        investigation = Investigation.objects.create(name="Example Investigation")
-        form = Form.objects.create(name="My first Form", investigation=investigation)
-        form_instance = FormInstance.objects.create(form=form,
-                                                    form_json={},
-                                                    email_template=email_template)
-        response = FormResponse.objects.create(json={"email": "tester@example.com",
+        form_instance = FormInstanceFactory.create(email_template=email_template)
+        response = FormResponseFactory.create(json={"email": "tester@example.com",
                                                      "send_report": True,
                                                      "street": "Große Singerstraße",
                                                      "house_number": "109",
                                                      },
-                                               submission_date=timezone.now(),
-                                               form_instance=form_instance,
-                                               )
+                                              form_instance=form_instance,
+                                              )
 
         email, html_email = generate_emails(response)
         expected = """
@@ -48,31 +42,14 @@ class EmailTestCase(TestCase):
         self.assertEqual(email, expected)
 
     def test_formresponse_email_without_template(self):
-        investigation = Investigation.objects.create(name="Example Investigation")
-        form = Form.objects.create(name="My first Form", investigation=investigation)
-        form_instance = FormInstance.objects.create(form=form,
-                                                    form_json={})
-        response = FormResponse.objects.create(json={"email": "tester@example.com",
-                                                     "send_report": True,
-                                                     "street": "Große Singerstraße",
-                                                     "house_number": "109",
-                                                     },
-                                               submission_date=timezone.now(),
-                                               form_instance=form_instance,
-                                               )
+        response = FormResponseFactory.create()
 
         email, html_email = generate_emails(response)
         expected = "Thank you for participating in a crowdnewsroom investigation!"
         self.assertEqual(email, expected)
 
     def test_formresponse_email_fields(self):
-        investigation = Investigation.objects.create(name="Example Investigation",
-                                                     slug="example-investigation")
-        form = Form.objects.create(name="My first Form",
-                                   slug="my-first-form",
-                                   investigation=investigation)
-        form_instance = FormInstance.objects.create(form=form,
-                                                    ui_schema_json={
+        form_instance = FormInstanceFactory.create(ui_schema_json={
                                                         "second-step": {
                                                             "signature": {
                                                                 "ui:title": "Signature",
@@ -117,12 +94,11 @@ class EmailTestCase(TestCase):
                                                             },
                                                         }]
                                                     )
-        response = FormResponse.objects.create(json={
+        response = FormResponseFactory.create(json={
             "name": "Patrick",
             "signature": "data-url: abc",
             "get_updates": True,
         },
-            submission_date=timezone.now(),
             form_instance=form_instance,
         )
 
@@ -141,12 +117,7 @@ Do you want updates?: Yes"""
         self.assertEqual(sorted(result.split('\n')), sorted(expected.split('\n')))
 
     def test_formresponse_render_response_email(self):
-        investigation = Investigation.objects.create(name="Example Investigation")
-        form = Form.objects.create(name="My first Form",
-                                   investigation=investigation)
-        form_instance = FormInstance.objects.create(form=form,
-                                                    form_json={},
-                                                    email_template="""This is your response:
+        form_instance = FormInstanceFactory.create(email_template="""This is your response:
 {{field_list}}"""
                                                     )
         with patch("forms.models.FormResponse.email_fields", new_callable=PropertyMock) as mock_email_fields:

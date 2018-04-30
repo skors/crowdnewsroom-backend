@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-26 12:03+0200\n"
+"POT-Creation-Date: 2018-04-30 15:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,8 +30,8 @@ msgstr ""
 msgid "Important dates"
 msgstr ""
 
-#: forms/admin_views.py:57 forms/admin_views.py:76 forms/admin_views.py:105
-#: forms/admin_views.py:183
+#: forms/admin_views.py:58 forms/admin_views.py:77 forms/admin_views.py:106
+#: forms/admin_views.py:184
 msgid "Investigations"
 msgstr ""
 
@@ -91,35 +91,35 @@ msgstr ""
 msgid "Thank you for participating in a crowdnewsroom investigation!"
 msgstr ""
 
-#: forms/models.py:247
+#: forms/models.py:250
 msgid "Submitted"
 msgstr "Inbox"
 
-#: forms/models.py:248 forms/templates/forms/formresponse_list.html:30
+#: forms/models.py:251 forms/templates/forms/formresponse_list.html:30
 msgid "Verified"
 msgstr ""
 
-#: forms/models.py:249
+#: forms/models.py:252
 msgid "Invalid"
 msgstr "Trash"
 
-#: forms/models.py:261
+#: forms/models.py:264
 msgid "Edit response"
 msgstr ""
 
-#: forms/models.py:307
+#: forms/models.py:316
 msgid "Yes"
 msgstr ""
 
-#: forms/models.py:307
+#: forms/models.py:316
 msgid "No"
 msgstr ""
 
-#: forms/models.py:324
+#: forms/models.py:333
 msgid "<File>"
 msgstr ""
 
-#: forms/models.py:372
+#: forms/models.py:381
 msgid "Thank you for your submission!"
 msgstr ""
 
@@ -136,17 +136,21 @@ msgstr ""
 msgid "Content of Response"
 msgstr ""
 
-#: forms/templates/forms/formresponse_detail.html:55
+#: forms/templates/forms/formresponse_detail.html:68
 #: forms/templates/forms/formresponse_list.html:87
 msgid "Tags"
 msgstr ""
 
-#: forms/templates/forms/formresponse_detail.html:62
+#: forms/templates/forms/formresponse_detail.html:72
+msgid "Submit Tags"
+msgstr ""
+
+#: forms/templates/forms/formresponse_detail.html:75
 #: forms/templates/forms/formresponse_list.html:86
 msgid "Comments"
 msgstr ""
 
-#: forms/templates/forms/formresponse_detail.html:67
+#: forms/templates/forms/formresponse_detail.html:80
 msgid "submit comment"
 msgstr ""
 
@@ -276,3 +280,15 @@ msgid_plural ""
 "                            "
 msgstr[0] ""
 msgstr[1] ""
+
+#: forms/templates/forms/user_settings.html:7
+msgid "Your Settings"
+msgstr ""
+
+#: forms/templates/forms/user_settings.html:12
+msgid "Language"
+msgstr ""
+
+#: forms/templates/forms/user_settings.html:24
+msgid "set language"
+msgstr ""
