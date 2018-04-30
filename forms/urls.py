@@ -3,7 +3,7 @@ from django.urls import path, register_converter
 
 from forms.admin_views import InvestigationListView, FormResponseListView, FormResponseDetailView, CommentAddView, \
     FormResponseStatusView, form_response_csv_view, FormListView, form_response_file_view, FormResponseTagsView, \
-    form_response_batch_edit, form_response_json_edit_view
+    form_response_batch_edit, form_response_json_edit_view, UserSettingsView
 from forms.views import FormInstanceDetail, FormResponseCreate, InvestigationDetail
 
 
@@ -25,6 +25,7 @@ urlpatterns = [
     path('investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses', FormResponseCreate.as_view(), name="form_response"),
 
     path('admin/investigations', InvestigationListView.as_view(), name="investigation_list"),
+    path('admin/user_settings', UserSettingsView.as_view(), name="user_settings"),
     path('admin/investigations/<slug:investigation_slug>/forms', FormListView.as_view(), name="form_list"),
     path('admin/investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses/batch_edit', form_response_batch_edit, name="form_responses_edit"),
     path('admin/investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses',

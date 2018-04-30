@@ -9,7 +9,7 @@ from guardian.decorators import permission_required
 from guardian.mixins import PermissionRequiredMixin
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, TemplateView
 from guardian.shortcuts import get_objects_for_user
 from django.utils.translation import gettext as _
 from jsonschema import validate, ValidationError, FormatChecker
@@ -375,3 +375,7 @@ def form_response_json_edit_view(request, *args, **kwargs):
             form_response.save()
 
     return HttpResponseRedirect(reverse("response_details", kwargs=kwargs))
+
+
+class UserSettingsView(LoginRequiredMixin, BreadCrumbMixin, TemplateView):
+    template_name = "forms/user_settings.html"
