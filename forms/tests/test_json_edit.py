@@ -62,3 +62,16 @@ class FormReponseListViewTest(TestCase):
 
         updated_response = FormResponse.objects.get(id=form_response.id)
         self.assertDictEqual(updated_response.json, {"name": "Gödel", "color": "Red"})
+
+    def test_with_json_schema(self):
+        properties = {"email": {"type": "string", "format": "email"}}
+        form_instance = make_singe_step_instance(properties)
+        form_response = FormResponseFactory.create(json={"email": "test@example.com"}, form_instance=form_instance)
+
+        response = self.client.post(url_for_response(form_response), data={"json__email": "not an email address"})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.content, b"'not an email address' is not a 'email'")
+
+        updated_response = FormResponse.objects.get(id=form_response.id)
+        self.assertDictEqual(updated_response.json, {"email": "test@example.com"})
+

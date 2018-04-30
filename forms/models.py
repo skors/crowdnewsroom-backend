@@ -234,12 +234,15 @@ class FormInstance(models.Model):
             .first()
 
     @property
-    def json_properties(self):
-        keys = set()
+    def flat_schema(self):
+        properties = {}
         for step in self.form_json:
-            for prop in step["schema"]["properties"]:
-                keys.add(prop)
-        return keys
+            properties.update(step["schema"]["properties"])
+        return {"type": "object", "properties": properties}
+
+    @property
+    def json_properties(self):
+        return set(self.flat_schema["properties"].keys())
 
 
 class FormResponse(models.Model):

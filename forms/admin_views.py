@@ -12,6 +12,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from guardian.shortcuts import get_objects_for_user
 from django.utils.translation import gettext as _
+from jsonschema import validate, ValidationError, FormatChecker
 
 from forms.forms import CommentForm, FormResponseStatusForm, FormResponseTagsForm
 from forms.models import FormResponse, Investigation, Comment, Form
@@ -362,6 +363,12 @@ def form_response_json_edit_view(request, *args, **kwargs):
             original = form_response.json
             if json_key not in form_response.valid_keys:
                 return HttpResponse(status=400)
+            try:
+                validate({json_key: value},
+                         form_response.form_instance.flat_schema,
+                         format_checker=FormatChecker())
+            except ValidationError as e:
+                return HttpResponse(e.message, status=400)
 
             original.update({json_key: value})
             form_response.json = original
