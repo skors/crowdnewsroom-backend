@@ -1,9 +1,9 @@
 from django.http import HttpResponseRedirect
-from django.urls import path, re_path, register_converter
+from django.urls import path, register_converter
 
 from forms.admin_views import InvestigationListView, FormResponseListView, FormResponseDetailView, CommentAddView, \
     FormResponseStatusView, form_response_csv_view, FormListView, form_response_file_view, FormResponseTagsView, form_response_batch_edit
-from forms.views import FormInstanceDetail, FormResponseListCreate, InvestigationDetail
+from forms.views import FormInstanceDetail, FormResponseCreate, InvestigationDetail
 
 
 class BucketConverter:
@@ -21,7 +21,7 @@ register_converter(BucketConverter, 'bucket')
 urlpatterns = [
     path('investigations/<slug:investigation_slug>', InvestigationDetail.as_view(), name="investigation"),
     path('investigations/<slug:investigation_slug>/forms/<slug:form_slug>', FormInstanceDetail.as_view(), name="form"),
-    path('investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses', FormResponseListCreate.as_view(), name="form_response"),
+    path('investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses', FormResponseCreate.as_view(), name="form_response"),
 
     path('admin/investigations', InvestigationListView.as_view(), name="investigation_list"),
     path('admin/investigations/<slug:investigation_slug>/forms', FormListView.as_view(), name="form_list"),

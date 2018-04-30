@@ -56,6 +56,6 @@ class FormResponseSerializer(ModelSerializer):
         return fr
 
 
-class FormResponseListCreate(generics.CreateAPIView):
+class FormResponseCreate(generics.CreateAPIView):
     queryset = FormResponse
     serializer_class = FormResponseSerializer
