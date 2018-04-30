@@ -32,8 +32,7 @@ def _get_filter_params(kwargs, get_params):
     filter_params = {}
 
     if has_filter:
-        key = "json__{}__isnull".format(has_filter)
-        filter_params[key] = False
+        filter_params["json__has_key"] = has_filter
 
     if tag_filter:
         filter_params["tags__slug"] = tag_filter
