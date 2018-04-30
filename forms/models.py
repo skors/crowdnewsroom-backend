@@ -11,7 +11,7 @@ from django.utils.safestring import mark_safe
 from . import secrets  # TODO: Replace with included module once updated to python 3.6
 from .mixins import UniqueSlugMixin
 
-from django.utils.translation import gettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import Group, AbstractUser, BaseUserManager
 from django.db import models
 from django.contrib.postgres.fields import JSONField
@@ -361,8 +361,8 @@ class FormResponse(models.Model):
 
 
 def generate_emails(form_response: FormResponse):
-    plaintext_template = Engine().from_string(form_response.form_instance.email_template)
-    html_template = Engine().from_string(form_response.form_instance.email_template_html)
+    plaintext_template = Engine().from_string(str(form_response.form_instance.email_template))
+    html_template = Engine().from_string(str(form_response.form_instance.email_template_html))
     context = Context(dict(response=form_response.json,
                            field_list=mark_safe(form_response.email_fields)))
     return (plaintext_template.render(context=context),
