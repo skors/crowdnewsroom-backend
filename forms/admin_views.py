@@ -20,9 +20,10 @@ from forms.utils import create_form_csv
 
 
 def _get_filter_params(kwargs, get_params):
-    bucket = kwargs.get("bucket") or get_params.get("bucket")
+    bucket = kwargs.get("bucket")
     has_filter = get_params.get("has")
     tag_filter = get_params.get("tag")
+    email_filter = get_params.get("email")
     mapping = {
         "inbox": "S",
         "trash": "I",
@@ -32,11 +33,13 @@ def _get_filter_params(kwargs, get_params):
     filter_params = {}
 
     if has_filter:
-        key = "json__{}__isnull".format(has_filter)
-        filter_params[key] = False
+        filter_params["json__has_key"] = has_filter
 
     if tag_filter:
         filter_params["tags__slug"] = tag_filter
+
+    if email_filter:
+        filter_params["json__email__icontains"] = email_filter
 
     filter_params["status"] = mapping.get(bucket, "S")
     return filter_params
@@ -129,7 +132,7 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
         context['investigation'] = self.investigation
         context['form'] = self.form
 
-        allowed_params = ['has', 'tag']
+        allowed_params = ['has', 'tag', 'email']
 
         context['query_params'] = '&'.join(['{}={}'.format(k, v)
                                             for k, v
@@ -137,6 +140,7 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
                                             if k in allowed_params])
         context['has_param'] = self.request.GET.get('has')
         context['tag_param'] = self.request.GET.get('tag')
+        context['email_param'] = self.request.GET.get('email')
 
         csv_base = reverse("form_responses_csv", kwargs={
             "investigation_slug": self.investigation.slug,

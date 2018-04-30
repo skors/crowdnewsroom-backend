@@ -47,3 +47,26 @@ class FormReponseListViewTest(TestCase):
             list(response.context_data["formresponse_list"].all()),
             [form_response]
         )
+
+    def test_email_filters(self):
+        form = self.form_instance.form
+        edwards_response = FormResponseFactory.create(form_instance=self.form_instance, json={"email": "edward@example.com"})
+
+        FormResponseFactory.create(form_instance=self.form_instance, json={"email": "edwardina@example.com"})
+
+        response = self.client.get(
+            "/forms/admin/investigations/{}/forms/{}/responses/inbox?email=edward@example.com".format(form.investigation.slug, form.slug))
+        self.assertListEqual(
+            list(response.context_data["formresponse_list"].all()),
+            [edwards_response]
+        )
+
+    def test_email_filters_partial(self):
+        form = self.form_instance.form
+        FormResponseFactory.create(form_instance=self.form_instance, json={"email": "edward@example.com"})
+        FormResponseFactory.create(form_instance=self.form_instance, json={"email": "edwardina@example.com"})
+        FormResponseFactory.create(form_instance=self.form_instance, json={"email": "bella@example.com"})
+
+        response = self.client.get(
+            "/forms/admin/investigations/{}/forms/{}/responses/inbox?email=edward".format(form.investigation.slug, form.slug))
+        self.assertEqual(len(response.context_data["formresponse_list"]), 2)
