@@ -1,16 +1,14 @@
 import sys
 from unittest.mock import patch, PropertyMock
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
-from django.utils.translation import activate
 
-
-activate("en")
 from forms.models import FormResponse, generate_emails
 from forms.tests.factories import FormResponseFactory, FormInstanceFactory
 
 
+@override_settings(LANGUAGE_CODE='en', LANGUAGES=(('en', 'English'),))
 class EmailTestCase(TestCase):
     def test_formresponse_email(self):
         email_template = """
