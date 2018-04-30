@@ -69,7 +69,7 @@
         <form id="tags-form" action="{% url 'response_details_tags' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id %}" method="post">
             {{ tags_form }}
             {% csrf_token %}
-           <input type="submit" class="btn btn-primary" value="Submit Tags">
+           <input type="submit" class="btn btn-primary" value="{% trans 'Submit Tags' %}">
         </form>
 
         <h2>{% trans "Comments" %}</h2>
