@@ -1,7 +1,7 @@
 from io import StringIO
 
 import pytz
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils.datetime_safe import datetime
 from django.utils.text import slugify
 
@@ -10,6 +10,7 @@ from forms.tests.factories import FormResponseFactory
 from forms.utils import create_form_csv
 
 
+@override_settings(LANGUAGE_CODE='en', LANGUAGES=(('en', 'English'),))
 class Utils(TestCase):
     def setUp(self):
         investigation_name = "First Investigation"
@@ -54,11 +55,11 @@ class Utils(TestCase):
         self.assertEquals(header, expected_header)
 
         first = lines[1].strip()
-        expected_first = "peter@example.com,{},Submitted,2018-01-01 00:00:00+00:00,http://example.com,0,Peter".format(response_1.id)
+        expected_first = "peter@example.com,{},Inbox,2018-01-01 00:00:00+00:00,http://example.com,0,Peter".format(response_1.id)
         self.assertEquals(first, expected_first)
 
         second = lines[2].strip()
-        expected_second = "katharina@example.com,{},Submitted,2018-01-02 00:00:00+00:00,http://example.com,0,Katharina".format(response_2.id)
+        expected_second = "katharina@example.com,{},Inbox,2018-01-02 00:00:00+00:00,http://example.com,0,Katharina".format(response_2.id)
         self.assertEquals(second, expected_second)
 
     def test_create_form_csv_file(self):
@@ -94,7 +95,7 @@ class Utils(TestCase):
         first = lines[1].strip()
         expected_first = ",".join(["katharina@example.com",
                                    str(response.id),
-                                   "Submitted",
+                                   "Inbox",
                                    "2018-01-02 00:00:00+00:00",
                                    "https://example.com/forms/admin/investigations/first-investigation/forms/first-form/responses/{}".format(
                                        response.id),
