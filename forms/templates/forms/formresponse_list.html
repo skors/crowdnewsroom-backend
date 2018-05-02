@@ -44,7 +44,7 @@
       <form action="" method="GET">
         <div>
             <label for="email_filter">{% trans "Search by E-Mail" %}</label>
-            <input id="email_filter" name="email" type="text" value="{{ email_param }}">
+            <input id="email_filter" name="email" type="text" value="{{ email_param|default:'' }}">
         </div>
 
         <div>
