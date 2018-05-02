@@ -37,31 +37,33 @@
                 <td>{{ formresponse.email }}</td>
             </tr>
             {% for entry in formresponse.rendered_fields %}
-                <tr>
-                    <th>{{ entry.title }}</th>
-                    {% if entry.type == "text" %}
-                        <td>{{ entry.value }}
-                        {% if entry.data_type == "string" %}
-                            <i class="fa fa-edit edit-inline-button" title="edit"></i>
-                            <span class="edit-inline">
-                                <form action="{{formresponse.id}}/edit" method="POST">
-                                    {% csrf_token %}
-                                    <input type="text"
-                                           name="json__{{entry.json_name}}"
-                                           value="{{ entry.value}}">
-                                    <input type="submit">
-                                </form>
-                            </span>
+                {% if entry.title %}
+                    <tr>
+                        <th title="{{ entry.title }}">{{ entry.title | truncatewords:5 }}</th>
+                        {% if entry.type == "text" %}
+                            <td>{{ entry.value }}
+                            {% if entry.data_type == "string" %}
+                                <i class="fa fa-edit edit-inline-button" title="edit"></i>
+                                <span class="edit-inline">
+                                    <form action="{{formresponse.id}}/edit" method="POST">
+                                        {% csrf_token %}
+                                        <input type="text"
+                                               name="json__{{entry.json_name}}"
+                                               value="{{ entry.value}}">
+                                        <input type="submit">
+                                    </form>
+                                </span>
+                            {% endif %}
+                            </td>
                         {% endif %}
-                        </td>
-                    {% endif %}
 
-                    {% if entry.type == "link" %}
-                        <td>
-                            <a href="{{entry.value}}" target="_blank">Download</a>
-                        </td>
-                    {% endif %}
-                </tr>
+                        {% if entry.type == "link" %}
+                            <td>
+                                <a href="{{entry.value}}" target="_blank">Download</a>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {%  endif %}
             {% endfor %}
         </table>
 

@@ -282,7 +282,7 @@ class FormResponse(models.Model):
             flat_ui_schema.update(values)
 
         for name, props in self.all_json_properties().items():
-            title = flat_ui_schema.get(name, {}).get("ui:title", name)
+            title = flat_ui_schema.get(name, {}).get("ui:title", name) or props.get("title")
             row = {"title": title, "json_name": name, "data_type": props.get("type")}
             if (flat_ui_schema.get(name, dict()).get("ui:widget") == "signatureWidget"
                     or props.get("format") == "data-url"):
