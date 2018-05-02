@@ -1,5 +1,7 @@
-from django.test import TestCase, Client
 from unittest.mock import patch
+from django.test import TestCase, Client, LiveServerTestCase, override_settings
+from selenium import webdriver
+from selenium.webdriver.chrome.webdriver import WebDriver
 
 from forms.models import User
 from forms.tests.factories import FormResponseFactory, FormInstanceFactory, TagFactory, UserFactory
@@ -88,3 +90,45 @@ class FormReponseListViewTest(TestCase):
         response = self.client.get(
             "/forms/admin/investigations/{}/forms/{}/responses/inbox?email=edward".format(form.investigation.slug, form.slug))
         self.assertEqual(len(response.context_data["formresponse_list"]), 2)
+
+
+@override_settings(DEBUG=True)
+@patch('webpack_loader.loader.WebpackLoader.get_bundle')
+class FormResponseListBrowserTest(LiveServerTestCase):
+    def setUp(self):
+        self.form_instance = FormInstanceFactory.create()
+        User.objects.create_superuser('admin@crowdnewsroom.org', 'password')
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        options = webdriver.ChromeOptions()
+        options.set_headless()
+        options.add_argument("--no-sandbox")
+        cls.selenium = WebDriver(options=options)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.selenium.quit()
+        super().tearDownClass()
+
+    def test_login(self, *args):
+        self.selenium.get('%s%s' % (self.live_server_url, '/accounts/login/'))
+        username_input = self.selenium.find_element_by_name("username")
+        username_input.send_keys('admin@crowdnewsroom.org')
+        password_input = self.selenium.find_element_by_name("password")
+        password_input.send_keys('password')
+        self.selenium.find_element_by_xpath('//input[@value="Login"]').click()
+
+        url = "/forms/admin/investigations/{}/forms/{}/responses/inbox".format(
+            self.form_instance.form.investigation.slug,
+            self.form_instance.form.slug
+        )
+        self.selenium.get('%s%s' % (self.live_server_url, url))
+
+        email_input = self.selenium.find_element_by_name("email")
+        self.assertEqual(email_input.get_attribute("value"), "")
+
+
+
+
