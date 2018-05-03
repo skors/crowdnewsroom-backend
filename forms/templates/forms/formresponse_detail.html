@@ -8,28 +8,25 @@
 
 {% block main %}
     <div class="formresponse-details">
-        <div class="d-flex justify-content-between mt-5 mb-5">
-            <h2 style="display: inline-block;">{% trans "Content of Response" %}</h2>
-            <form action="{% url 'response_details_status' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id %}"
-                  method="post"
-                  style="display: inline-block; margin-left: 2em">
-                {% csrf_token %}
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    {% for value, label in formresponse.STATUSES %}
-                    <label class="btn btn-secondary {% if value == formresponse.status %}active{% endif %}">
-                        <input type="radio"
-                               name="status"
-                               value="{{value}}"
-                               autocomplete="off"
-                               onClick = "this.form.submit()"
-                               {% if value == formresponse.status %} checked {%endif %}>
-                        {{label}}
-                        <i class="fa {% response_icon value %}"></i>
-                    </label>
-                    {% endfor %}
-                </div>
-            </form>
-        </div>
+        <form action="{% url 'response_details_status' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id %}"
+              method="post"
+              class="mb-4" >
+            {% csrf_token %}
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                {% for value, label in formresponse.STATUSES %}
+                <label class="btn btn-secondary {% if value == formresponse.status %}active{% endif %}">
+                    <input type="radio"
+                           name="status"
+                           value="{{value}}"
+                           autocomplete="off"
+                           onClick = "this.form.submit()"
+                           {% if value == formresponse.status %} checked {%endif %}>
+                    {{label}}
+                    <i class="fa {% response_icon value %}"></i>
+                </label>
+                {% endfor %}
+            </div>
+        </form>
 
         <table class="table table-borderless">
             {% for entry in formresponse.rendered_fields %}
