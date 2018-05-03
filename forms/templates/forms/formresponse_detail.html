@@ -8,7 +8,7 @@
 
 {% block main %}
     <div class="formresponse-details">
-        <div>
+        <div class="d-flex justify-content-between mt-5 mb-5">
             <h2 style="display: inline-block;">{% trans "Content of Response" %}</h2>
             <form action="{% url 'response_details_status' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id %}"
                   method="post"
