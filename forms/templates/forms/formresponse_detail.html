@@ -32,10 +32,6 @@
         </div>
 
         <table class="table">
-            <tr>
-                <th>E-Mail</th>
-                <td>{{ formresponse.email }}</td>
-            </tr>
             {% for entry in formresponse.rendered_fields %}
                 {% if entry.title %}
                     <tr>
