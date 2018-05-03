@@ -1,10 +1,9 @@
 import datetime
 
 import pytz
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 import factory
 import factory.fuzzy
-import itertools
 import random
 
 from forms.models import Investigation
@@ -15,7 +14,8 @@ class Command(BaseCommand):
     help = 'Create initial data'
 
     def create_first_investigation(self):
-        investigation = factories.InvestigationFactory.create(name="Food Investigation")
+        investigation = factories.InvestigationFactory.create(
+            name="Food Investigation")
         form = factories.FormFactory.create(name="Banana consumption",
                                             investigation=investigation)
         form_json = [
@@ -43,17 +43,18 @@ class Command(BaseCommand):
         tags = [factories.TagFactory(investigation=investigation, name="yellow"),
                 factories.TagFactory(investigation=investigation, name="fruit"),
                 factories.TagFactory(investigation=investigation, name="tropical"),
-                factories.TagFactory(investigation=investigation, name="plantain"),]
+                factories.TagFactory(investigation=investigation, name="plantain"), ]
 
         today = datetime.datetime.now(pytz.utc)
         a_month_ago = today - datetime.timedelta(days=30)
         for _ in range(40):
-            form_response = factories.FormResponseFactory.create(json=factory.Dict({"email": factory.Faker("safe_email"),
-                                                                    "banana_consumption": factory.fuzzy.FuzzyInteger(0,
-                                                                                                                     12)}),
-                                                 form_instance=form_instance,
-                                                 status=factory.fuzzy.FuzzyChoice(["S", "V", "I"]),
-                                                 submission_date=factory.fuzzy.FuzzyDateTime(a_month_ago, today))
+            form_response = factories.FormResponseFactory.create(
+                json=factory.Dict({
+                    "email": factory.Faker("safe_email"),
+                    "banana_consumption": factory.fuzzy.FuzzyInteger(0, 12)}),
+                form_instance=form_instance,
+                status=factory.fuzzy.FuzzyChoice(["S", "V", "I"]),
+                submission_date=factory.fuzzy.FuzzyDateTime(a_month_ago, today))
             form_response.tags.set([random.choice(tags), random.choice(tags)])
 
     def create_second_investigation(self):
@@ -65,7 +66,7 @@ class Command(BaseCommand):
                 factories.TagFactory(investigation=investigation, name="north america"),
                 factories.TagFactory(investigation=investigation, name="africa"),
                 factories.TagFactory(investigation=investigation, name="asia"),
-                factories.TagFactory(investigation=investigation, name="australia"),]
+                factories.TagFactory(investigation=investigation, name="australia"), ]
         form_json = [
             {"schema": {
                 "title": "Did you ever travel outside of your home country?",
@@ -147,28 +148,31 @@ class Command(BaseCommand):
                                                              ui_schema_json=ui_json,
                                                              form_json=form_json)
 
-
         today = datetime.datetime.now(pytz.utc)
         a_month_ago = today - datetime.timedelta(days=30)
         two_months_ago = today - datetime.timedelta(days=60)
 
         for _ in range(10):
-            form_response = factories.FormResponseFactory.create(json=factory.Dict({"email": factory.Faker("safe_email"),
-                                                                    "traveled_outside": False,
-                                                                    "like_to_travel": factory.fuzzy.FuzzyChoice(
-                                                                        [True, False])}),
-                                                 form_instance=form_instance,
-                                                 status=factory.fuzzy.FuzzyChoice(["S", "V", "I"]),
-                                                 submission_date=factory.fuzzy.FuzzyDateTime(two_months_ago, a_month_ago))
+            form_response = factories.FormResponseFactory.create(
+                json=factory.Dict({
+                    "email": factory.Faker("safe_email"),
+                    "traveled_outside": False,
+                    "like_to_travel": factory.fuzzy.FuzzyChoice(
+                        [True, False])}),
+                    form_instance=form_instance,
+                    status=factory.fuzzy.FuzzyChoice(["S", "V", "I"]),
+                    submission_date=factory.fuzzy.FuzzyDateTime(two_months_ago, a_month_ago))
             form_response.tags.set([random.choice(tags), random.choice(tags)])
 
         for _ in range(10):
-            form_response = factories.FormResponseFactory.create(json=factory.Dict({"email": factory.Faker("safe_email"),
-                                                                    "traveled_outside": True,
-                                                                    "farthest_destination": factory.Faker("country")}),
-                                                 form_instance=form_instance,
-                                                 status=factory.fuzzy.FuzzyChoice(["S", "V", "I"]),
-                                                 submission_date=factory.fuzzy.FuzzyDateTime(two_months_ago, a_month_ago))
+            form_response = factories.FormResponseFactory.create(
+                json=factory.Dict({
+                    "email": factory.Faker("safe_email"),
+                    "traveled_outside": True,
+                    "farthest_destination": factory.Faker("country")}),
+                form_instance=form_instance,
+                status=factory.fuzzy.FuzzyChoice(["S", "V", "I"]),
+                submission_date=factory.fuzzy.FuzzyDateTime(two_months_ago, a_month_ago))
             form_response.tags.set([random.choice(tags), random.choice(tags), random.choice(tags)])
 
         # At some point we realized that we forgot and important question in our form
@@ -183,23 +187,27 @@ class Command(BaseCommand):
                                                                ui_schema_json=second_ui_json,
                                                                form_json=second_json)
         for _ in range(10):
-            form_response = factories.FormResponseFactory.create(json=factory.Dict({"email": factory.Faker("safe_email"),
-                                                                            "traveled_outside": False,
-                                                                            "like_to_travel": factory.fuzzy.FuzzyChoice(
-                                                                        [True, False])}),
-                                                 form_instance=second_instance,
-                                                 status=factory.fuzzy.FuzzyChoice(["S", "V", "I"]),
-                                                 submission_date=factory.fuzzy.FuzzyDateTime(a_month_ago, today))
-            form_response.tags.set([random.choice(tags), random.choice(tags), random.choice(tags)])
+            form_response = factories.FormResponseFactory.create(
+                json=factory.Dict({
+                    "email": factory.Faker("safe_email"),
+                    "traveled_outside": False,
+                    "like_to_travel": factory.fuzzy.FuzzyChoice(
+                        [True, False])}),
+                form_instance=second_instance,
+                status=factory.fuzzy.FuzzyChoice(["S", "V", "I"]),
+                submission_date=factory.fuzzy.FuzzyDateTime(a_month_ago, today))
+            form_response.tags.set([random.choice(tags), random.choice(tags)])
 
         for _ in range(10):
-            form_response = factories.FormResponseFactory.create(json=factory.Dict({"email": factory.Faker("safe_email"),
-                                                                    "traveled_outside": True,
-                                                                    "liked-it": factory.fuzzy.FuzzyChoice([True, False]),
-                                                                    "farthest_destination": factory.Faker("country")}),
-                                                 form_instance=second_instance,
-                                                 status=factory.fuzzy.FuzzyChoice(["S", "V", "I"]),
-                                                 submission_date=factory.fuzzy.FuzzyDateTime(a_month_ago, today))
+            form_response = factories.FormResponseFactory.create(
+                json=factory.Dict({
+                    "email": factory.Faker("safe_email"),
+                    "traveled_outside": True,
+                    "liked-it": factory.fuzzy.FuzzyChoice([True, False]),
+                    "farthest_destination": factory.Faker("country")}),
+                form_instance=second_instance,
+                status=factory.fuzzy.FuzzyChoice(["S", "V", "I"]),
+                submission_date=factory.fuzzy.FuzzyDateTime(a_month_ago, today))
             form_response.tags.set([random.choice(tags)])
 
     def warn(self, string):
@@ -230,5 +238,3 @@ class Command(BaseCommand):
                 create_function()
                 self.success("Created first investigation and responses")
             self.success("\n")
-
-
