@@ -67,10 +67,15 @@
             {% endfor %}
         </table>
 
-        <h2>{% trans "Tags" %}</h2>
         <form id="tags-form" action="{% url 'response_details_tags' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id %}" method="post">
-            {{ tags_form }}
             {% csrf_token %}
+            {%  for tag in tags_form.tags %}
+                <label for="{{ tag.id_for_label }}"
+                       class="badge  p-2 {% if tag.data.attrs.checked %} badge-primary {% else %} badge-secondary {% endif %}">
+                    {{ tag.tag }}
+                    {{ tag.choice_label }}
+                </label>
+            {% endfor %}
            <input type="submit" class="btn btn-primary" value="{% trans 'Submit Tags' %}">
         </form>
 
@@ -113,5 +118,12 @@
     document.querySelectorAll(".edit-inline-button").forEach(function(button){
      button.addEventListener("click", toggleEdit);
     });
+
+    var tagsForm = document.querySelector("#tags-form");
+    tagsForm.querySelectorAll("input[type='checkbox']").forEach(function(tag) {
+        tag.addEventListener("click", function(event) { tag.form.submit() } );
+    });
+    tagsForm.querySelector("input[type='submit']").classList.add("d-none");
+
 </script>
 {% endblock %}
