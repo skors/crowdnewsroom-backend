@@ -40,8 +40,7 @@ class FormReponseListViewTest(TestCase):
         response = self.client.get("/forms/admin/investigations/{}/forms/{}/responses/{}/files/file_field".format(form.investigation.slug, form.slug,form_response.id))
         self.assertEquals(response.status_code, 200)
 
-        expected_filename = "crowdnewsroom_download_{}_{}.csv".format(form.investigation.slug, form.slug)
-        expected_content_disposition = 'inline; filename="filename.png"'.format(expected_filename)
+        expected_content_disposition = 'inline; filename="{}-filename.png"'.format(form_response.id)
         self.assertEquals(response['Content-Disposition'], expected_content_disposition)
 
     def test_file_download_multiple_off_by_one(self):

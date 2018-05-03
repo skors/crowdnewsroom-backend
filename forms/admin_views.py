@@ -341,9 +341,10 @@ def form_response_file_view(request, *args, **kwargs):
 
     filename, file_type, file_content = _get_file_data(file)
 
+    prefixed_filename = "{}-{}".format(form_response.id, filename)
     response = HttpResponse(content_type=file_type)
     response.write(file_content)
-    response['Content-Disposition'] = 'inline; filename="{}"'.format(filename)
+    response['Content-Disposition'] = 'inline; filename="{}"'.format(prefixed_filename)
     return response
 
 
