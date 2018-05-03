@@ -46,9 +46,9 @@ python manage.py createsuperuser
 ```
 
 ### Get example data
-To load some example data that contains an investigation with a corresponding form you can run
+To load some example data that contains two investigations and some responses run:
 ```bash
-python manage.py loaddata investigation_and_form
+python manage.py seed_data
 ```
 
 ## Running
