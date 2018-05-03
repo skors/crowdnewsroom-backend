@@ -73,6 +73,7 @@ class Investigation(models.Model, UniqueSlugMixin):
             "to_verify": to_verify,
         }
 
+
 @receiver(models.signals.post_save, sender=Investigation)
 def execute_after_save(sender, instance, created, *args, **kwargs):
     investigation = instance
@@ -108,6 +109,11 @@ class UserGroup(models.Model):
             user_group.save()
 
             user_group.assign_permissions()
+
+
+@receiver(models.signals.post_delete, sender=UserGroup)
+def my_post_delete_callback(sender, **kwargs):
+    kwargs['instance'].group.delete()
 
 
 class UserManager(BaseUserManager):
