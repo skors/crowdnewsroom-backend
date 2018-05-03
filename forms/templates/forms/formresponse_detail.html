@@ -31,10 +31,10 @@
             </form>
         </div>
 
-        <table class="table">
+        <table class="table table-borderless">
             {% for entry in formresponse.rendered_fields %}
                 {% if entry.title %}
-                    <tr>
+                    <tr class="border-bottom">
                         <th title="{{ entry.title }}">{{ entry.title | truncatewords:5 }}</th>
                         {% if entry.type == "text" %}
                             <td>{{ entry.value }}
