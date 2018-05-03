@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-30 16:14+0200\n"
+"POT-Creation-Date: 2018-05-03 17:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -129,29 +129,15 @@ msgstr ""
 
 #: forms/templates/forms/formresponse_detail.html:5
 #: forms/templates/forms/formresponse_detail.html:6
-msgid "Validate Submission"
-msgstr ""
-
-#: forms/templates/forms/formresponse_detail.html:12
-msgid "Content of Response"
-msgstr ""
-
-#: forms/templates/forms/formresponse_detail.html:68
-#: forms/templates/forms/formresponse_list.html:92
-msgid "Tags"
+msgid "Submission Details"
 msgstr ""
 
 #: forms/templates/forms/formresponse_detail.html:72
 msgid "Submit Tags"
 msgstr ""
 
-#: forms/templates/forms/formresponse_detail.html:75
-#: forms/templates/forms/formresponse_list.html:91
-msgid "Comments"
-msgstr ""
-
-#: forms/templates/forms/formresponse_detail.html:80
-msgid "submit comment"
+#: forms/templates/forms/formresponse_detail.html:102
+msgid "add comment"
 msgstr ""
 
 #: forms/templates/forms/formresponse_list.html:6
@@ -208,6 +194,14 @@ msgstr ""
 
 #: forms/templates/forms/formresponse_list.html:90
 msgid "Submission Date"
+msgstr ""
+
+#: forms/templates/forms/formresponse_list.html:91
+msgid "Comments"
+msgstr ""
+
+#: forms/templates/forms/formresponse_list.html:92
+msgid "Tags"
 msgstr ""
 
 #: forms/templates/forms/formresponse_list.html:106
