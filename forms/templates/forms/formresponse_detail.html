@@ -2,43 +2,36 @@
 {% load i18n %}
 {% load forms_tags %}
 
-{% block title %}{% trans "Validate Submission" %}{% endblock %}
-{% block headertitle %}{% trans "Validate Submission" %}{% endblock %}
+{% block title %}{% trans "Submission Details" %}{% endblock %}
+{% block headertitle %}{% trans "Submission Details" %}{% endblock %}
 
 
 {% block main %}
     <div class="formresponse-details">
-        <div>
-            <h2 style="display: inline-block;">{% trans "Content of Response" %}</h2>
-            <form action="{% url 'response_details_status' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id %}"
-                  method="post"
-                  style="display: inline-block; margin-left: 2em">
-                {% csrf_token %}
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    {% for value, label in formresponse.STATUSES %}
-                    <label class="btn btn-secondary {% if value == formresponse.status %}active{% endif %}">
-                        <input type="radio"
-                               name="status"
-                               value="{{value}}"
-                               autocomplete="off"
-                               onClick = "this.form.submit()"
-                               {% if value == formresponse.status %} checked {%endif %}>
-                        {{label}}
-                        <i class="fa {% response_icon value %}"></i>
-                    </label>
-                    {% endfor %}
-                </div>
-            </form>
-        </div>
+        <form action="{% url 'response_details_status' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id %}"
+              method="post"
+              class="mb-4" >
+            {% csrf_token %}
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                {% for value, label in formresponse.STATUSES %}
+                <label class="btn btn-secondary {% if value == formresponse.status %}active{% endif %}">
+                    <input type="radio"
+                           name="status"
+                           value="{{value}}"
+                           autocomplete="off"
+                           onClick = "this.form.submit()"
+                           {% if value == formresponse.status %} checked {%endif %}>
+                    {{label}}
+                    <i class="fa {% response_icon value %}"></i>
+                </label>
+                {% endfor %}
+            </div>
+        </form>
 
-        <table class="formresponse">
-            <tr>
-                <th>E-Mail</th>
-                <td>{{ formresponse.email }}</td>
-            </tr>
+        <table class="table table-borderless">
             {% for entry in formresponse.rendered_fields %}
                 {% if entry.title %}
-                    <tr>
+                    <tr class="border-bottom">
                         <th title="{{ entry.title }}">{{ entry.title | truncatewords:5 }}</th>
                         {% if entry.type == "text" %}
                             <td>{{ entry.value }}
@@ -67,25 +60,21 @@
             {% endfor %}
         </table>
 
-        <h2>{% trans "Tags" %}</h2>
         <form id="tags-form" action="{% url 'response_details_tags' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id %}" method="post">
-            {{ tags_form }}
             {% csrf_token %}
+            {%  for tag in tags_form.tags %}
+                <label for="{{ tag.id_for_label }}"
+                       class="badge  p-2 {% if tag.data.attrs.checked %} badge-primary {% else %} badge-secondary {% endif %}">
+                    {{ tag.tag }}
+                    {{ tag.choice_label }}
+                </label>
+            {% endfor %}
            <input type="submit" class="btn btn-primary" value="{% trans 'Submit Tags' %}">
         </form>
 
-        <h2>{% trans "Comments" %}</h2>
-        <form action="{% url 'response_details_comments' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id %}" method="post">
-            <div class="form-group">
-                {% csrf_token %}
-                {{ comment_form }}
-                <input type="submit" class="btn btn-primary" value="{% trans 'submit comment' %}"/>
-            </div>
-        </form>
-
-        <ul>
+        <ul class="list-unstyled">
             {% for comment in formresponse.comment_set.all reversed %}
-                <li>
+                <li class="mt-3">
                     <div class="card">
                       <div class="card-header">
                           <span class="author">{{ comment.author.first_name }} {{ comment.author.last_name }}</span>
@@ -97,6 +86,25 @@
                     </div>
                 </li>
             {% endfor %}
+            <li class="mt-3">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="author">{{ user.first_name }} {{ user.last_name }}</span>
+                    </div>
+                    <div class="card-body">
+                        <form action="{% url 'response_details_comments' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id %}" method="post">
+                            <div class="form-group">
+                                {% csrf_token %}
+                                <label for="{{ comment_form.text.id_for_label }}" class="sr-only">
+                                    {{ comment_form.text.label }}
+                                </label>
+                                {{ comment_form.text }}
+                                <input type="submit" class="btn btn-primary" value="{% trans 'add comment' %}"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </li>
         </ul>
     </div>
 
@@ -113,5 +121,12 @@
     document.querySelectorAll(".edit-inline-button").forEach(function(button){
      button.addEventListener("click", toggleEdit);
     });
+
+    var tagsForm = document.querySelector("#tags-form");
+    tagsForm.querySelectorAll("input[type='checkbox']").forEach(function(tag) {
+        tag.addEventListener("click", function(event) { tag.form.submit() } );
+    });
+    tagsForm.querySelector("input[type='submit']").classList.add("d-none");
+
 </script>
 {% endblock %}

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-30 16:14+0200\n"
+"POT-Creation-Date: 2018-05-03 17:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -130,30 +130,16 @@ msgstr "Formulare für diese Recherche"
 
 #: forms/templates/forms/formresponse_detail.html:5
 #: forms/templates/forms/formresponse_detail.html:6
-msgid "Validate Submission"
-msgstr "Antworten validieren"
-
-#: forms/templates/forms/formresponse_detail.html:12
-msgid "Content of Response"
-msgstr "Inhalt der Antwort"
-
-#: forms/templates/forms/formresponse_detail.html:68
-#: forms/templates/forms/formresponse_list.html:92
-msgid "Tags"
-msgstr "Markierungen"
+msgid "Submission Details"
+msgstr "Antwortdetails"
 
 #: forms/templates/forms/formresponse_detail.html:72
 msgid "Submit Tags"
 msgstr "Markierungen übernehmen"
 
-#: forms/templates/forms/formresponse_detail.html:75
-#: forms/templates/forms/formresponse_list.html:91
-msgid "Comments"
-msgstr "Kommentare"
-
-#: forms/templates/forms/formresponse_detail.html:80
-msgid "submit comment"
-msgstr "Kommentar abschicken"
+#: forms/templates/forms/formresponse_detail.html:102
+msgid "add comment"
+msgstr "Kommentar hinzufügen"
 
 #: forms/templates/forms/formresponse_list.html:6
 msgid "Responses"
@@ -213,6 +199,14 @@ msgstr "E-Mail"
 #: forms/templates/forms/formresponse_list.html:90
 msgid "Submission Date"
 msgstr "Eingangsdatum"
+
+#: forms/templates/forms/formresponse_list.html:91
+msgid "Comments"
+msgstr "Kommentare"
+
+#: forms/templates/forms/formresponse_list.html:92
+msgid "Tags"
+msgstr "Markierungen"
 
 #: forms/templates/forms/formresponse_list.html:106
 msgid "No Email Provided"
@@ -323,5 +317,11 @@ msgstr "Sprache"
 msgid "set language"
 msgstr "Sprache setzen"
 
-#~ msgid "Comment"
-#~ msgstr "Kommentar"
+#~ msgid "Validate Submission"
+#~ msgstr "Antworten validieren"
+
+#~ msgid "Content of Response"
+#~ msgstr "Inhalt der Antwort"
+
+#~ msgid "submit comment"
+#~ msgstr "Kommentar abschicken"
