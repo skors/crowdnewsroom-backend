@@ -234,7 +234,6 @@ class Command(BaseCommand):
                 else:
                     self.success("Not deleting and not recreating")
             else:
-                self.success("What is happening")
                 create_function()
                 self.success("Created first investigation and responses")
             self.success("\n")
