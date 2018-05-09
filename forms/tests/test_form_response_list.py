@@ -1,9 +1,11 @@
 from django.test import TestCase, Client
+from unittest.mock import patch
 
 from forms.models import User
 from forms.tests.factories import FormResponseFactory, FormInstanceFactory, TagFactory
 
 
+@patch('webpack_loader.loader.WebpackLoader.get_bundle')
 class FormReponseListViewTest(TestCase):
     def setUp(self):
         self.form_instance = FormInstanceFactory.create()
@@ -17,7 +19,7 @@ class FormReponseListViewTest(TestCase):
         self.client = Client()
         self.client.login(email='admin@crowdnewsroom.org', password='password')
 
-    def test_inbox(self):
+    def test_inbox(self, *args):
         form = self.form_instance.form
 
         response = self.client.get("/forms/admin/investigations/{}/forms/{}/responses/inbox".format(form.investigation.slug, form.slug))
@@ -29,13 +31,13 @@ class FormReponseListViewTest(TestCase):
         response = self.client.get("/forms/admin/investigations/{}/forms/{}/responses/verified".format(form.investigation.slug, form.slug))
         self.assertEquals(len(response.context_data["formresponse_list"]), 2)
 
-    def test_has_filters(self):
+    def test_has_filters(self, *args):
         form = self.form_instance.form
 
         response = self.client.get("/forms/admin/investigations/{}/forms/{}/responses/verified?has=has_car".format(form.investigation.slug, form.slug))
         self.assertEquals(len(response.context_data["formresponse_list"]), 1)
 
-    def test_tag_filters(self):
+    def test_tag_filters(self, *args):
         form = self.form_instance.form
         tag = TagFactory.create(investigation=form.investigation, name="Avocado", slug="avocado")
         form_response = FormResponseFactory.create(form_instance=self.form_instance)
@@ -48,7 +50,7 @@ class FormReponseListViewTest(TestCase):
             [form_response]
         )
 
-    def test_email_filters(self):
+    def test_email_filters(self, *args):
         form = self.form_instance.form
         edwards_response = FormResponseFactory.create(form_instance=self.form_instance, json={"email": "edward@example.com"})
 
@@ -61,7 +63,7 @@ class FormReponseListViewTest(TestCase):
             [edwards_response]
         )
 
-    def test_email_filters_partial(self):
+    def test_email_filters_partial(self, *args):
         form = self.form_instance.form
         FormResponseFactory.create(form_instance=self.form_instance, json={"email": "edward@example.com"})
         FormResponseFactory.create(form_instance=self.form_instance, json={"email": "edwardina@example.com"})
