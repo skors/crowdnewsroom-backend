@@ -35,6 +35,11 @@ DJANGO_SECRET_KEY='<your generated secret key>'
 DJANGO_ALLOWED_HOSTS='localhost' # can be comma-separated
 ```
 
+### Compile translation files
+```bash
+python manage.py compilemessages
+```
+
 ### Run migrations
 ```bash
 python manage.py migrate
