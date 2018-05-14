@@ -16,6 +16,12 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+### Install frontend dependencies
+In the `./theme` folder, you need to install frontend tooling and dependencies using [Yarn](https://yarnpkg.com/).
+```bash
+cd ./theme && yarn install
+```
+
 ### Database
 You need to set up a postgres database. Django supports many types of databases but we want to use Postgres' JSONB feature
 to store user replies as JSON blobs for flexibility.
@@ -51,7 +57,13 @@ To load some example data that contains two investigations and some responses ru
 python manage.py seed_data
 ```
 
-## Running
+## Bundle frontend assets for development 
+During development, you need to have Webpack running in a separate terminal. Webpack can be started using Yarn in the theme folder:
+```bash
+cd ./theme && yarn run dev
+```
+
+## Run the Django server
 ```bash
 python manage.py runserver
 ```
