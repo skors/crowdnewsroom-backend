@@ -1,6 +1,8 @@
 from django.test import TestCase
 
 from django.urls import reverse
+from unittest.mock import patch
+
 from forms.models import User
 from forms.tests.factories import FormResponseFactory
 
@@ -27,7 +29,8 @@ class FormResponseDetailView(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
-    def test_200_when_authorized(self):
+    @patch('webpack_loader.loader.WebpackLoader.get_bundle')
+    def test_200_when_authorized(self, *args):
         self.client.login(email='admin@crowdnewsroom.org', password='password')
 
         url = url_for_response(self.form_response_1)
