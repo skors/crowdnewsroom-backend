@@ -133,13 +133,13 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
 
     def _get_message(self):
         if sum(self.form.count_by_bucket().values()) == 0:
-            return _("No on contributed to your investigation yet. Time to advertise!")
+            return _("No one contributed to your investigation yet. Time to advertise!")
 
         active_filters = [key for key, value in self.request.GET.items() if value]
         is_filtered = {'has', 'tag', 'email', 'assignee'}.intersection(active_filters)
 
         if is_filtered:
-            return _("There are not results for your current filters. Maybe try something else?")
+            return _("There are no results using your current filters. Maybe try something else?")
 
         if not self.kwargs.get("bucket") == "inbox":
             return _("There are no results in this bucket yet. Start moving some from the inbox.")
