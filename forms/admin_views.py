@@ -24,6 +24,7 @@ def _get_filter_params(kwargs, get_params):
     has_filter = get_params.get("has")
     tag_filter = get_params.get("tag")
     email_filter = get_params.get("email")
+    assignee_filter = get_params.get("assignee")
     mapping = {
         "inbox": "S",
         "trash": "I",
@@ -40,6 +41,9 @@ def _get_filter_params(kwargs, get_params):
 
     if email_filter:
         filter_params["json__email__icontains"] = email_filter
+
+    if assignee_filter:
+        filter_params["assignees__email"] = assignee_filter
 
     filter_params["status"] = mapping.get(bucket, "S")
     return filter_params
@@ -132,7 +136,7 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
         context['investigation'] = self.investigation
         context['form'] = self.form
 
-        allowed_params = ['has', 'tag', 'email']
+        allowed_params = ['has', 'tag', 'email', 'assignee']
 
         context['query_params'] = '&'.join(['{}={}'.format(k, v)
                                             for k, v
@@ -141,6 +145,7 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
         context['has_param'] = self.request.GET.get('has')
         context['tag_param'] = self.request.GET.get('tag')
         context['email_param'] = self.request.GET.get('email')
+        context['assignee_param'] = self.request.GET.get('assignee')
 
         csv_base = reverse("form_responses_csv", kwargs={
             "investigation_slug": self.investigation.slug,

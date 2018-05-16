@@ -58,7 +58,19 @@
               {% endfor %}
           </select>
         </div>
-        
+
+        <div>
+            <label for="assignee_filter">{% trans "Only show responses that are assigned to" %}</label>
+            <select id="assignee_filter" name="assignee" onChange="this.form.submit()">
+                <option value="">---</option>
+                {% for user in form.investigation.manager_users %}
+                    <option value="{{user.email}}"
+                            {% if assignee_param == user.email %} selected {% endif %}
+                    >{{user}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
         {% if investigation.tags %}
         <div>
             <label for="tag_filter">{% trans "Show responses tagged" %}</label>
