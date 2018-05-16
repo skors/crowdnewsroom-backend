@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 from unittest.mock import patch
 
 from forms.models import User
-from forms.tests.factories import FormResponseFactory, FormInstanceFactory, TagFactory
+from forms.tests.factories import FormResponseFactory, FormInstanceFactory, TagFactory, UserFactory
 
 
 @patch('webpack_loader.loader.WebpackLoader.get_bundle')
@@ -45,6 +45,22 @@ class FormReponseListViewTest(TestCase):
 
         response = self.client.get(
             "/forms/admin/investigations/{}/forms/{}/responses/inbox?tag=avocado".format(form.investigation.slug, form.slug))
+        self.assertListEqual(
+            list(response.context_data["formresponse_list"].all()),
+            [form_response]
+        )
+
+    def test_assignee_filters(self, *args):
+        form = self.form_instance.form
+        user = UserFactory.create()
+        form_response = FormResponseFactory.create(form_instance=self.form_instance)
+        form_response.assignees.set([user])
+
+        # create another one to make sure that this one is not returned later
+        FormResponseFactory.create(form_instance=self.form_instance)
+
+        response = self.client.get(
+            "/forms/admin/investigations/{}/forms/{}/responses/inbox?assignee={}".format(form.investigation.slug, form.slug, user.email))
         self.assertListEqual(
             list(response.context_data["formresponse_list"].all()),
             [form_response]

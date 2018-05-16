@@ -18,21 +18,21 @@
       <ul class="nav nav-tabs">
       {% with counts=form.count_by_bucket %}
       <li class="nav-item">
-        <a class="nav-link {% if request.resolver_match.kwargs.bucket == 'inbox' %} active {% endif %}" href="inbox">
+        <a class="nav-link {% if request.resolver_match.kwargs.bucket == 'inbox' %} active {% endif %}" href="inbox?{{query_params}}">
             <i class="fa {% response_icon 'S' %}"></i>
             {% trans "Inbox" %}
             ({{ counts.S | default:0 }})
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link {% if request.resolver_match.kwargs.bucket == 'verified' %} active {% endif %}" href="verified">
+        <a class="nav-link {% if request.resolver_match.kwargs.bucket == 'verified' %} active {% endif %}" href="verified?{{query_params}}">
             <i class="fa {% response_icon 'V' %}"></i>
             {% trans "Verified" %}
             ({{ counts.V | default:0 }})
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link {% if request.resolver_match.kwargs.bucket == 'trash' %} active {% endif %}" href="trash">
+        <a class="nav-link {% if request.resolver_match.kwargs.bucket == 'trash' %} active {% endif %}" href="trash?{{query_params}}">
             <i class="fa {% response_icon 'I' %}"></i>
             {% trans "Trash" %}
             ({{ counts.I | default:0 }})
@@ -58,7 +58,19 @@
               {% endfor %}
           </select>
         </div>
-        
+
+        <div>
+            <label for="assignee_filter">{% trans "Only show responses that are assigned to" %}</label>
+            <select id="assignee_filter" name="assignee" onChange="this.form.submit()">
+                <option value="">---</option>
+                {% for user in form.investigation.manager_users %}
+                    <option value="{{user.email}}"
+                            {% if assignee_param == user.email %} selected {% endif %}
+                    >{{user}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
         {% if investigation.tags %}
         <div>
             <label for="tag_filter">{% trans "Show responses tagged" %}</label>
@@ -118,6 +130,12 @@
                   {% endfor %}
                 </td>
             </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">
+                        {{ empty_message }}
+                    </td>
+                </tr>
             {% endfor %}
             </tbody>
         </table>
