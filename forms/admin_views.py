@@ -131,6 +131,22 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
         investigation_responses = investigation_responses.filter(**filter_params)
         return investigation_responses
 
+    def _get_message(self):
+        if sum(self.form.count_by_bucket().values()) == 0:
+            return _("No on contributed to your investigation yet. Time to advertise!")
+
+        active_filters = [key for key, value in self.request.GET.items() if value]
+        is_filtered = {'has', 'tag', 'email', 'assignee'}.intersection(active_filters)
+
+        if is_filtered:
+            return _("There are not results for your current filters. Maybe try something else?")
+
+        if not self.kwargs.get("bucket") == "inbox":
+            return _("There are no results in this bucket yet. Start moving some from the inbox.")
+
+        else:
+            return _("Looks like you verified or deleted all contributions. Good work!")
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['investigation'] = self.investigation
@@ -146,6 +162,7 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
         context['tag_param'] = self.request.GET.get('tag')
         context['email_param'] = self.request.GET.get('email')
         context['assignee_param'] = self.request.GET.get('assignee')
+        context['empty_message'] = self._get_message()
 
         csv_base = reverse("form_responses_csv", kwargs={
             "investigation_slug": self.investigation.slug,

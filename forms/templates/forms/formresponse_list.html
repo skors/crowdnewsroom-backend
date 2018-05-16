@@ -130,6 +130,12 @@
                   {% endfor %}
                 </td>
             </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">
+                        {{ empty_message }}
+                    </td>
+                </tr>
             {% endfor %}
             </tbody>
         </table>
