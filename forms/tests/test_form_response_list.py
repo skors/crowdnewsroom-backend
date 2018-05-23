@@ -1,5 +1,5 @@
 from unittest.mock import patch
-from django.test import TestCase, Client, LiveServerTestCase, override_settings
+from django.test import TestCase, Client, LiveServerTestCase, tag
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
 
@@ -92,7 +92,7 @@ class FormReponseListViewTest(TestCase):
         self.assertEqual(len(response.context_data["formresponse_list"]), 2)
 
 
-@override_settings(DEBUG=True)
+@tag("browsertest")
 @patch('webpack_loader.loader.WebpackLoader.get_bundle')
 class FormResponseListBrowserTest(LiveServerTestCase):
     def setUp(self):

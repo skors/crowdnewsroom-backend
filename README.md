@@ -78,6 +78,12 @@ You can run the test suite with
 ```bash
 python manage.py test
 ```
+This will also run some tests in headless Chrome. You need to have
+Chrome and chromedriver installed for those tests to work. If you
+do not currently have those you can skip those test by running:
+```bash
+python manage.py test --exclude-tag browsertest
+```
 
 ## License
 The source code for this project is published under [GNU AGPL License](https://github.com/correctiv/crowdnewsroom-backend/blob/master/LICENSE)
