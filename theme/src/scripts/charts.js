@@ -9,7 +9,7 @@ import moment from "moment";
 
 const timeFormat = "MM/DD/YYYY HH:mm";
 
-window.makeChart = (labels, values) => {
+const makeChart = (labels, values) => {
     const color = Chart.helpers.color;
     const config = {
       type: "bar",
@@ -57,3 +57,5 @@ window.makeChart = (labels, values) => {
     var ctx = document.getElementById("canvas").getContext("2d");
     new Chart(ctx, config);
 }
+
+export { makeChart };
