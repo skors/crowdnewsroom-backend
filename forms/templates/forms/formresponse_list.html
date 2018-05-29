@@ -202,7 +202,7 @@ const values  = [
 {% endfor %}
 ];
 window.addEventListener("load", function(event){
-    makeChart(labels, values);
+    window.charts.makeChart(labels, values);
 
     var bulkActions = document.querySelector("#bulk-actions");
     bulkActions.classList.add("d-none");
