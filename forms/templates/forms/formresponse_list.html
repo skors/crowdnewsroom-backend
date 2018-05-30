@@ -129,7 +129,7 @@
                     <th scope="col">{% trans "Email" %}</th>
                     <th scope="col">{% trans "Submission Date" %}</th>
                     <th scope="col">{% trans "Comments" %}</th>
-                    <th scope="col">{% trans "Tags" %}</th>
+                    <th scope="col">{% trans "Ownership" %}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -149,15 +149,19 @@
                                 <i> {% trans "No Email Provided" %}</i>
                             {% endif %}
                         </a>
+                        <p>
+                        {% for tag in response.tags.all %}
+                            <span class="bx--tag bx--tag--beta">{{ tag.name }}</span>
+                        {% endfor %}
+                        </p>
                     </td>
                     <td>{{ response.submission_date | localtime }}</td>
                     <td>{{ response.comment_set.count }}</td>
                     <td>
-                    {% for tag in response.tags.all %}
-                        <span class="badge badge-primary">{{ tag.name }}</span>
-                    {% endfor %}
                     {% for user in response.assignees.all %}
-                        <span class="badge badge-secondary">{{ user }}</span>
+                        <span>{{ user }}</span>
+                    {% empty %} 
+                        -
                     {% endfor %}
                     </td>
                 </tr>
