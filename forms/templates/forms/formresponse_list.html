@@ -156,7 +156,7 @@
                         </p>
                     </td>
                     <td>{{ response.submission_date | localtime }}</td>
-                    <td>{{ response.comment_set.count }}</td>
+                    <td>{{ response.comments.last.text | default:'-' }}</td>
                     <td>
                     {% for user in response.assignees.all %}
                         <span>{{ user }}</span>
