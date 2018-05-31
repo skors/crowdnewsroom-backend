@@ -113,35 +113,52 @@
 
     <form action="batch_edit" method="POST">
         {% csrf_token %}
-        <div id="bulk-actions" class="p-3">
-            <div>
-                <label for="apply_tag">{% trans "Apply tag" %}</label>
-                <select id="apply_tag" name="tag">
-                    <option value="">---</option>
-                    {% for tag in investigation.tags %}
-                    <option value="{{tag.slug}}">{{tag.name}}</option>
-                    {% endfor %}
-                </select>            
+        <div id="bulk-actions" class="p-3" style="display: flex; flex-wrap: wrap">
+            <div class="bx--form-item">
+                <label for="apply_tag" class="bx--label">{% trans "Apply tag" %}</label>
+                <div class="bx--select">
+                    <select id="apply_tag" name="tag" class="bx--select-input">
+                        <option value="" class="bx--select-option">---</option>
+                        {% for tag in investigation.tags %}
+                        <option value="{{tag.slug}}" class="bx--select-option">{{tag.name}}</option>
+                        {% endfor %}
+                    </select>
+                    <svg class="bx--select__arrow" width="10" height="5" viewBox="0 0 10 5" fill-rule="evenodd">
+                        <path d="M10 0L5 5 0 0z"></path>
+                    </svg>
+                </div>
             </div>
-            <div>
-                <label for="apply_assignee">{% trans "Apply assignee" %}</label>
-                <select id="apply_assignee" name="assignee_email">
-                    <option value="">---</option>
-                    {% for user in investigation.manager_users %}
-                        <option value="{{user.email}}">{{user.first_name}}</option>
-                    {% endfor %}
-                </select>
+            <div class="bx--form-item">
+                <label for="apply_assignee" class="bx--label">{% trans "Apply assignee" %}</label>
+                <div class="bx--select">
+                    <select id="apply_assignee" name="assignee_email" class="bx--select-input">
+                        <option value="" class="bx--select-option">---</option>
+                        {% for user in investigation.manager_users %}
+                            <option value="{{user.email}}">{{user.first_name}}</option>
+                        {% endfor %}
+                    </select>
+                    <svg class="bx--select__arrow" width="10" height="5" viewBox="0 0 10 5" fill-rule="evenodd">
+                        <path d="M10 0L5 5 0 0z"></path>
+                    </svg>
+                </div>
             </div>
-            <div>
-                <label for="apply_action">Mark as</label>
-                <select id="apply_action" name="action">
-                    <option value="">---</option>
-                    <option value="mark_submitted">{% trans "Move to inbox" %}</option>
-                    <option value="mark_verified">{% trans "Mark as verified" %}</option>
-                    <option value="mark_invalid">{% trans "Move to trash" %}</option>
-                </select>
+            <div class="bx--form-item">
+                <label for="apply_action" class="bx--label">Mark as</label>
+                <div class="bx--select">
+                    <select id="apply_action" name="action" class="bx--select-input">
+                        <option value="" class="bx--select-option">---</option>
+                        <option value="mark_submitted" class="bx--select-option">{% trans "Move to inbox" %}</option>
+                        <option value="mark_verified" class="bx--select-option">{% trans "Mark as verified" %}</option>
+                        <option value="mark_invalid" class="bx--select-option">{% trans "Move to trash" %}</option>
+                    </select>
+                    <svg class="bx--select__arrow" width="10" height="5" viewBox="0 0 10 5" fill-rule="evenodd">
+                        <path d="M10 0L5 5 0 0z"></path>
+                    </svg>
+                </div>
             </div>
-            <input type="submit" data-template="{% trans 'Apply to COUNT submission(s)' %}">
+            <div class="bx--form-item" style="display: flex; align-items: center;">
+                <input type="submit" class="bx--btn bx--btn--primary" data-template="{% trans 'Apply to COUNT submission(s)' %}">
+            </div>
         </div>
         <div class="bx--data-table-v2-container">
             <table class="bx--data-table-v2 bx--data-table-v2--zebra">
