@@ -403,6 +403,6 @@ def send_email(sender, instance, created, *args, **kwargs):
 class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     date = models.DateTimeField()
-    form_response = models.ForeignKey(FormResponse, on_delete=models.CASCADE)
+    form_response = models.ForeignKey(FormResponse, on_delete=models.CASCADE, related_name="comments")
     text = models.TextField()
 
