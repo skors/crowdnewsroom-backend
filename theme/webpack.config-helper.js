@@ -72,14 +72,19 @@ module.exports = options => {
 
     webpackConfig.module.loaders.push({
       test: /\.s[a|c]ss$/i,
-      loader: ExtractSASS.extract(["css", "sass"])
+      loader: ExtractSASS.extract(["css", "postcss", "sass"])
     });
   } else {
     webpackConfig.plugins.push(new Webpack.HotModuleReplacementPlugin());
 
     webpackConfig.module.loaders.push({
       test: /\.s[a|c]ss$/i,
-      loaders: ["style", "css", "sass"]
+      loaders: [
+        'style',
+        'css',
+        'postcss',
+        'sass',
+      ]
     });
 
     webpackConfig.devServer = {
