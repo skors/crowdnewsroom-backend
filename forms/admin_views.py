@@ -130,6 +130,9 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
         investigation_responses = FormResponse.get_all_for_form(self.form)
         filter_params = _get_filter_params(self.kwargs, self.request.GET)
         investigation_responses = investigation_responses.filter(**filter_params)
+        investigation_responses = investigation_responses \
+            .prefetch_related("tags") \
+            .prefetch_related("assignees")
         return investigation_responses
 
     def _get_message(self):
