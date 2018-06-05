@@ -35,7 +35,7 @@
                     </div>
 
                     {% with stats=investigation.submission_stats %}
-                    <ul class="list-unstyled card-text icon-list">
+                    <ul class="list-unstyled card-text icon-list" id="investigation-stats">
                         <li><i class="fas fa-chart-line text-primary"></i>
                             {% blocktrans count counter=stats.total %}
                                 {{ counter }} submission in total
