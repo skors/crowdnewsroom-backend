@@ -209,11 +209,7 @@
                     <td>{{ response.submission_date | localtime }}</td>
                     <td>{{ response.comments.last.text | default:'-' }}</td>
                     <td>
-                    {% for user in response.assignees.all %}
-                        <span>{{ user }}</span>
-                    {% empty %} 
-                        -
-                    {% endfor %}
+                    {{ response.assignees.all | join:', ' | default:'-' }}
                     </td>
                 </tr>
                     {% empty %}
