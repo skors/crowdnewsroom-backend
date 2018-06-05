@@ -10,3 +10,6 @@ import 'babel-polyfill'
 import "../styles/main.sass";
 import "expose-loader?charts!./charts.js"
 import "./charts.js"
+
+import { Tooltip } from 'carbon-components'
+Tooltip.init(document.body);
