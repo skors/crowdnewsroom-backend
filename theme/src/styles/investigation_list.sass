@@ -7,23 +7,6 @@
   .status
     position: relative
 
-    &::after
-      position: absolute
-      top: 0
-      left: 0
-      padding: 0.3em
-      color: white
-      text-transform: uppercase
-      font-size: 12px
+  #investigation-stats
+    line-height: 1.4em
 
-    &.A::after
-      content: "✓ Archived"
-      background-color: rgb(74, 146, 226)
-
-    &.D::after
-      content: "𝗑 Draft"
-      background-color: rgb(8, 18, 26)
-
-    &.P::after
-      content: "✓ Published"
-      background-color: rgb(97, 178, 10)
