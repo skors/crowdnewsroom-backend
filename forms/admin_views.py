@@ -1,7 +1,7 @@
 import base64
 import re
 
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
@@ -251,6 +251,13 @@ class CommentDeleteView(InvestigationAuthMixin, UpdateView):
 
     def get_permission_object(self):
         return Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
+
+    def check_permissions(self, request):
+        comment = self.get_object()
+        if comment.author != request.user:
+            raise PermissionDenied()
+        return super().check_permissions(request)
+
 
 
 @login_required(login_url="/admin/login")
