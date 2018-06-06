@@ -33,14 +33,12 @@
                 </div>
             </div>
         </nav>
-        <div class="title">
-            <h2>
-                {% block headertitle %}Title{% endblock %}
-            </h2>
-        </div>
     </header>
 
     <main class="page">
+      <h2 class="page-title">
+        {% block headertitle %}Title{% endblock %}
+      </h2>
       {% include 'includes/breadcrumbs.html' %}
       {% include 'includes/messages.html' %}
       {% block main %}{% endblock %}
