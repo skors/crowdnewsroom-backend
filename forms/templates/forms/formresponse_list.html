@@ -12,9 +12,6 @@
 
 {% block main %}
   <div class="formresponse-list">
-      <div style="width:100%; height: 400px;">
-          <canvas id="canvas"></canvas>
-      </div>
       <ul class="nav nav-tabs">
       {% with counts=form.count_by_bucket %}
       <li class="nav-item">
@@ -248,19 +245,7 @@
   </div>
 
 <script>
-const labels = [
-{% for entry in form.submissions_by_date %}
-            new Date({{ entry.date | date:"U" }} * 1000),
-{% endfor %}
-            ];
-const values  = [
-{% for entry in form.submissions_by_date %}
-            {{ entry.c }},
-{% endfor %}
-];
 window.addEventListener("load", function(event){
-    window.charts.makeChart(labels, values);
-
     var bulkActions = document.querySelector("#bulk-actions");
     bulkActions.classList.add("d-none");
 
