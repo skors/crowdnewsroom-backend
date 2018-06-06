@@ -25,7 +25,7 @@ class CommentForm(ModelForm):
 class CommentDeleteForm(ModelForm):
     class Meta:
         model = Comment
-        fields = ["archived"]
+        fields = ["archived", "text"]
 
 
 class FormResponseStatusForm(ModelForm):

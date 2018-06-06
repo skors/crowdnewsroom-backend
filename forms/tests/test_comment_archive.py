@@ -37,6 +37,7 @@ class FormReponseAssigneesTest(TestCase):
 
         payload = {
             "archived": True,
+            "text": self.comment.text
         }
         response = self.client.post(make_url(self.comment), data=payload)
         self.assertEqual(response.status_code, 302)
@@ -49,6 +50,7 @@ class FormReponseAssigneesTest(TestCase):
 
         payload = {
             "archived": True,
+            "text": self.comment.text
         }
         response = self.client.post(make_url(self.comment), data=payload)
         self.assertEqual(response.status_code, 403)
@@ -61,6 +63,7 @@ class FormReponseAssigneesTest(TestCase):
 
         payload = {
             "archived": True,
+            "text": self.comment.text
         }
         response = self.client.post(make_url(self.comment), data=payload)
         self.assertEqual(response.status_code, 403)
