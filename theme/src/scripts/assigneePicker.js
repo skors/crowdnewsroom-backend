@@ -4,6 +4,21 @@ import { MultiSelect } from "carbon-components-react";
 
 let id = null;
 
+
+const authorizedFetch = (url, settings) => fetch(url, Object.assign({credentials: 'same-origin'}, settings)).then(response => response.json());
+
+const authroizedPUT = (url, settings) => {
+  const csrfValue = document.cookie.split(';').find(c => c.indexOf("csrftoken") === 0).split("=")[1];
+  const baseSettings = {
+    method: "PATCH",
+    headers: {
+      'content-type': 'application/json',
+      'X-CSRFToken': csrfValue,
+    },
+  };
+  return authorizedFetch(url, Object.assign(baseSettings, settings));
+};
+
 class AssigneePicker extends Component {
   constructor(props){
     super(props);
@@ -18,11 +33,9 @@ class AssigneePicker extends Component {
 
   componentDidMount(){
     const tagPromise =
-      fetch("/forms/investigations/food-investigation/tags")
-        .then(response => response.json());
+      authorizedFetch("/forms/investigations/food-investigation/tags");
 
-    const responsePromise = fetch(`/forms/responses/${id}`)
-      .then(response => response.json());
+    const responsePromise = authorizedFetch(`/forms/responses/${id}`);
 
     Promise.all([tagPromise, responsePromise]).then(([tags, response]) => {
       const selectedTags = tags.filter(tag => response.tags.includes(tag.id));
@@ -30,22 +43,15 @@ class AssigneePicker extends Component {
     });
   }
 
-  update(httpResponse){
-    httpResponse.json()
-      .then(response => {
-        const selectedTags = this.state.tags.filter(tag => response.tags.includes(tag.id));
-        this.setState({selectedTags});
-      });
+  update(updatedResponse){
+      const selectedTags = this.state.tags.filter(tag => updatedResponse.tags.includes(tag.id));
+      this.setState({selectedTags});
   }
 
   updateSelection({selectedItems}){
-    fetch(`/forms/responses/${id}`, {
-      method: "PATCH",
-      body: JSON.stringify({tags: selectedItems.map(tag => tag.id)}),
-      headers: {
-        'content-type': 'application/json'
-      },
-    }).then(this.update);
+    authroizedPUT(`/forms/responses/${id}`,
+      {body: JSON.stringify({tags: selectedItems.map(tag => tag.id)})})
+    .then(this.update);
   }
 
   render(){

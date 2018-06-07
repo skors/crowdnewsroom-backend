@@ -1,10 +1,9 @@
 import datetime
 
-from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import JsonResponse, Http404
-from guardian.shortcuts import get_objects_for_user
-from rest_framework import generics, serializers
+from django.http import Http404
+from rest_framework import generics, permissions
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import DjangoObjectPermissions
 from rest_framework.serializers import ModelSerializer
 
 from .models import FormResponse, FormInstance, Investigation, Tag
@@ -62,10 +61,23 @@ class CompleteFormResponseSerializer(ModelSerializer):
         fields = "__all__"
 
 
+def get_investigation(instance):
+    if isinstance(instance, FormResponse):
+        return instance.form_instance.form.investigation
+
+
+class CanEditInvestigation(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        print("CHecking permission")
+        investigation = get_investigation(obj)
+        return request.user.has_perm("manage_investigation", investigation)
+
+
 class FormResponseDetail(generics.RetrieveUpdateAPIView):
     lookup_url_kwarg = "response_id"
     serializer_class = CompleteFormResponseSerializer
     queryset = FormResponse
+    permission_classes = [CanEditInvestigation]
 
 
 class TagSerializer(ModelSerializer):
@@ -80,6 +92,12 @@ class TagList(generics.ListAPIView):
     def get_queryset(self):
         investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
         return Tag.objects.filter(investigation=investigation).all()
+
+    def list(self, request, *args, **kwargs):
+        investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
+        if not request.user.has_perm("view_investigation", investigation):
+            raise PermissionDenied(detail="not allowed!")
+        return super().list(request, *args, **kwargs)
 
 
 class FormResponseCreate(generics.CreateAPIView):
