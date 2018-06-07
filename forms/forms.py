@@ -32,7 +32,6 @@ class FormResponseStatusForm(ModelForm):
         form_response_status.last_status_changed_date = timezone.now()
         for (key, value) in kwargs.items():
             form_response_status.__setattr__(key, value)
-        print("form_response_status.last_status_changed_date: {}".format(form_response_status.last_status_changed_date))
         form_response_status.save()
 
 
