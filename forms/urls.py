@@ -4,7 +4,7 @@ from django.urls import path, register_converter
 from forms.admin_views import InvestigationListView, FormResponseListView, FormResponseDetailView, CommentAddView, \
     FormResponseStatusView, form_response_csv_view, FormListView, form_response_file_view, FormResponseTagsView, \
     form_response_batch_edit, form_response_json_edit_view, UserSettingsView, FormResponseAssigneesView
-from forms.views import FormInstanceDetail, FormResponseCreate, InvestigationDetail
+from forms.views import FormInstanceDetail, FormResponseCreate, InvestigationDetail, FormResponseDetail, TagList
 
 
 class BucketConverter:
@@ -23,6 +23,8 @@ urlpatterns = [
     path('investigations/<slug:investigation_slug>', InvestigationDetail.as_view(), name="investigation"),
     path('investigations/<slug:investigation_slug>/forms/<slug:form_slug>', FormInstanceDetail.as_view(), name="form"),
     path('investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses', FormResponseCreate.as_view(), name="form_response"),
+    path('responses/<int:response_id>', FormResponseDetail.as_view()),
+    path('investigations/<slug:investigation_slug>/tags', TagList.as_view(), name="investigation_tags"),
 
     path('admin/investigations', InvestigationListView.as_view(), name="investigation_list"),
     path('admin/user_settings', UserSettingsView.as_view(), name="user_settings"),

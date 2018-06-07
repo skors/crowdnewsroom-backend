@@ -7,7 +7,7 @@ from guardian.shortcuts import get_objects_for_user
 from rest_framework import generics, serializers
 from rest_framework.serializers import ModelSerializer
 
-from .models import FormResponse, FormInstance, Investigation
+from .models import FormResponse, FormInstance, Investigation, Tag
 
 
 class InvestigationSerializer(ModelSerializer):
@@ -54,6 +54,32 @@ class FormResponseSerializer(ModelSerializer):
         fr.submission_date = datetime.datetime.now()
         fr.save()
         return fr
+
+
+class CompleteFormResponseSerializer(ModelSerializer):
+    class Meta:
+        model = FormResponse
+        fields = "__all__"
+
+
+class FormResponseDetail(generics.RetrieveUpdateAPIView):
+    lookup_url_kwarg = "response_id"
+    serializer_class = CompleteFormResponseSerializer
+    queryset = FormResponse
+
+
+class TagSerializer(ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = "__all__"
+
+
+class TagList(generics.ListAPIView):
+    serializer_class = TagSerializer
+
+    def get_queryset(self):
+        investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
+        return Tag.objects.filter(investigation=investigation).all()
 
 
 class FormResponseCreate(generics.CreateAPIView):

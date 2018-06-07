@@ -14,7 +14,8 @@ module.exports = options => {
         `webpack-dev-server/client?http://localhost:${options.port}`,
         "webpack/hot/dev-server",
         "./src/scripts/index"
-      ]
+      ],
+      assigneePicker: "./src/scripts/assigneePicker"
     },
     output: {
       publicPath: "http://127.0.0.1:1339/",

@@ -268,7 +268,7 @@ class FormResponse(models.Model):
     form_instance = models.ForeignKey(FormInstance, on_delete=models.CASCADE)
     status = models.CharField(max_length=1, choices=STATUSES, default='S')
     submission_date = models.DateTimeField()
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True)
     assignees = models.ManyToManyField(User)
 
     class Meta:
