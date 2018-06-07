@@ -249,6 +249,10 @@ class CommentDeleteView(InvestigationAuthMixin, UpdateView):
         self.kwargs.pop("comment_id")
         return reverse("response_details", kwargs=self.kwargs)
 
+    def form_invalid(self, form):
+        self.kwargs.pop("comment_id")
+        return HttpResponseRedirect(reverse("response_details", kwargs=self.kwargs))
+
     def get_permission_object(self):
         return Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
 
