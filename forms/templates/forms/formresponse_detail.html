@@ -198,7 +198,7 @@
 
     function toggleEditComment(event){
         var button = event.target;
-        button.parentElement.parentElement.parentElement.querySelectorAll(".card-body .part").forEach(function(part) {
+        button.closest(".card").querySelectorAll(".part").forEach(function(part) {
             part.classList.toggle("d-none");
         });
     }
