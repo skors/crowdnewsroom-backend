@@ -36,10 +36,12 @@
     </header>
 
     <main class="page">
-      <h2 class="page-title">
-        {% block headertitle %}Title{% endblock %}
-      </h2>
-      {% include 'includes/breadcrumbs.html' %}
+      <div class="cnr--header">
+          <h2>
+            {% block headertitle %}Title{% endblock %}
+          </h2>
+          {% include 'includes/breadcrumbs.html' %}
+      </div>
       {% include 'includes/messages.html' %}
       {% block main %}{% endblock %}
     </main>
