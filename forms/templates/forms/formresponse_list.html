@@ -33,35 +33,26 @@
       {% endwith %}
       </div>
     </div>
-    <div class="p-3 pt-4">
+    <div class="pt-4">
+      <h2>{% trans "Filter" %}</h2>
       <form action="" method="GET" style="display: flex; flex-wrap:wrap">
-          <h2>{% trans "Filter by" %}</h2>
-          <div data-search class="bx--search bx--search--sm" role="search">
-              <svg class="bx--search-magnifier" width="16" height="16" viewBox="0 0 16 16" fill-rule="evenodd">
-                  <path d="M6 2c2.2 0 4 1.8 4 4s-1.8 4-4 4-4-1.8-4-4 1.8-4 4-4zm0-2C2.7 0 0 2.7 0 6s2.7 6 6 6 6-2.7 6-6-2.7-6-6-6zM16 13.8L13.8 16l-3.6-3.6 2.2-2.2z"></path>
-                  <path d="M16 13.8L13.8 16l-3.6-3.6 2.2-2.2z"></path>
-              </svg>
-              <label class="bx--label" id="email-label" for="email_filter">Search by e-mail</label>
+          <div class="bx--form-item">
+              <label class="bx--visually-hidden" id="email-label" for="email_filter">Search by e-mail</label>
               <input name="email"
-                     class="bx--search-input"
+                     class="bx--text-input"
                      type="text"
                      id="email_filter"
                      role="search"
-                     placeholder="E-mail"
+                     placeholder="{% trans 'Search by email' %}"
                      aria-labelledby="email-label"
-                     value="{{ email_param|default:'' }}"
-                     style="margin: 1em auto;" >
-              <svg class="bx--search-close bx--search-close--hidden" width="16" height="16" viewBox="0 0 16 16" fill-rule="evenodd">
-                  <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm3.5 10.1l-1.4 1.4L8 9.4l-2.1 2.1-1.4-1.4L6.6 8 4.5 5.9l1.4-1.4L8 6.6l2.1-2.1 1.4 1.4L9.4 8l2.1 2.1z"></path>
-              </svg>
+                     value="{{ email_param|default:'' }}" >
           </div>
 
-
         <div class="bx--form-item">
-          <label for="has_filter"class="bx--label">{% trans "Field" %}</label>
+          <label for="has_filter"class="bx--visually-hidden">{% trans "Field" %}</label>
           <div class="bx--select">
               <select id="has_filter" name="has" class="bx--select-input" onChange="this.form.submit()">
-                  <option value="" class="bx--select-option">---</option>
+                  <option value="" class="bx--select-option">{% trans "Field" %}</option>
                   {% for property in form.instance_properties %}
                   <option value="{{property}}"
                           class="bx--select-option"
@@ -76,10 +67,10 @@
         </div>
 
         <div class="bx--form-item">
-            <label for="assignee_filter" class="bx--label">{% trans "Assignee" %}</label>
+            <label for="assignee_filter" class="bx--visually-hidden">{% trans "Assignee" %}</label>
             <div class="bx--select">
                 <select id="assignee_filter" name="assignee" class="bx--select-input" onChange="this.form.submit()">
-                    <option value="" class="bx--select-option">---</option>
+                    <option value="" class="bx--select-option">{% trans "Assignee" %}</option>
                     {% for user in form.investigation.manager_users %}
                         <option value="{{user.email}}"
                                 class="bx--select-option"
@@ -95,10 +86,10 @@
 
         {% if investigation.tags %}
           <div class="bx--form-item">
-              <label for="tag_filter" class="bx--label">{% trans "Tag" %}</label>
+              <label for="tag_filter" class="bx--visually-hidden">{% trans "Tag" %}</label>
               <div class="bx--select">
                   <select id="tag_filter" name="tag" class="bx--select-input" onchange="this.form.submit()">
-                      <option class="bx--select-option" value="">---</option>
+                      <option class="bx--select-option" value="">{% trans "Tag" %}</option>
                       {% for tag in investigation.tags %}
                       <option class="bx--select-option" value="{{tag.slug}}" {% if tag_param == tag.slug %} selected {% endif %}>{{tag.name}}</option>
                       {% endfor %}
