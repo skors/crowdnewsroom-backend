@@ -15,6 +15,7 @@ module.exports = options => {
         "webpack/hot/dev-server",
         "./src/scripts/index"
       ],
+      style: './src/styles/main.sass',
       assigneePicker: "./src/scripts/assigneePicker"
     },
     output: {
