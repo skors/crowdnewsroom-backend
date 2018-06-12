@@ -178,7 +178,6 @@
                     <td>
                         <a href="{% url 'response_details' investigation.slug form.slug response.id %}"
                         style="text-decoration: none">
-                            <i class="fa {% response_icon response.status %}"></i>
                             {% if response.json_email %}
                                 {{ response.json_email }}
                             {% else %}
