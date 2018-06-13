@@ -9,25 +9,20 @@
 
 {% block main %}
     <div class="formresponse-details">
-        <form action="{% url 'response_details_status' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id %}"
-              method="post"
-              class="mb-4" >
-            {% csrf_token %}
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                {% for value, label in formresponse.STATUSES %}
-                <label class="btn btn-secondary {% if value == formresponse.status %}active{% endif %}">
-                    <input type="radio"
-                           name="status"
-                           value="{{value}}"
-                           autocomplete="off"
-                           onClick = "this.form.submit()"
-                           {% if value == formresponse.status %} checked {%endif %}>
-                    {{label}}
-                    <i class="fa {% response_icon value %}"></i>
-                </label>
-                {% endfor %}
+        <div class="formresponse-details--actions">
+            <div>
+                <h3>{% trans "Manage Tags" %}</h3>
+                <div id="tag-picker" response-id="{{ formresponse.id }}"></div>
             </div>
-        </form>
+            <div>
+                <h3>{% trans "Manage Ownership" %}</h3>
+                <div id="assignee-picker" response-id="{{ formresponse.id }}"></div>
+            </div>
+            <div>
+                <h3>{% trans "Manage Bucket" %}</h3>
+                <div id="bucket-picker" response-id="{{ formresponse.id }}"></div>
+            </div>
+        </div>
 
         <table class="table table-borderless">
             {% for entry in formresponse.rendered_fields %}
@@ -60,24 +55,6 @@
                 {%  endif %}
             {% endfor %}
         </table>
-
-        <form id="tags-form" action="{% url 'response_details_tags' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id %}" method="post">
-            {% csrf_token %}
-            {%  for tag in tags_form.tags %}
-                <label for="{{ tag.id_for_label }}"
-                       class="badge  p-2 {% if tag.data.attrs.checked %} badge-primary {% else %} badge-light {% endif %}">
-                    <span class="sr-only">
-                        {{ tag.tag }}
-                    </span>
-
-                    {{ tag.choice_label }}
-                </label>
-            {% endfor %}
-           <input type="submit" class="btn btn-primary" value="{% trans 'Submit Tags' %}">
-        </form>
-
-
-        <div id="assignee-picker" response-id="{{ formresponse.id }}"></div>
 
         <ul class="list-unstyled comments">
             {% for comment in formresponse.visible_comments.all reversed %}
@@ -162,7 +139,7 @@
         </ul>
     </div>
 
-{% render_bundle "assigneePicker" %}
+{% render_bundle "formResponseDetails" %}
 
 <script>
     var editElements = document.querySelectorAll(".edit-inline");

@@ -1,12 +1,13 @@
 import datetime
 
 from django.http import Http404
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, serializers
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import DjangoObjectPermissions
+from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
-from .models import FormResponse, FormInstance, Investigation, Tag
+from .models import FormResponse, FormInstance, Investigation, Tag, User
 
 
 class InvestigationSerializer(ModelSerializer):
@@ -55,7 +56,25 @@ class FormResponseSerializer(ModelSerializer):
         return fr
 
 
+class TagField(serializers.PrimaryKeyRelatedField):
+    def get_queryset(self):
+        form_response = self.context['view'].get_object()
+        return form_response.taglist
+
+
+class AssigneeField(serializers.PrimaryKeyRelatedField):
+    def get_queryset(self):
+        form_response = self.context['view'].get_object()  # type: FormResponse
+        investigation_users = form_response.form_instance.form.investigation.manager_users
+        # We already have a list of all the users here but Django expects us to pass
+        # a queryset to the form, not a list of objects so we manually create
+        # that query here.
+        return User.objects.filter(id__in=[user.id for user in investigation_users])
+
+
 class CompleteFormResponseSerializer(ModelSerializer):
+    tags = TagField(many=True, required=False)
+
     class Meta:
         model = FormResponse
         fields = "__all__"
@@ -68,7 +87,6 @@ def get_investigation(instance):
 
 class CanEditInvestigation(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        print("CHecking permission")
         investigation = get_investigation(obj)
         return request.user.has_perm("manage_investigation", investigation)
 
@@ -80,24 +98,44 @@ class FormResponseDetail(generics.RetrieveUpdateAPIView):
     permission_classes = [CanEditInvestigation]
 
 
+class InvestigationListAPIView(generics.ListAPIView):
+    def list(self, request, *args, **kwargs):
+        investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
+        if not request.user.has_perm("view_investigation", investigation):
+            raise PermissionDenied(detail="not allowed!")
+        return super().list(request, *args, **kwargs)
+
+
 class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
         fields = "__all__"
 
 
-class TagList(generics.ListAPIView):
+class TagList(InvestigationListAPIView):
     serializer_class = TagSerializer
 
     def get_queryset(self):
         investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
         return Tag.objects.filter(investigation=investigation).all()
 
-    def list(self, request, *args, **kwargs):
+
+class AssigneeSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("first_name", "last_name", "id")
+
+
+class AssigneeList(InvestigationListAPIView):
+    serializer_class = AssigneeSerializer
+
+    def get_queryset(self):
         investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
-        if not request.user.has_perm("view_investigation", investigation):
-            raise PermissionDenied(detail="not allowed!")
-        return super().list(request, *args, **kwargs)
+        investigation_users = investigation.manager_users
+        # We already have a list of all the users here but Django expects us to pass
+        # a queryset to the form, not a list of objects so we manually create
+        # that query here.
+        return User.objects.filter(id__in=[user.id for user in investigation_users])
 
 
 class FormResponseCreate(generics.CreateAPIView):

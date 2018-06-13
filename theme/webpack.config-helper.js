@@ -16,7 +16,7 @@ module.exports = options => {
         "./src/scripts/index"
       ],
       style: './src/styles/main.sass',
-      assigneePicker: "./src/scripts/assigneePicker"
+      formResponseDetails: './src/scripts/form-response-details'
     },
     output: {
       publicPath: "http://127.0.0.1:1339/",
