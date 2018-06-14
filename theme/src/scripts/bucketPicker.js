@@ -26,7 +26,7 @@ export default class BucketPicker extends Component {
   }
 
   updateSelection({selectedItem}){
-    authorizedPUT(`/forms/responses/${id}`,
+    authorizedPUT(`/forms/responses/${this.props.responseId}`,
       {body: JSON.stringify({status: selectedItem.id})}
     ).then(this.update);
   }
