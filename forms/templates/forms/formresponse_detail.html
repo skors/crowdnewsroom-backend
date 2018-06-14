@@ -9,18 +9,20 @@
 
 {% block main %}
     <div class="formresponse-details main-content-padded">
-        <div class="formresponse-details--actions">
+        <div class="formresponse-details--actions"
+             data-response-id="{{ formresponse.id }}"
+             data-investigation-slug="{{ investigation.slug }}">
             <div>
                 <h3>{% trans "Manage Tags" %}</h3>
-                <div id="tag-picker" response-id="{{ formresponse.id }}"></div>
+                <div id="tag-picker"></div>
             </div>
             <div>
                 <h3>{% trans "Manage Ownership" %}</h3>
-                <div id="assignee-picker" response-id="{{ formresponse.id }}"></div>
+                <div id="assignee-picker"></div>
             </div>
             <div>
                 <h3>{% trans "Manage Bucket" %}</h3>
-                <div id="bucket-picker" response-id="{{ formresponse.id }}"></div>
+                <div id="bucket-picker"></div>
             </div>
         </div>
     </div>

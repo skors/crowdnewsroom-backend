@@ -17,7 +17,7 @@ export default class MultiSelectPicker extends Component {
 
   componentDidMount(){
     const itemPromise =
-      authorizedFetch(`/forms/investigations/food-investigation/${this.props.property}`);
+      authorizedFetch(`/forms/investigations/${this.props.investigationSlug}/${this.props.property}`);
 
     const responsePromise = authorizedFetch(`/forms/responses/${this.props.responseId}`);
 
