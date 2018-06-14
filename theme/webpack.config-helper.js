@@ -60,6 +60,11 @@ module.exports = options => {
 
   if (options.isProduction) {
     webpackConfig.entry = ["./src/scripts/index"];
+    webpackConfig.entry = {
+      main: "./src/scripts/index",
+      style : './src/styles/main.sass',
+      formResponseDetails : './src/scripts/form-response-details'
+    },
     webpackConfig.output.publicPath = "/static/js/";
 
     webpackConfig.plugins.push(
