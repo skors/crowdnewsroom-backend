@@ -137,16 +137,6 @@
      button.addEventListener("click", toggleEdit);
     });
 
-    function makeFormAutoSubmit(form){
-        form.querySelectorAll("input[type='checkbox']").forEach(function(checkbox) {
-            checkbox.addEventListener("click", function(event) { checkbox.form.submit() } );
-        });
-        form.querySelector("input[type='submit']").classList.add("d-none");
-    }
-
-    makeFormAutoSubmit(document.querySelector("#tags-form"));
-    makeFormAutoSubmit(document.querySelector("#assignees-form"));
-
     function toggleEditComment(event){
         var button = event.target;
         button.closest(".card").querySelectorAll(".part").forEach(function(part) {
@@ -157,7 +147,5 @@
     document.querySelectorAll(".comments .toggle-edit").forEach(function(button) {
         button.addEventListener("click", toggleEditComment);
     })
-
-
 </script>
 {% endblock %}
