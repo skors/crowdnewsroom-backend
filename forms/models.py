@@ -369,13 +369,6 @@ class FormResponse(models.Model):
                 .filter(form_instance__form=form) \
                 .order_by(Coalesce('last_status_changed_date', 'submission_date').desc())
 
-    def set_password_for_user(self, password):
-        contributor, user_created = User.objects.get_or_create(email=self.email)
-        if user_created:
-            contributor.set_password(password)
-            contributor.save()
-        assign_perm("edit_response", contributor, self)
-
 
 def generate_emails(form_response: FormResponse):
     plaintext_template = Engine().from_string(str(form_response.form_instance.email_template))
