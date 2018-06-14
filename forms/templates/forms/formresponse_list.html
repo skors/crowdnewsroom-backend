@@ -190,7 +190,7 @@
                         {% endfor %}
                         </p>
                     </td>
-                    <td>{{ response.submission_date | localtime }}</td>
+                    <td>{{ response.submission_date | date:"SHORT_DATETIME_FORMAT" }}</td>
                     <td>{{ response.comments.last.text | default:'-' }}</td>
                     <td>
                     {{ response.assignees.all | join:', ' | default:'-' }}

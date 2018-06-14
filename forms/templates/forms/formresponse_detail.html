@@ -73,7 +73,7 @@
                 <div class="card mt-5">
                   <div class="card-header">
                       <span class="author">{{ comment.author.first_name }} {{ comment.author.last_name }}</span>
-                      <span class="date"> - {{ comment.date }}</span>
+                      <span class="date"> - {{ comment.date | date:"SHORT_DATETIME_FORMAT" }}</span>
                         <div class="float-right">
                           {% if request.user == comment.author %}
                               <button class="toggle-edit button-unstyled">{% trans "edit" %}</button>
