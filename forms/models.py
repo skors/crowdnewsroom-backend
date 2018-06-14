@@ -286,7 +286,7 @@ class FormResponse(models.Model):
 
     @property
     def visible_comments(self):
-        return self.comments.filter(archived=False)
+        return self.comments.filter(archived=False).order_by("-date")
 
     @property
     def valid_keys(self):
