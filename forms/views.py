@@ -1,6 +1,7 @@
 import datetime
 
 from django.http import Http404
+from django.utils import timezone
 from rest_framework import generics, permissions, serializers
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import DjangoObjectPermissions
@@ -74,6 +75,7 @@ class AssigneeField(serializers.PrimaryKeyRelatedField):
 
 class CompleteFormResponseSerializer(ModelSerializer):
     tags = TagField(many=True, required=False)
+    assignees = AssigneeField(many=True, required=False)
 
     class Meta:
         model = FormResponse
@@ -96,6 +98,15 @@ class FormResponseDetail(generics.RetrieveUpdateAPIView):
     serializer_class = CompleteFormResponseSerializer
     queryset = FormResponse
     permission_classes = [CanEditInvestigation]
+
+    def perform_update(self, serializer):
+        old_obj = self.get_object()
+        status = serializer.validated_data.get("status")
+
+        if status and old_obj.status != status:
+            serializer.save(last_status_changed_date=timezone.now())
+        else:
+            serializer.save()
 
 
 class InvestigationListAPIView(generics.ListAPIView):
