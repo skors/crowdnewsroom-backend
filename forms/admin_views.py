@@ -163,10 +163,12 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
                                             for k, v
                                             in self.request.GET.items()
                                             if k in allowed_params])
-        context['has_param'] = self.request.GET.get('has')
-        context['tag_param'] = self.request.GET.get('tag')
-        context['email_param'] = self.request.GET.get('email')
-        context['assignee_param'] = self.request.GET.get('assignee')
+        for param in allowed_params:
+            value = self.request.GET.get(param)
+            context['{}_param'.format(param)] = value
+            if value:
+                context['has_filters'] = True
+
         context['empty_message'] = self._get_message()
 
         csv_base = reverse("form_responses_csv", kwargs={
