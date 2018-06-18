@@ -1,5 +1,6 @@
 $content-width: 800px
 @import 'colors'
+$font-family-sans-serif: 'Source Sans Pro', sans-serif
 @import '../../node_modules/bootstrap/scss/bootstrap'
 @import '../../node_modules/@fortawesome/fontawesome-free-webfonts/css/fontawesome.css'
 @import '../../node_modules/@fortawesome/fontawesome-free-webfonts/css/fa-solid.css'
@@ -59,6 +60,14 @@ html
   svg
     margin-right: 5px
     fill: white
+
+.cnr--link-button
+  font-size: .8em
+
+  &:hover
+    color: $ui-01
+    text-decoration: none
+
 
 
 body
