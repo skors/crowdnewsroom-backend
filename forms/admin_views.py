@@ -1,7 +1,7 @@
 import base64
 import re
 
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
@@ -10,12 +10,13 @@ from guardian.decorators import permission_required
 from guardian.mixins import PermissionRequiredMixin
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, TemplateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, TemplateView, DeleteView
 from guardian.shortcuts import get_objects_for_user
 from django.utils.translation import gettext as _
 from jsonschema import validate, ValidationError, FormatChecker
+from django.utils import timezone
 
-from forms.forms import CommentForm, FormResponseStatusForm, FormResponseTagsForm, FormResponseAssigneesForm
+from forms.forms import CommentForm, CommentDeleteForm
 from forms.models import FormResponse, Investigation, Comment, Form, Tag, User
 from forms.utils import create_form_csv
 
@@ -130,6 +131,9 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
         investigation_responses = FormResponse.get_all_for_form(self.form)
         filter_params = _get_filter_params(self.kwargs, self.request.GET)
         investigation_responses = investigation_responses.filter(**filter_params)
+        investigation_responses = investigation_responses \
+            .prefetch_related("tags") \
+            .prefetch_related("assignees")
         return investigation_responses
 
     def _get_message(self):
@@ -159,10 +163,12 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
                                             for k, v
                                             in self.request.GET.items()
                                             if k in allowed_params])
-        context['has_param'] = self.request.GET.get('has')
-        context['tag_param'] = self.request.GET.get('tag')
-        context['email_param'] = self.request.GET.get('email')
-        context['assignee_param'] = self.request.GET.get('assignee')
+        for param in allowed_params:
+            value = self.request.GET.get(param)
+            context['{}_param'.format(param)] = value
+            if value:
+                context['has_filters'] = True
+
         context['empty_message'] = self._get_message()
 
         csv_base = reverse("form_responses_csv", kwargs={
@@ -201,9 +207,6 @@ class FormResponseDetailView(InvestigationAuthMixin, BreadCrumbMixin, DetailView
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['comment_form'] = CommentForm()
-        context['tags_form'] = FormResponseTagsForm(instance=self.object)
-        context['status_form'] = FormResponseStatusForm(instance=self.object)
-        context['assignees_form'] = FormResponseAssigneesForm(instance=self.object)
         context['investigation'] = self.investigation
         return context
 
@@ -234,6 +237,30 @@ class CommentAddView(InvestigationAuthMixin, CreateView):
         response = FormResponse.objects.get(id=self.kwargs.get("response_id"))
         form.save_with_extra_props(form_response=response, author=self.request.user)
         return super().form_valid(form)
+
+
+class CommentDeleteView(InvestigationAuthMixin, UpdateView):
+    model = Comment
+    form_class = CommentDeleteForm
+    pk_url_kwarg = "comment_id"
+
+    def get_success_url(self):
+        self.kwargs.pop("comment_id")
+        return reverse("response_details", kwargs=self.kwargs)
+
+    def form_invalid(self, form):
+        self.kwargs.pop("comment_id")
+        return HttpResponseRedirect(reverse("response_details", kwargs=self.kwargs))
+
+    def get_permission_object(self):
+        return Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
+
+    def check_permissions(self, request):
+        comment = self.get_object()
+        if comment.author != request.user:
+            raise PermissionDenied()
+        return super().check_permissions(request)
+
 
 
 @login_required(login_url="/admin/login")
@@ -275,63 +302,17 @@ def form_response_batch_edit(request, *args, **kwargs):
     # update status for all selected form responses
     if action == "mark_invalid":
         form_responses.update(status="I")
+        form_responses.update(last_status_changed_date=timezone.now())
     elif action == "mark_submitted":
         form_responses.update(status="S")
+        form_responses.update(last_status_changed_date=timezone.now())
     elif action == "mark_verified":
         form_responses.update(status="V")
+        form_responses.update(last_status_changed_date=timezone.now())
 
     return HttpResponseRedirect(reverse("form_responses", kwargs={"investigation_slug": kwargs["investigation_slug"],
                                                                   "form_slug": kwargs["form_slug"],
                                                                   "bucket": return_bucket}))
-
-
-class FormResponseStatusView(InvestigationAuthMixin, UpdateView):
-    model = FormResponse
-    form_class = FormResponseStatusForm
-    pk_url_kwarg = "response_id"
-
-    def get_success_url(self):
-        self.kwargs.update(bucket="inbox")
-        kwargs = self.kwargs
-        kwargs.pop("response_id")
-        return reverse("form_responses", kwargs=kwargs)
-
-    def get_permission_object(self):
-        return Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
-
-
-class FormResponseMultiSelectFormView(InvestigationAuthMixin, UpdateView):
-    model = FormResponse
-    pk_url_kwarg = "response_id"
-
-    def post(self, request, *args, **kwargs):
-        if request.POST.get(self.field):
-            return super().post(request, *args, **kwargs)
-        else:
-            instance = self.get_object()
-            objects = getattr(instance, self.field)
-            objects.clear()
-            redirect = reverse("response_details", kwargs=self.kwargs)
-            return HttpResponseRedirect(redirect_to=redirect)
-
-    def get_success_url(self):
-        return reverse("response_details", kwargs=self.kwargs)
-
-    def form_invalid(self, form):
-        return HttpResponse(status=403)
-
-    def get_permission_object(self):
-        return Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
-
-
-class FormResponseTagsView(FormResponseMultiSelectFormView):
-    form_class = FormResponseTagsForm
-    field = "tags"
-
-
-class FormResponseAssigneesView(FormResponseMultiSelectFormView):
-    form_class = FormResponseAssigneesForm
-    field = "assignees"
 
 
 @login_required(login_url="/admin/login")

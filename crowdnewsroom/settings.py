@@ -137,12 +137,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'public/static')
 
 LOGIN_REDIRECT_URL = "/forms/"
 LOGIN_URL = '/accounts/login'
+LOGOUT_REDIRECT_URL="/"
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
-    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication'
+    ],
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
     )

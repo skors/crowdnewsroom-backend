@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from django.core.mail import send_mail
 from django.db.models import Count
+from django.db.models.functions import Coalesce
 from django.template import Engine, Context
 from django.urls import reverse
 from django.utils import timezone
@@ -90,7 +91,6 @@ class UserGroup(models.Model):
         ('O', _('Owner')),
         ('A', _('Admin')),
         ('E', _('Editor')),
-        ('A', _('Auditor')),  # FIXME: We have two roles with the same letter...
         ('V', _('Viewer'))
     )
     investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
@@ -268,7 +268,9 @@ class FormResponse(models.Model):
     form_instance = models.ForeignKey(FormInstance, on_delete=models.CASCADE)
     status = models.CharField(max_length=1, choices=STATUSES, default='S')
     submission_date = models.DateTimeField()
-    tags = models.ManyToManyField(Tag)
+    last_status_changed_date = models.DateTimeField(default=None, blank=True,
+                                                    null=True)
+    tags = models.ManyToManyField(Tag, blank=True)
     assignees = models.ManyToManyField(User)
 
     class Meta:
@@ -281,6 +283,10 @@ class FormResponse(models.Model):
         for step in self.form_instance.form_json:
             properties.update(step["schema"].get("properties", {}))
         return properties
+
+    @property
+    def visible_comments(self):
+        return self.comments.filter(archived=False).order_by("-date")
 
     @property
     def valid_keys(self):
@@ -296,8 +302,7 @@ class FormResponse(models.Model):
         for name, props in self.all_json_properties().items():
             title = flat_ui_schema.get(name, {}).get("ui:title", name) or props.get("title")
             row = {"title": title, "json_name": name, "data_type": props.get("type")}
-            if (flat_ui_schema.get(name, dict()).get("ui:widget") == "signatureWidget"
-                    or props.get("format") == "data-url"):
+            if (flat_ui_schema.get(name, dict()).get("ui:widget") == "signatureWidget" or props.get("format") == "data-url"):
                 if form_data.get(name):
                     row["type"] = "link"
                     row["value"] = reverse("response_file",
@@ -362,14 +367,7 @@ class FormResponse(models.Model):
     def get_all_for_form(cls, form):
         return cls.objects\
                 .filter(form_instance__form=form) \
-                .order_by("-submission_date")
-
-    def set_password_for_user(self, password):
-        contributor, user_created = User.objects.get_or_create(email=self.email)
-        if user_created:
-            contributor.set_password(password)
-            contributor.save()
-        assign_perm("edit_response", contributor, self)
+                .order_by(Coalesce('last_status_changed_date', 'submission_date').desc())
 
 
 def generate_emails(form_response: FormResponse):
@@ -403,6 +401,6 @@ def send_email(sender, instance, created, *args, **kwargs):
 class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     date = models.DateTimeField()
-    form_response = models.ForeignKey(FormResponse, on_delete=models.CASCADE)
+    form_response = models.ForeignKey(FormResponse, on_delete=models.CASCADE, related_name="comments")
     text = models.TextField()
-
+    archived = models.BooleanField(default=False)
