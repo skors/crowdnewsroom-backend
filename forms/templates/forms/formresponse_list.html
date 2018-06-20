@@ -33,7 +33,7 @@
       {% endwith %}
       </div>
     </div>
-    <div class="pt-4">
+    <div class="filter-container pt-4">
       <div class="formresponse-list__filter-header">
         <h3>{% trans "Filter" %}</h3>
         {% if has_filters %}
@@ -109,9 +109,11 @@
       </form>
     </div>
 
+<div class="response-container">
     <form action="batch_edit" method="POST">
         {% csrf_token %}
-        <div id="bulk-actions" class="p-3" style="display: flex; flex-wrap: wrap">
+        <div id="bulk-actions">
+          <div class="p-3" style="display: flex; flex-wrap: wrap">
             <div class="bx--form-item">
                 <label for="apply_tag" class="bx--label">{% trans "Apply tag" %}</label>
                 <div class="bx--select">
@@ -157,9 +159,11 @@
             <div class="bx--form-item" style="display: flex; align-items: center;">
                 <input type="submit" class="bx--btn bx--btn--primary" data-template="{% trans 'Apply to COUNT submission(s)' %}">
             </div>
+          </div>
         </div>
-        <h3>{% trans "Responses" %}</h3>
-        <div class="bx--data-table-v2-container">
+        <div class="responses">
+          <h3>{% trans "Responses" %}</h3>
+          <div class="bx--data-table-v2-container">
             <table class="bx--data-table-v2 cnr-data-table">
                 <thead>
                 <tr>
@@ -210,6 +214,7 @@
                 {% endfor %}
                 </tbody>
             </table>
+          </div>
         </div>
     </form>
       {% if is_paginated %}
@@ -250,11 +255,11 @@
         <i class="fa fa-download bx--btn__icon"></i>
       </a>
   </div>
+</div>
 
 <script>
 window.addEventListener("load", function(event){
     var bulkActions = document.querySelector("#bulk-actions");
-    bulkActions.classList.add("d-none");
 
     var selectedResponsesCheckboxes = document.querySelectorAll("input[name='selected_responses']");
     var selectAllCheckbox = document.getElementById("selectAllResponsesCheckbox");
@@ -262,11 +267,11 @@ window.addEventListener("load", function(event){
     function updateFilterVisibility(){
         var selectedCount = document.querySelectorAll("input[name='selected_responses']:checked").length;
         if (selectedCount > 0){
-            bulkActions.classList.remove("d-none");
+            bulkActions.classList.add("slidein");
             var submitButton = bulkActions.querySelector("input[type='submit']");
             submitButton.value = submitButton.dataset.template.replace("COUNT", selectedCount);
         } else {
-            bulkActions.classList.add("d-none");
+            bulkActions.classList.remove("slidein");
         }
     }
 
