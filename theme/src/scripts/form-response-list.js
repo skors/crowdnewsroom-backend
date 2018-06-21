@@ -2,28 +2,29 @@ import queryString from "query-string";
 
 
 var bulkActions = document.querySelector("#bulk-actions");
-bulkActions.classList.add("d-none");
 
 var selectedResponsesCheckboxes = document.querySelectorAll("input[name='selected_responses']");
 var selectAllCheckbox = document.getElementById("selectAllResponsesCheckbox");
 
 var pagePicker = document.getElementById("page-picker");
-pagePicker.addEventListener("change", function(event){
-    console.log(event);
-    const currentSearch = queryString.parse(window.location.search);
-    currentSearch.page = event.target.value;
-    console.log(currentSearch);
-    window.location.search = queryString.stringify(currentSearch)
-});
+if (pagePicker) {
+    pagePicker.addEventListener("change", function (event) {
+        console.log(event);
+        const currentSearch = queryString.parse(window.location.search);
+        currentSearch.page = event.target.value;
+        console.log(currentSearch);
+        window.location.search = queryString.stringify(currentSearch)
+    });
+}
 
 function updateFilterVisibility(){
     var selectedCount = document.querySelectorAll("input[name='selected_responses']:checked").length;
+    var submitButton = bulkActions.querySelector("input[type='submit']");
+    submitButton.value = submitButton.dataset.template.replace("COUNT", selectedCount);
     if (selectedCount > 0){
-        bulkActions.classList.remove("d-none");
-        var submitButton = bulkActions.querySelector("input[type='submit']");
-        submitButton.value = submitButton.dataset.template.replace("COUNT", selectedCount);
+        bulkActions.classList.add("slidein");
     } else {
-        bulkActions.classList.add("d-none");
+        bulkActions.classList.remove("slidein");
     }
 }
 
