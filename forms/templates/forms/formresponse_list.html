@@ -266,10 +266,10 @@ window.addEventListener("load", function(event){
 
     function updateFilterVisibility(){
         var selectedCount = document.querySelectorAll("input[name='selected_responses']:checked").length;
+        var submitButton = bulkActions.querySelector("input[type='submit']");
+        submitButton.value = submitButton.dataset.template.replace("COUNT", selectedCount);
         if (selectedCount > 0){
             bulkActions.classList.add("slidein");
-            var submitButton = bulkActions.querySelector("input[type='submit']");
-            submitButton.value = submitButton.dataset.template.replace("COUNT", selectedCount);
         } else {
             bulkActions.classList.remove("slidein");
         }
