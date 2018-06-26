@@ -1,4 +1,5 @@
 import smtplib
+import math
 from datetime import timedelta
 
 from django.core.mail import send_mail
@@ -232,6 +233,7 @@ class FormInstance(models.Model):
     ui_schema_json = JSONField(default={})
     version = models.IntegerField(default=0)
     form = models.ForeignKey(Form, on_delete=models.CASCADE)
+    priority_fields = JSONField(default=[])
     email_template = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"))
     email_template_html = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"));
     redirect_url_template = models.TextField(default="https://forms.crowdnewsroom.org")
@@ -292,6 +294,12 @@ class FormResponse(models.Model):
     def valid_keys(self):
         return self.all_json_properties().keys()
 
+    def _priority_order(self, elem):
+        try:
+            return self.form_instance.priority_fields.index(elem[0])
+        except ValueError:
+            return math.inf
+
     def rendered_fields(self):
         form_data = self.json
 
@@ -299,7 +307,9 @@ class FormResponse(models.Model):
         for (key, values) in self.form_instance.ui_schema_json.items():
             flat_ui_schema.update(values)
 
-        for name, props in self.all_json_properties().items():
+        sorted_properties = sorted(self.all_json_properties().items(),
+            key=self._priority_order)
+        for name, props in sorted_properties:
             title = flat_ui_schema.get(name, {}).get("ui:title", name) or props.get("title")
             row = {"title": title, "json_name": name, "data_type": props.get("type")}
             if (flat_ui_schema.get(name, dict()).get("ui:widget") == "signatureWidget" or props.get("format") == "data-url"):
