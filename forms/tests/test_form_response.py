@@ -53,16 +53,7 @@ class FormReponseTest(TestCase):
         self.assertListEqual(list(self.response.rendered_fields()), expected)
 
     def test_priority_order_rendered_fields(self):
-        response = FormResponseFactory.create()
-        response.json = {"firstname": "nerdy",
-                         "lastname": "mcnerdface",
-                         "email": "nerdy@nerds.com",
-                         "city": "Buxtehude"}
-        response.save()
-
-        form_instance = response.form_instance
-        form_instance.priority_fields = ["email", "city"]
-        form_instance.form_json = [{"schema": {
+        form_json = [{"schema": {
             "name": "Step 1",
             "slug": "step-1",
             "properties": {
@@ -81,7 +72,14 @@ class FormReponseTest(TestCase):
             }
         }
         }]
-        form_instance.save()
+        form_instance = FormInstanceFactory.create(priority_fields=["email", "city"],
+                                                   form_json=form_json)
+        response_json = {"firstname": "nerdy",
+                         "lastname": "mcnerdface",
+                         "email": "nerdy@nerds.com",
+                         "city": "Buxtehude"}
+        response = FormResponseFactory.create(form_instance=form_instance,
+                                              json=response_json)
 
         output_fields = list(response.rendered_fields())
 
