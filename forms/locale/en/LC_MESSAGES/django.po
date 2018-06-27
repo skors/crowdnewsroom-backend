@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-27 12:25+0200\n"
+"POT-Creation-Date: 2018-06-27 13:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -294,6 +294,35 @@ msgstr ""
 msgid "No Email Provided"
 msgstr ""
 
+#: forms/templates/forms/formresponse_list.html:233
+#: forms/templates/forms/formresponse_list.html:238
+msgid "of"
+msgstr ""
+
+#: forms/templates/forms/formresponse_list.html:234
+msgid "items"
+msgstr ""
+
+#: forms/templates/forms/formresponse_list.html:239
+msgid "pages"
+msgstr ""
+
+#: forms/templates/forms/formresponse_list.html:242
+msgid "Backward button"
+msgstr ""
+
+#: forms/templates/forms/formresponse_list.html:252
+msgid "Page number input"
+msgstr ""
+
+#: forms/templates/forms/formresponse_list.html:254
+msgid "Number of items per page"
+msgstr ""
+
+#: forms/templates/forms/formresponse_list.html:268
+msgid "Forward button"
+msgstr ""
+
 #: forms/templates/forms/formresponse_list.html:282
 msgid "Download data as csv"
 msgstr ""
@@ -377,4 +406,8 @@ msgstr ""
 
 #: forms/templates/registration/login.html:35
 msgid "Password"
+msgstr ""
+
+#: forms/templates/registration/login.html:45
+msgid "Lost your password?"
 msgstr ""
