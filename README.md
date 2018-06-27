@@ -41,9 +41,13 @@ DJANGO_SECRET_KEY='<your generated secret key>'
 DJANGO_ALLOWED_HOSTS='localhost' # can be comma-separated
 ```
 
+### Create translation files
+```bash
+sh ./maketranslations.sh
+```
+
 ### Compile translation files
 ```bash
-django-admin makemessages --locale=en --locale=de --ignore=env
 python manage.py compilemessages
 ```
 
