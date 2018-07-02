@@ -1,8 +1,11 @@
+import pytz
 from django.test import TestCase, Client
 from django.urls import reverse
+from django.utils import timezone
 
-from forms.models import Comment, UserGroup
-from forms.tests.factories import UserFactory, CommentFactory
+from forms.models import Comment, UserGroup, User
+from forms.tests.factories import UserFactory, CommentFactory,\
+    FormResponseFactory, FormInstanceFactory
 
 
 def make_url(comment):
@@ -16,6 +19,15 @@ def make_url(comment):
     }
 
     return reverse("comment_delete", kwargs=params)
+
+
+def make_url_for_response_list(form, bucket):
+    params = {
+        "investigation_slug": form.investigation.slug,
+        "form_slug": form.slug,
+        "bucket": bucket
+    }
+    return reverse("form_responses", kwargs=params)
 
 
 class FormReponseAssigneesTest(TestCase):
@@ -70,3 +82,31 @@ class FormReponseAssigneesTest(TestCase):
 
         updated_comment = Comment.objects.get(id=self.comment.id)
         self.assertEqual(updated_comment.archived, False)
+
+
+class FormReponseListTest(TestCase):
+    def setUp(self):
+        self.user = UserFactory.create()
+        self.form_instance = FormInstanceFactory.create()
+        self.form_response1 = FormResponseFactory.create(form_instance=self.form_instance)
+        self.form_response2 = FormResponseFactory.create(form_instance=self.form_instance)
+        self.comment1 = CommentFactory.create(author=self.user, text="bla",
+                                              date=timezone.datetime(2018, 1, 12, tzinfo=pytz.utc),
+                                              form_response=self.form_response1)
+        self.comment2 = CommentFactory.create(author=self.user, text="blup",
+                                              date=timezone.datetime(2018, 1, 15, tzinfo=pytz.utc),
+                                              form_response=self.form_response1)
+
+        User.objects.create_superuser('admin@crowdnewsroom.org', 'password')
+        self.client.login(email='admin@crowdnewsroom.org', password='password')
+
+    def test_deleted_comment_not_shown_in_response_list(self):
+        response_list = self.client.get(make_url_for_response_list(self.form_instance.form, "inbox"))
+        self.assertContains(response_list, "blup", html=True)
+
+        self.comment2.archived = True
+        self.comment2.save()
+
+        response_list = self.client.get(make_url_for_response_list(self.form_instance.form, "inbox"))
+        self.assertNotContains(response_list, "blup", html=True)
+        self.assertContains(response_list, "bla", html=True)

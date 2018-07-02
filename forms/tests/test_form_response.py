@@ -52,6 +52,42 @@ class FormReponseTest(TestCase):
         expected = []
         self.assertListEqual(list(self.response.rendered_fields()), expected)
 
+    def test_priority_order_rendered_fields(self):
+        response = FormResponseFactory.create()
+        response.json = {"firstname": "nerdy",
+                         "lastname": "mcnerdface",
+                         "email": "nerdy@nerds.com",
+                         "city": "Buxtehude"}
+        response.save()
+
+        form_instance = response.form_instance
+        form_instance.priority_fields = ["email", "city"]
+        form_instance.form_json = [{"schema": {
+            "name": "Step 1",
+            "slug": "step-1",
+            "properties": {
+                "firstname": {
+                    "type": "string"
+                },
+                "lastname": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                }
+            }
+        }
+        }]
+        form_instance.save()
+
+        output_fields = list(response.rendered_fields())
+
+        self.assertEqual(output_fields[0]["json_name"], "email")
+        self.assertEqual(output_fields[1]["json_name"], "city")
+
 
 def make_url(form):
     params = {

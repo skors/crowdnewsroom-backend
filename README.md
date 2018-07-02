@@ -41,6 +41,11 @@ DJANGO_SECRET_KEY='<your generated secret key>'
 DJANGO_ALLOWED_HOSTS='localhost' # can be comma-separated
 ```
 
+### Create translation files
+```bash
+sh ./maketranslations.sh
+```
+
 ### Compile translation files
 ```bash
 python manage.py compilemessages
@@ -62,7 +67,7 @@ To load some example data that contains two investigations and some responses ru
 python manage.py seed_data
 ```
 
-## Bundle frontend assets for development 
+## Bundle frontend assets for development
 During development, you need to have Webpack running in a separate terminal. Webpack can be started using Yarn in the theme folder:
 ```bash
 cd ./theme && yarn run dev
