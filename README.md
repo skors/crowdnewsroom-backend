@@ -100,7 +100,7 @@ This project uses [BrowserStack](https://www.browserstack.com/) for cross-browse
 ## Permissions
 
 |                                    |  Owner |  Admin | Editor | Viewer
-|------------------------------------|:------:|:------:|:------:|:------|
+|------------------------------------|:------:|:------:|:------:|:-----:|
 | Create new investigation           | x      |  x     |   x    |  x    |
 | Delete investigation               | x      |        |        |       |
 | Add owners  to investigation       | x      |        |        |       |
