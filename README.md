@@ -96,3 +96,16 @@ The source code for this project is published under [GNU AGPL License](https://g
 ## About
 This project uses [BrowserStack](https://www.browserstack.com/) for cross-browser testing and [Crowdin](https://crowdin.com) for translations. Cheers to these tools to support non-profit and Open Source initiatives.
 
+
+## Permissions
+
+|                                    |  Owner |  Admin | Editor | Viewer
+|------------------------------------|:------:|:------:|:------:|:------|
+| Create new investigation           | x      |  x     |   x    |  x    |
+| Delete investigation               | x      |        |        |       |
+| Add owners  to investigation       | x      |        |        |       |
+| Add new users to investigation     | x      |  x     |        |       |
+| Remove users from investigation    | x      |  x     |        |       |
+| Make comments on responses         | x      |  x     | x      | x     |
+| Change bucket of response          | x      |  x     | x      |       |
+| Manage assignees/tags for response | x      |  x     | x      |       |
