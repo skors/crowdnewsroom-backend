@@ -104,8 +104,12 @@ This project uses [BrowserStack](https://www.browserstack.com/) for cross-browse
 | Create new investigation           | x      |  x     |   x    |  x    |
 | Delete investigation               | x      |        |        |       |
 | Add owners  to investigation       | x      |        |        |       |
+| Change user roles                  | x      |  x     |        |       |
+| Customise investigation            | x      |  x     |        |       |
 | Add new users to investigation     | x      |  x     |        |       |
 | Remove users from investigation    | x      |  x     |        |       |
+| Create an Interviewer              | x      |  x     |        |       |
 | Make comments on responses         | x      |  x     | x      | x     |
 | Change bucket of response          | x      |  x     | x      |       |
 | Manage assignees/tags for response | x      |  x     | x      |       |
+| Download CSV file                  | x      |  x     | x      |       |
