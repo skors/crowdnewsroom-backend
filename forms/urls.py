@@ -4,9 +4,9 @@ from django.urls import path, register_converter
 from forms.admin_views import InvestigationListView, FormResponseListView, FormResponseDetailView, CommentAddView, \
     form_response_csv_view, FormListView, form_response_file_view, \
     form_response_batch_edit, form_response_json_edit_view, UserSettingsView, \
-    CommentDeleteView
+    CommentDeleteView, InvestigationUsersView
 from forms.views import FormInstanceDetail, FormResponseCreate, InvestigationDetail, FormResponseDetail, TagList, \
-    AssigneeList
+    AssigneeList, UserList, UserGroupUserList
 
 
 class BucketConverter:
@@ -28,9 +28,12 @@ urlpatterns = [
     path('responses/<int:response_id>', FormResponseDetail.as_view(), name="form_response_edit"),
     path('investigations/<slug:investigation_slug>/tags', TagList.as_view(), name="investigation_tags"),
     path('investigations/<slug:investigation_slug>/assignees', AssigneeList.as_view(), name="investigation_assignees"),
+    path('investigations/<slug:investigation_slug>/users', UserList.as_view(), name="investigation_users"),
+    path('investigations/<slug:investigation_slug>/groups/<role>/users', UserGroupUserList.as_view(), name="user_groups"),
 
     path('admin/investigations', InvestigationListView.as_view(), name="investigation_list"),
     path('admin/user_settings', UserSettingsView.as_view(), name="user_settings"),
+    path('admin/investigations/<slug:investigation_slug>/users', InvestigationUsersView.as_view(), name="admin_investigation_users"),
     path('admin/investigations/<slug:investigation_slug>/forms', FormListView.as_view(), name="form_list"),
     path('admin/investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses/batch_edit', form_response_batch_edit, name="form_responses_edit"),
     path('admin/investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses',

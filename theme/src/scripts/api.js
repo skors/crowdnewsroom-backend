@@ -17,4 +17,16 @@ const authorizedPUT = (url, settings) => {
   return authorizedFetch(url, Object.assign(baseSettings, settings));
 };
 
-export { authorizedFetch, authorizedPUT };
+const authorizedPOST = (url, settings) => {
+  const csrfValue = Cookie.get("csrftoken");
+  const baseSettings = {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "X-CSRFToken": csrfValue
+    }
+  };
+  return authorizedFetch(url, Object.assign(baseSettings, settings));
+};
+
+export { authorizedFetch, authorizedPUT, authorizedPOST };

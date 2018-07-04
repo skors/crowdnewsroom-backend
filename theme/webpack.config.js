@@ -15,7 +15,8 @@ module.exports = {
     main: "./src/scripts/index",
     style: "./src/styles/main.sass",
     formResponseDetails: "./src/scripts/form-response-details",
-    formResponseList: "./src/scripts/form-response-list"
+    formResponseList: "./src/scripts/form-response-list",
+    investigationUsers: "./src/scripts/investigation-users",
   },
   output: {
     publicPath: devMode ? "http://127.0.0.1:1339/" : "/static/js/",

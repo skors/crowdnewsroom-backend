@@ -79,6 +79,11 @@ class Investigation(models.Model, UniqueSlugMixin):
         user_perms = get_users_with_perms(self, with_superusers=True, attach_perms=True)
         return [user for (user, perms) in user_perms.items() if "manage_investigation" in perms]
 
+    @property
+    def all_users(self):
+        user_perms = get_users_with_perms(self, with_superusers=True, attach_perms=True)
+        return [user for (user, perms) in user_perms.items() if "view_investigation" in perms]
+
 
 @receiver(models.signals.post_save, sender=Investigation)
 def execute_after_save(sender, instance, created, *args, **kwargs):
@@ -97,6 +102,12 @@ class UserGroup(models.Model):
     investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     role = models.CharField(max_length=1, choices=ROLES, default='V')
+
+    def add_user(self, user):
+        user_groups = UserGroup.objects.filter(investigation=self.investigation)
+        for user_group in user_groups:
+            user_group.group.user_set.remove(user)
+        self.group.user_set.add(user)
 
     def assign_permissions(self):
         assign_perm("view_investigation", self.group, self.investigation)

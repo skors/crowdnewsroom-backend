@@ -432,3 +432,7 @@ def form_response_json_edit_view(request, *args, **kwargs):
 
 class UserSettingsView(LoginRequiredMixin, BreadCrumbMixin, TemplateView):
     template_name = "forms/user_settings.html"
+
+
+class InvestigationUsersView(InvestigationAuthMixin, TemplateView):
+    template_name = "forms/investigation_users.html"

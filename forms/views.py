@@ -4,11 +4,9 @@ from django.http import Http404
 from django.utils import timezone
 from rest_framework import generics, permissions, serializers
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.permissions import DjangoObjectPermissions
-from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
-from .models import FormResponse, FormInstance, Investigation, Tag, User
+from .models import FormResponse, FormInstance, Investigation, Tag, User, UserGroup
 
 
 class InvestigationSerializer(ModelSerializer):
@@ -135,7 +133,7 @@ class TagList(InvestigationListAPIView):
 class AssigneeSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ("first_name", "last_name", "id")
+        fields = ("first_name", "last_name", "email", "id")
 
 
 class AssigneeList(InvestigationListAPIView):
@@ -148,6 +146,49 @@ class AssigneeList(InvestigationListAPIView):
         # a queryset to the form, not a list of objects so we manually create
         # that query here.
         return User.objects.filter(id__in=[user.id for user in investigation_users])
+
+
+class InvestigationUsersSerializer(serializers.ModelSerializer):
+    users = serializers.SerializerMethodField()
+
+    def get_users(self, investigation):
+        user_groups = UserGroup.objects.filter(investigation=investigation).all()
+
+        for user_group in user_groups:
+            for user in user_group.group.user_set.all():
+                yield {"first_name": user.first_name,
+                       "last_name": user.last_name,
+                       "email": user.email,
+                       "role": user_group.role,
+                       "id": user.id
+                       }
+
+    class Meta:
+        model = Investigation
+        fields = ("users",)
+
+
+class UserList(generics.RetrieveAPIView):
+    serializer_class = InvestigationUsersSerializer
+    lookup_url_kwarg = "investigation_slug"
+    queryset = Investigation
+    lookup_field = "slug"
+
+
+class UserGroupUserList(generics.ListCreateAPIView):
+    serializer_class = AssigneeSerializer
+
+    def get_queryset(self):
+        user_group = UserGroup.objects.get(investigation__slug=self.kwargs.get("investigation_slug"),
+                                           role=self.kwargs.get("role"))
+        return User.objects.filter(groups=user_group.group)
+
+    def create(self, request, *args, **kwargs):
+        user_group = UserGroup.objects.get(investigation__slug=self.kwargs.get("investigation_slug"),
+                                           role=self.kwargs.get("role"))
+        user = User.objects.get(id=request.data.get("id"))
+        user_group.add_user(user)
+        return self.get(request, *args, **kwargs)
 
 
 class FormResponseCreate(generics.CreateAPIView):
