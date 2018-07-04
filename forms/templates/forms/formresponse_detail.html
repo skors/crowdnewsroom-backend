@@ -30,7 +30,7 @@
     <div class="content-block">
         <h3>{% trans "View details" %}</h3>
 
-        <section class="bx--structured-list cnr-fixed-width-list">
+        <section class="bx--structured-list cnr--list">
           <div class="bx--structured-list-thead">
             <div class="bx--structured-list-row bx--structured-list-row--header-row">
               <div class="bx--structured-list-th">{% trans "Question" %}</div>
@@ -42,24 +42,28 @@
             <div class="bx--structured-list-row">
               <div class="bx--structured-list-td bx--structured-list-content--nowrap" title="{{ entry.title }}">{{ entry.title | truncatewords:5 }}</div>
               <div class="bx--structured-list-td">
+
+                <div class="cnr--inline-edit">
                   {% if entry.type == "text" %}
-                  <span class="value">{{ entry.value }}</span>
-                      {% if entry.data_type == "string" %}
-                          <button class="edit-inline-button button-unstyled">edit</button>
-                          <span class="edit-inline">
-                                  <form action="{{formresponse.id}}/edit" method="POST">
-                                      {% csrf_token %}
-                                      <input type="text"
-                                             name="json__{{entry.json_name}}"
-                                             value="{{ entry.value}}">
-                                      <input type="submit">
-                                  </form>
-                              </span>
+                    <span class="cnr--inline-edit__value">{{ entry.value }}</span>
+                    {% if entry.data_type == "string" %}
+                      <form class="cnr--inline-edit__form" action="{{formresponse.id}}/edit" method="POST">
+                        {% csrf_token %}
+                        <input type="text"
+                                class="bx--text-input"
+                                name="json__{{entry.json_name}}"
+                                value="{{ entry.value}}">
+                        <input type="submit" 
+                                class="bx--btn bx--btn--secondary">
+                      </form>
+                      <button class="cnr--inline-edit__button">edit</button>
                     {% endif %}
                   {% endif %}
                   {% if entry.type == "link" %}
                     <a href="{{entry.value}}" target="_blank">Download</a>
                   {% endif %}
+                </div>
+
               </div>
             </div>
             {% endfor %}
@@ -96,7 +100,7 @@
                       <div class="part">
                         {{ comment.text }}
                       </div>
-                      <form class="part d-none" action="{% url 'comment_delete' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id comment_id=comment.id %}" method="post">
+                      <form class="part cnr--inline-edit__item--hidden" action="{% url 'comment_delete' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id comment_id=comment.id %}" method="post">
                           <div class="form-group">
                               {% csrf_token %}
                               <label for="{{ comment_form.text.id_for_label }}" class="sr-only">
@@ -124,23 +128,23 @@
 {% render_bundle "formResponseDetails" %}
 
 <script>
-    var editElements = document.querySelectorAll(".edit-inline");
-    editElements.forEach(function(element) { element.classList.add("d-none"); });
+    var editElements = document.querySelectorAll(".cnr--inline-edit__form");
+    editElements.forEach(function(element) { element.classList.add("cnr--inline-edit__item--hidden"); });
 
     function toggleEdit(event) {
         var button = event.target;
-        button.parentElement.querySelector(".edit-inline").classList.toggle("d-none");
-        button.parentElement.querySelector(".value").classList.toggle("d-none");
+        button.parentElement.querySelector(".cnr--inline-edit__form").classList.toggle("cnr--inline-edit__item--hidden");
+        button.parentElement.querySelector(".cnr--inline-edit__value").classList.toggle("cnr--inline-edit__item--hidden");
     }
 
-    document.querySelectorAll(".edit-inline-button").forEach(function(button){
+    document.querySelectorAll(".cnr--inline-edit__button").forEach(function(button){
      button.addEventListener("click", toggleEdit);
     });
 
     function toggleEditComment(event){
         var button = event.target;
         button.closest(".card").querySelectorAll(".part").forEach(function(part) {
-            part.classList.toggle("d-none");
+            part.classList.toggle("cnr--inline-edit__item--hidden");
         });
     }
 
