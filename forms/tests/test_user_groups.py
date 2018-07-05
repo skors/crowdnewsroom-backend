@@ -158,18 +158,18 @@ class UserGroupAPITestCase(APITestCase):
 
     def test_remove_self(self):
         investigation = InvestigationFactory.create()
-        owner = UserFactory.create()
+        viewer = UserFactory.create()
 
-        investigation.add_user(owner, OWNER)
+        investigation.add_user(viewer, VIEWER)
 
-        self.client.force_login(owner)
+        self.client.force_login(viewer)
         url_params = {"investigation_slug": investigation.slug,
-                      "user_id": owner.id,
-                      "role": "O"}
+                      "user_id": viewer.id,
+                      "role": VIEWER}
 
         response = self.client.delete(reverse("user_group_membership", kwargs=url_params))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(investigation.get_users(OWNER).count(), 0)
+        self.assertEqual(investigation.get_users(VIEWER).count(), 0)
 
     def test_remove_not_allowed(self):
         investigation = InvestigationFactory.create()

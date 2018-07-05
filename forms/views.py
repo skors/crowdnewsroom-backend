@@ -4,6 +4,7 @@ from django.http import Http404, HttpResponse
 from django.utils import timezone
 from rest_framework import generics, permissions, serializers
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.serializers import ModelSerializer
 
@@ -215,6 +216,12 @@ class UserGroupMembershipDelete(generics.DestroyAPIView):
 
     def check_permissions(self, request):
         super().check_permissions(request)
+
+        user_id = self.kwargs.get("user_id")
+        user = get_object_or_404(User, id=user_id)
+        if request.user == user:
+            # users can always remove themselves
+            return True
 
         investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
         if not request.user.has_perm("manage_investigation", investigation):
