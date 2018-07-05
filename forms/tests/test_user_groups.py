@@ -155,3 +155,77 @@ class UserGroupAPITestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
 
         self.assertEqual(investigation.get_users(OWNER).count(), 2)
+
+    def test_remove_self(self):
+        investigation = InvestigationFactory.create()
+        owner = UserFactory.create()
+
+        investigation.add_user(owner, OWNER)
+
+        self.client.force_login(owner)
+        url_params = {"investigation_slug": investigation.slug,
+                      "user_id": owner.id,
+                      "role": "O"}
+
+        response = self.client.delete(reverse("user_group_membership", kwargs=url_params))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(investigation.get_users(OWNER).count(), 0)
+
+    def test_remove_not_allowed(self):
+        investigation = InvestigationFactory.create()
+        editor = UserFactory.create()
+        owner = UserFactory.create()
+
+        investigation.add_user(owner, OWNER)
+        investigation.add_user(editor, EDITOR)
+
+        self.client.force_login(editor)
+        url_params = {"investigation_slug": investigation.slug,
+                      "user_id": owner.id,
+                      "role": "O"}
+
+        response = self.client.delete(reverse("user_group_membership", kwargs=url_params))
+        self.assertEqual(response.status_code, 403)
+
+        self.assertEqual(investigation.get_users(OWNER).count(), 1)
+        self.assertEqual(investigation.get_users(EDITOR).count(), 1)
+
+    def test_remove_other_user(self):
+        investigation = InvestigationFactory.create()
+        editor = UserFactory.create()
+        owner = UserFactory.create()
+
+        investigation.add_user(owner, OWNER)
+        investigation.add_user(editor, EDITOR)
+
+        self.client.force_login(owner)
+        url_params = {"investigation_slug": investigation.slug,
+                      "user_id": editor.id,
+                      "role": "E"}
+
+        response = self.client.delete(reverse("user_group_membership", kwargs=url_params))
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(investigation.get_users(OWNER).count(), 1)
+        self.assertEqual(investigation.get_users(EDITOR).count(), 0)
+
+    def test_remove_owner_as_owner_works(self):
+        investigation = InvestigationFactory.create()
+        owner = UserFactory.create()
+        other_owner = UserFactory.create()
+
+        investigation.add_user(owner, OWNER)
+        investigation.add_user(other_owner, OWNER)
+
+        self.assertEqual(investigation.get_users(OWNER).count(), 2)
+
+        self.client.force_login(owner)
+
+        url_params = {"investigation_slug": investigation.slug,
+                      "user_id": other_owner.id,
+                      "role": "O"}
+
+        response = self.client.delete(reverse("user_group_membership", kwargs=url_params))
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(investigation.get_users(OWNER).count(), 1)

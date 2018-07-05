@@ -1,6 +1,6 @@
 import datetime
 
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.utils import timezone
 from rest_framework import generics, permissions, serializers
 from rest_framework.exceptions import PermissionDenied
@@ -191,6 +191,27 @@ class UserGroupUserList(generics.ListCreateAPIView):
         user = User.objects.get(id=request.data.get("id"))
         user_group.add_user(user)
         return self.get(request, *args, **kwargs)
+
+    def check_permissions(self, request):
+        super().check_permissions(request)
+
+        investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
+        if not request.user.has_perm("manage_investigation", investigation):
+            raise PermissionDenied(detail="not allowed!")
+
+        role = self.kwargs.get("role")
+        if role == "O" and not request.user.has_perm("master_investigation", investigation):
+            raise PermissionDenied(detail="not allowed!")
+
+
+class UserGroupMembershipDelete(generics.DestroyAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def delete(self, request, investigation_slug, role, user_id):
+        user_group = UserGroup.objects.get(investigation__slug=investigation_slug, role=role)
+        user = User.objects.get(id=user_id)
+        user_group.group.user_set.remove(user)
+        return HttpResponse(200)
 
     def check_permissions(self, request):
         super().check_permissions(request)
