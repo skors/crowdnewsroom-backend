@@ -10,13 +10,25 @@
     padding: 10px
 
 .comments
-  .card, .card-header
-    border: none
+  .card
+    margin: 1em 0 3em 0
 
-  .author
-    font-weight: bolder
+    .author
+      font-weight: bolder
 
-.cnr--list 
+    .card-header
+      display: flex
+      justify-content: space-between
+      padding-bottom: .5em
+      border-bottom: 2px solid $brand-01
+
+    .card-body
+      padding-top: 1em
+
+    .toggle-edit
+      font-size: 15px
+
+.cnr--list
   .bx--structured-list-td:first-child
     width: 33%
 

@@ -53,7 +53,7 @@
                                 class="bx--text-input"
                                 name="json__{{entry.json_name}}"
                                 value="{{ entry.value}}">
-                        <input type="submit" 
+                        <input type="submit"
                                 class="bx--btn bx--btn--secondary">
                       </form>
                       <button class="cnr--inline-edit__button">edit</button>
@@ -74,27 +74,29 @@
     <div class="content-block comments">
         <h3>{% trans "Comments" %}</h3>
             {% for comment in formresponse.visible_comments.all %}
-                <div class="card mt-5">
+                <div class="card" >
                   <div class="card-header">
-                      <span class="author">{{ comment.author.first_name }} {{ comment.author.last_name }}</span>
-                      <span class="date"> - {{ comment.date | date:"SHORT_DATETIME_FORMAT" }}</span>
-                        <div class="float-right">
-                          {% if request.user == comment.author %}
-                            <button class="toggle-edit button-unstyled">{% trans "edit" %}</button>
-                            <div tabindex="0" data-tooltip-trigger data-tooltip-target="#delete-tooltip-{{ comment.id }}" role="tooltip" class="bx--tooltip__trigger button-unstyled">
-                              {% trans "delete" %}
-                            </div>
-                            <div id="delete-tooltip-{{ comment.id }}" data-floating-menu-direction="bottom" class="bx--tooltip">
-                              <form action="{% url 'comment_delete' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id comment_id=comment.id %}" method="post">
-                                <span class="bx--tooltip__caret"></span>
-                                  <input type="submit" class="bx--btn bx--btn--danger" value="{%  trans "Delete comment" %}" />
-                                  <input type="checkbox" style="display: none;" name="archived" checked/>
-                                  <input type="hidden" name="text" value="{{ comment.text }}" />
-                                  {% csrf_token %}
-                              </form>
-                            </div>
-                          {% endif %}
-                        </div>
+                      <div>
+                        <span class="author">{{ comment.author.first_name }} {{ comment.author.last_name }}</span>
+                        <span class="date"> - {{ comment.date | date:"SHORT_DATETIME_FORMAT" }}</span>
+                      </div>
+                      <div>
+                        {% if request.user == comment.author %}
+                          <button class="toggle-edit cnr--button-unstyled">{% trans "edit" %}</button>
+                          <div tabindex="0" data-tooltip-trigger data-tooltip-target="#delete-tooltip-{{ comment.id }}" role="tooltip" class="bx--tooltip__trigger">
+                            {% trans "delete" %}
+                          </div>
+                          <div id="delete-tooltip-{{ comment.id }}" data-floating-menu-direction="bottom" class="bx--tooltip">
+                            <form action="{% url 'comment_delete' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id comment_id=comment.id %}" method="post">
+                              <span class="bx--tooltip__caret"></span>
+                                <input type="submit" class="bx--btn bx--btn--danger" value="{%  trans "Delete comment" %}" />
+                                <input type="checkbox" style="display: none;" name="archived" checked/>
+                                <input type="hidden" name="text" value="{{ comment.text }}" />
+                                {% csrf_token %}
+                            </form>
+                          </div>
+                        {% endif %}
+                      </div>
                   </div>
 
                   <div class="card-body">
@@ -129,7 +131,9 @@
                   </label>
                 {{ comment_form.text }}
                 </div>
-                  <input type="submit" class="bx--btn bx--btn--primary mt-2" value="{% trans 'add comment' %}"/>
+                <div class="bx--form-item">
+                  <input type="submit" class="bx--btn bx--btn--primary" value="{% trans 'add comment' %}"/>
+                </div>
             </form>
         </ul>
     </div>
