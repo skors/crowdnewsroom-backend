@@ -41,7 +41,7 @@
           <a href="?"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M6.32 5L10 8.68 8.68 10 5 6.32 1.32 10 0 8.68 3.68 5 0 1.32 1.32 0 5 3.68 8.68 0 10 1.32 6.32 5z"></path></svg> {% trans "clear all filters" %}</a>
         {% endif %}
       </div>
-      <form action="" method="GET" style="display: flex; flex-wrap:wrap">
+      <form action="" method="GET" class="formresponse-list__filters">
           <div class="bx--form-item">
               <label class="bx--visually-hidden" id="email-label" for="email_filter">Search by e-mail</label>
               <input name="email"
@@ -114,7 +114,7 @@
     <form action="batch_edit" method="POST">
         {% csrf_token %}
         <div id="bulk-actions">
-          <div class="p-3" style="display: flex; flex-wrap: wrap">
+          <div class="formresponse-list__filters">
             <div class="bx--form-item">
                 <label for="apply_tag" class="bx--label">{% trans "Apply tag" %}</label>
                 <div class="bx--select">
@@ -165,7 +165,7 @@
                     </svg>
                 </div>
             </div>
-            <div class="bx--form-item" style="display: flex; align-items: center;">
+            <div class="bx--form-item" style="display: flex; flex-direction: row; align-items: flex-end;">
                 <input type="submit" class="bx--btn bx--btn--primary" data-template="{% trans 'Apply to COUNT submission(s)' %}">
             </div>
           </div>
