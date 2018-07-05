@@ -85,6 +85,13 @@ class Investigation(models.Model, UniqueSlugMixin):
         user_perms = get_users_with_perms(self, with_superusers=True, attach_perms=True)
         return [user for (user, perms) in user_perms.items() if "view_investigation" in perms]
 
+    def add_user(self, user, role):
+        user_group = UserGroup.objects.get(investigation=self, role=role)
+        user_group.group.user_set.add(user)
+
+    def get_users(self, role):
+        return UserGroup.objects.get(investigation=self, role=role).group.user_set
+
 
 @receiver(models.signals.post_save, sender=Investigation)
 def execute_after_save(sender, instance, created, *args, **kwargs):

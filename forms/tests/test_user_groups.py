@@ -5,6 +5,10 @@ from unittest import TestCase
 from forms.models import UserGroup, Investigation
 from forms.tests.factories import InvestigationFactory, UserFactory
 
+OWNER = "O"
+EDITOR = "E"
+ADMIN = "A"
+VIEWER = "V"
 
 class UserGroupTestCase(TestCase):
     def test_create_groups(self):
@@ -36,8 +40,7 @@ class UserGroupAPITestCase(APITestCase):
         investigation = InvestigationFactory.create()
         user = UserFactory.create()
 
-        investigation_owners = UserGroup.objects.get(investigation=investigation, role="O")
-        investigation_owners.group.user_set.add(user)
+        investigation.add_user(user, OWNER)
 
         self.client.force_login(user)
 
@@ -50,11 +53,8 @@ class UserGroupAPITestCase(APITestCase):
         owner = UserFactory.create()
         viewer = UserFactory.create()
 
-        investigation_owners = UserGroup.objects.get(investigation=investigation, role="O")
-        investigation_owners.group.user_set.add(owner)
-
-        investigation_viewers = UserGroup.objects.get(investigation=investigation, role="V")
-        investigation_viewers.group.user_set.add(viewer)
+        investigation.add_user(owner, OWNER)
+        investigation.add_user(viewer, VIEWER)
 
         self.client.force_login(owner)
 
@@ -70,11 +70,9 @@ class UserGroupAPITestCase(APITestCase):
         owner = UserFactory.create()
         viewer = UserFactory.create()
 
-        investigation_owners = UserGroup.objects.get(investigation=investigation, role="O")
-        investigation_owners.group.user_set.add(owner)
+        investigation.add_user(owner, OWNER)
 
-        investigation_viewers = UserGroup.objects.get(investigation=investigation, role="V")
-        self.assertEqual(investigation_viewers.group.user_set.count(), 0)
+        self.assertEqual(investigation.get_users(VIEWER).count(), 0)
 
         self.client.force_login(owner)
 
@@ -86,19 +84,17 @@ class UserGroupAPITestCase(APITestCase):
                                             "last_name": viewer.last_name,
                                             "id": viewer.id}])
 
-        self.assertEqual(investigation_viewers.group.user_set.count(), 1)
+        self.assertEqual(investigation.get_users(VIEWER).count(), 1)
 
     def test_change_usergroup_for_user(self):
         investigation = InvestigationFactory.create()
         owner = UserFactory.create()
         viewer = UserFactory.create()
 
-        investigation_owners = UserGroup.objects.get(investigation=investigation, role="O")
-        investigation_owners.group.user_set.add(owner)
+        investigation.add_user(owner, OWNER)
+        investigation.add_user(viewer, VIEWER)
 
-        investigation_viewers = UserGroup.objects.get(investigation=investigation, role="V")
-        investigation_viewers.group.user_set.add(viewer)
-        self.assertEqual(investigation_viewers.group.user_set.count(), 1)
+        self.assertEqual(investigation.get_users(VIEWER).count(), 1)
 
         investigation_editors = UserGroup.objects.get(investigation=investigation, role="E")
         self.assertEqual(investigation_editors.group.user_set.count(), 0)
@@ -109,17 +105,17 @@ class UserGroupAPITestCase(APITestCase):
                                     data={"id": viewer.id})
         self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(investigation_viewers.group.user_set.count(), 0)
-        self.assertEqual(investigation_editors.group.user_set.count(), 1)
+        self.assertEqual(investigation.get_users(VIEWER).count(), 0)
+        self.assertEqual(investigation.get_users(EDITOR).count(), 1)
 
     def test_add_user_as_editor_fails(self):
         investigation = InvestigationFactory.create()
         editor = UserFactory.create()
         viewer = UserFactory.create()
 
-        investigation_editors = UserGroup.objects.get(investigation=investigation, role="E")
-        investigation_editors.group.user_set.add(editor)
-        self.assertEqual(investigation_editors.group.user_set.count(), 1)
+        investigation.add_user(editor, EDITOR)
+
+        self.assertEqual(investigation.get_users(EDITOR).count(), 1)
 
         self.client.force_login(editor)
 
@@ -127,15 +123,14 @@ class UserGroupAPITestCase(APITestCase):
                                     data={"id": viewer.id})
         self.assertEqual(response.status_code, 403)
 
-        self.assertEqual(investigation_editors.group.user_set.count(), 1)
+        self.assertEqual(investigation.get_users(EDITOR).count(), 1)
 
     def test_admin_cannot_manage_owners(self):
         investigation = InvestigationFactory.create()
         admin = UserFactory.create()
         viewer = UserFactory.create()
 
-        investigation_admins = UserGroup.objects.get(investigation=investigation, role="A")
-        investigation_admins.group.user_set.add(admin)
+        investigation.add_user(admin, ADMIN)
 
         self.client.force_login(admin)
 
@@ -151,8 +146,7 @@ class UserGroupAPITestCase(APITestCase):
         owner = UserFactory.create()
         viewer = UserFactory.create()
 
-        investigation_owners = UserGroup.objects.get(investigation=investigation, role="O")
-        investigation_owners.group.user_set.add(owner)
+        investigation.add_user(owner, OWNER)
 
         self.client.force_login(owner)
 
@@ -160,4 +154,4 @@ class UserGroupAPITestCase(APITestCase):
                                     data={"id": viewer.id})
         self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(investigation_owners.group.user_set.count(), 2)
+        self.assertEqual(investigation.get_users(OWNER).count(), 2)
