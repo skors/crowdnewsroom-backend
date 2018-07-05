@@ -34,7 +34,7 @@
       {% endwith %}
       </div>
     </div>
-    <div class="filter-container pt-4">
+    <div class="filter-container">
       <div class="formresponse-list__filter-header">
         <h3>{% trans "Filter" %}</h3>
         {% if has_filters %}
@@ -227,7 +227,7 @@
         </div>
     </form>
       {% if is_paginated %}
-          <div class="bx--pagination cnr-pagination mt-4" data-pagination>
+          <div class="bx--pagination cnr-pagination" data-pagination>
               <div class="bx--pagination__left">
                 <span class="bx--pagination__text">
                   <span data-displayed-item-range>{{ page_obj.start_index }}-{{ page_obj.end_index }}</span> {% trans "of" %}
@@ -278,7 +278,7 @@
               </div>
             </div>
     {% endif %}
-    <a href="{{ csv_url }}" class="bx--btn bx--btn--primary mt-4 cnr--link-button">
+    <a href="{{ csv_url }}" class="bx--btn bx--btn--primary cnr--link-button">
       {% trans "Download data as csv" %}
         <i class="fa fa-download bx--btn__icon"></i>
       </a>
