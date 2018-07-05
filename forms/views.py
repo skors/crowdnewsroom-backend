@@ -4,6 +4,7 @@ from django.http import Http404
 from django.utils import timezone
 from rest_framework import generics, permissions, serializers
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.serializers import ModelSerializer
 
 from .models import FormResponse, FormInstance, Investigation, Tag, User, UserGroup
@@ -177,6 +178,7 @@ class UserList(generics.RetrieveAPIView):
 
 class UserGroupUserList(generics.ListCreateAPIView):
     serializer_class = AssigneeSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         user_group = UserGroup.objects.get(investigation__slug=self.kwargs.get("investigation_slug"),
@@ -189,6 +191,17 @@ class UserGroupUserList(generics.ListCreateAPIView):
         user = User.objects.get(id=request.data.get("id"))
         user_group.add_user(user)
         return self.get(request, *args, **kwargs)
+
+    def check_permissions(self, request):
+        super().check_permissions(request)
+
+        investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
+        if not request.user.has_perm("manage_investigation", investigation):
+            raise PermissionDenied(detail="not allowed!")
+
+        role = self.kwargs.get("role")
+        if role == "O" and not request.user.has_perm("master_investigation", investigation):
+            raise PermissionDenied(detail="not allowed!")
 
 
 class FormResponseCreate(generics.CreateAPIView):

@@ -54,6 +54,7 @@ class Investigation(models.Model, UniqueSlugMixin):
         permissions = (
             ('view_investigation', _('View investigation')),
             ('manage_investigation', _('Manage investigation')),
+            ('master_investigation', _('Delete investigation and manage owners')),
         )
 
     def __str__(self):
@@ -113,6 +114,9 @@ class UserGroup(models.Model):
         assign_perm("view_investigation", self.group, self.investigation)
         if self.role in ["O", "A"]:
             assign_perm("manage_investigation", self.group, self.investigation)
+        if self.role == "O":
+            assign_perm("master_investigation", self.group, self.investigation)
+
 
     @classmethod
     def create_all_for(cls, investigation):
