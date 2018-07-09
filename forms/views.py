@@ -22,13 +22,32 @@ class InvestigationSerializer(ModelSerializer):
         fields = "__all__"
 
 
-class InvestigationDetail(generics.RetrieveAPIView):
+class InvestigationPermissions(DjangoObjectPermissions):
+    perms_map = {
+        'GET': [],
+        'OPTIONS': [],
+        'HEAD': [],
+        'POST': [],
+        'PUT': ['manage_investigation'],
+        'PATCH': ['manage_investigation'],
+        'DELETE': ['master_investigation'],
+    }
+
+    def has_permission(self, request, view):
+        # We never want to check model-based permissions, only
+        # object-based permissions. This is why we override
+        # this method and rely on `has_object_permission` alone
+        return True
+
+
+class InvestigationDetail(generics.RetrieveUpdateDestroyAPIView):
     # TODO: This should filter to make sure to only return
     # Investigations that are published and not in draft or unlisted state
-    queryset = Investigation
+    queryset = Investigation.objects.all()
     serializer_class = InvestigationSerializer
     lookup_url_kwarg = "investigation_slug"
     lookup_field = "slug"
+    permission_classes = (InvestigationPermissions, )
 
 
 class FormSerializer(ModelSerializer):
