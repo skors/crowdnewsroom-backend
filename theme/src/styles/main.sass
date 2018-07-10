@@ -1,14 +1,13 @@
 $content-width: 800px
-@import 'colors'
 $font-family-sans-serif: 'Source Sans Pro', sans-serif
-@import '../../node_modules/bootstrap/scss/bootstrap'
+
+@import 'cnr-carbon-main'
 @import '../../node_modules/@fortawesome/fontawesome-free-webfonts/css/fontawesome.css'
 @import '../../node_modules/@fortawesome/fontawesome-free-webfonts/css/fa-solid.css'
 @import 'investigation_list'
 @import 'formresponse_details'
 @import 'formresponse_list'
 @import 'forms_list'
-@import 'cnr-carbon'
 
 
 @font-face
@@ -37,6 +36,14 @@ html
 *, *:before, *:after
   box-sizing: inherit
 
+a 
+  text-decoration: none
+
+a:hover,
+a:focus,
+a:active
+  text-decoration: underline
+
 .cnr--header
   padding: 4em 40px 3em 40px
   background: white
@@ -57,6 +64,12 @@ html
     color: $ui-01
     text-decoration: none
 
+
+.cnr--button-unstyled
+  outline: none
+  border: 0
+  background-color: transparent
+  cursor: pointer
 
 
 body
@@ -131,6 +144,7 @@ body
     ul
       max-width: $content-width
       margin: 1em auto 0
+      display: flex
 
       li
         margin-right: 2em

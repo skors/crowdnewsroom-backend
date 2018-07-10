@@ -64,10 +64,9 @@
   "dependencies": {
     "@fortawesome/fontawesome-free-webfonts": "^1.0.6",
     "babel-polyfill": "^6.9.0",
-    "bootstrap": "^4.1.0",
-    "carbon-components": "^8.23.0",
-    "carbon-components-react": "^5.51.6",
-    "carbon-icons": "^6.3.2",
+    "carbon-components": "^9.1.10",
+    "carbon-components-react": "^6.7.4",
+    "carbon-icons": "^7.0.7",
     "chart.js": "^2.7.2",
     "expose-loader": "^0.7.5",
     "file-loader": "^1.1.11",
