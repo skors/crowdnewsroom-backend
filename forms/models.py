@@ -31,15 +31,15 @@ class Investigation(models.Model, UniqueSlugMixin):
     slug = models.SlugField(max_length=200, unique=True)
     cover_image = models.FileField(blank=True, null=True, default=None)
     logo = models.FileField(blank=True, null=True, default=None)
-    short_description = models.TextField()
-    category = models.TextField()  # What is this?
-    research_questions = models.TextField()
+    short_description = models.TextField(blank=True)
+    category = models.TextField(blank=True)  # What is this?
+    research_questions = models.TextField(blank=True)
     status = models.CharField(max_length=1, choices=STATUSES, default='D')
     # The following fields might be separate?
-    text = models.TextField()  # or is this the same as short_description?
-    methodology = models.TextField()
-    faq = models.TextField()
-    data_privacy_url = models.URLField(null=True)
+    text = models.TextField(blank=True)  # or is this the same as short_description?
+    methodology = models.TextField(blank=True)
+    faq = models.TextField(blank=True)
+    data_privacy_url = models.URLField(null=True, blank=True)
 
     @property
     def cover_image_url(self):
