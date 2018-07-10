@@ -273,7 +273,7 @@ class InvitationSerializer(ModelSerializer):
         fields = ("email", "id", "accepted")
 
 
-class InvestigationPermissions(DjangoObjectPermissions):
+class InvestigationInvitationPermissions(DjangoObjectPermissions):
     def has_permission(self, request, view):
         investigation = Investigation.objects.get(slug=view.kwargs.get("investigation_slug"))
         if not request.user.has_perm("manage_investigation", investigation):
@@ -297,7 +297,7 @@ def create_and_invite_user(email, request):
 
 class InvitationList(generics.ListCreateAPIView):
     serializer_class = InvitationSerializer
-    permission_classes = (InvestigationPermissions, )
+    permission_classes = (InvestigationInvitationPermissions, )
 
     def get_queryset(self):
         investigation = get_object_or_404(Investigation, slug=self.kwargs.get("investigation_slug"))
@@ -366,3 +366,16 @@ class UserInvitationList(generics.ListAPIView):
 
     def get_queryset(self):
         return Invitation.objects.filter(user=self.request.user).all()
+
+
+class InvestigationCreate(generics.CreateAPIView):
+    queryset = Investigation
+    serializer_class = InvestigationSerializer
+
+    permission_classes = (IsAuthenticated, )
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        new_investigation = Investigation.objects.get(id=response.data.get('id'))
+        new_investigation.add_user(request.user, "O")
+        return response

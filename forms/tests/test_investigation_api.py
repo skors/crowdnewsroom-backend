@@ -1,6 +1,7 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
+from forms.models import Investigation, UserGroup
 from forms.tests.factories import UserFactory, InvestigationFactory
 
 
@@ -44,4 +45,57 @@ class InvestigationAPITest(APITestCase):
         self.client.force_login(admin_user)
         response = self.client.delete(make_url(self.investigation))
         self.assertEqual(response.status_code, 403)
+
+    def test_owner_can_change_data(self):
+        self.client.force_login(self.investigation_owner)
+
+        response = self.client.patch(make_url(self.investigation), data={"name": "New Investigation Name"})
+        self.assertEqual(response.status_code, 200)
+        updated_investigation = Investigation.objects.get(id=self.investigation.id)
+        self.assertEqual(updated_investigation.name, "New Investigation Name")
+
+    def test_owner_can_get_data(self):
+        self.client.force_login(self.investigation_owner)
+
+        response = self.client.get(make_url(self.investigation))
+        self.assertEqual(response.status_code, 200)
+        expected_json = {'id': self.investigation.id,
+                         'name': self.investigation.name,
+                         'slug': self.investigation.slug,
+                         'cover_image': None,
+                         'logo': None,
+                         'short_description': '',
+                         'category': '',
+                         'research_questions': '',
+                         'status': 'D',
+                         'text': '',
+                         'methodology': '',
+                         'faq': '',
+                         'data_privacy_url': None}
+        self.assertEqual(response.data, expected_json)
+
+    def test_user_can_make_new_investigation(self):
+        user = UserFactory.create()
+        self.client.force_login(user)
+
+        response = self.client.post(reverse("investigations"), {"name": "test", "slug": "test"})
+        self.assertEqual(response.status_code, 201)
+
+        new_investigation = Investigation.objects.get(slug="test")
+        self.assertTrue(new_investigation)
+
+        investigation_owners = UserGroup.objects.get(investigation=new_investigation, role="O")
+
+        self.assertQuerysetEqual(investigation_owners.group.user_set.all(), [repr(user)])
+
+    def test_unauthorized_cannot_make_investigation(self):
+        response = self.client.post(reverse("investigations"), {"name": "test", "slug": "test"})
+        self.assertEqual(response.status_code, 403)
+
+    def test_cannot_have_same_slug_twice(self):
+        user = UserFactory.create()
+        self.client.force_login(user)
+
+        response = self.client.post(reverse("investigations"), {"name": "test", "slug": self.investigation.slug})
+        self.assertEqual(response.status_code, 400)
 

@@ -18,6 +18,7 @@ module.exports = {
     formResponseList: "./src/scripts/form-response-list",
     investigationUsers: "./src/scripts/investigation-users",
     invitationList: "./src/scripts/invitation-list",
+    investigationDetails: "./src/scripts/investigation-details",
   },
   output: {
     publicPath: devMode ? "http://127.0.0.1:1339/" : "/static/js/",
