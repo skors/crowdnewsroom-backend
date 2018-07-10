@@ -11,9 +11,7 @@ class InvestigationUserTest(APITestCase):
     def setUp(self):
         self.admin_user = UserFactory.create()  # type: User
         self.investigation = InvestigationFactory.create()
-
-        investigation_owner_group = UserGroup.objects.filter(investigation=self.investigation, role="O").first()
-        investigation_owner_group.group.user_set.add(self.admin_user)
+        self.investigation.add_user(self.admin_user, "O")
 
         self.client.force_login(self.admin_user)
 
@@ -33,8 +31,7 @@ class InvestigationUserTest(APITestCase):
         investigation_editor = UserFactory.create()
         other_investigation_editor = UserFactory.create()
 
-        investigation_editor_group = UserGroup.objects.filter(investigation=self.investigation, role="E").first()
-        investigation_editor_group.group.user_set.add(investigation_editor)
+        self.investigation.add_user(investigation_editor, "E")
 
         response = self.client.get(
             reverse("investigation_users", kwargs={"investigation_slug": self.investigation.slug}))
