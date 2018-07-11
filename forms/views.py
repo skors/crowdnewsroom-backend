@@ -249,7 +249,7 @@ class InvitationSerializer(ModelSerializer):
 
     class Meta:
         model = Invitation
-        fields = ("email", )
+        fields = ("email", "id")
 
 
 class InvestigationPermissions(DjangoObjectPermissions):
@@ -292,4 +292,23 @@ class InvitationList(generics.ListCreateAPIView):
         serializer = self.get_serializer()
         serialized = serializer.to_representation(invitation)
         return Response(serialized, status=status.HTTP_201_CREATED)
+
+
+class InvitationPermissions(DjangoObjectPermissions):
+    def has_permission(self, request, view):
+        # Since this only handles DELETE we only care about
+        # object permissions and not class permissions.
+        # It is therefore save to return True here
+        return True
+
+    def has_object_permission(self, request, view, obj):
+        invitation = obj
+        investigation = invitation.investigation
+        return request.user.has_perm("manage_investigation", investigation)
+
+
+class InvitationDetails(generics.DestroyAPIView):
+    queryset = Invitation
+    lookup_url_kwarg = "invitation_id"
+    permission_classes = (InvitationPermissions, )
 

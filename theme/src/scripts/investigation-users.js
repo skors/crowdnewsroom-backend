@@ -9,8 +9,8 @@ import { DataTable,
  Form,
  FormGroup,
  Button } from "carbon-components-react";
-import {authorizedFetch, authorizedPOST} from "./api";
-import {ary, partialRight, assign} from "lodash";
+import {authorizedDELETE, authorizedFetch, authorizedPOST} from "./api";
+import {assign} from "lodash";
 
 
 const {
@@ -21,6 +21,12 @@ const {
   TableRow,
   TableBody,
   TableCell,
+  TableToolbar,
+  TableBatchActions,
+  TableBatchAction,
+  TableSelectRow,
+  TableSelectAll,
+  TableToolbarSearch,
 } = DataTable;
 
 const ROLES = [
@@ -40,8 +46,9 @@ function RoleDropdown({selectedRole, user, updateCallback}) {
     />
 }
 
-function Row({row, updateCallback}){
+function Row({row, updateCallback, getSelectionProps}){
   return <TableRow>
+    <TableSelectRow {...getSelectionProps({ row })} />
     {row.cells.map(cell => <Cell cell={cell} row={row} changeUserCallback={updateCallback}/> )}
   </TableRow>
 }
@@ -60,12 +67,23 @@ function Cell({cell, row, changeUserCallback}){
   return <TableCell key={cell.id}>{cell.value}</TableCell>
 }
 
-const renderTableWithUpdate = (updateCallback) => {
-  return ({ rows, headers, getHeaderProps }) => (
-    <TableContainer title="Benutzer für Wem Gehört Berlin">
+const renderTableWithUpdate = (updateCallback, removeUsers) => {
+  return ({ rows, headers, getHeaderProps, getBatchActionProps, getSelectionProps, selectedRows }) => (
+    <TableContainer>
+      <TableToolbar>
+        <TableBatchActions {...getBatchActionProps()}>
+          <TableBatchAction onClick={() => removeUsers(selectedRows)}
+                            icon="close"
+                            iconDescription="remove">
+            Remove
+          </TableBatchAction>
+        </TableBatchActions>
+        <TableToolbarSearch />
+      </TableToolbar>
       <Table>
         <TableHead>
           <TableRow>
+            <TableSelectAll {...getSelectionProps()} />
             {headers.map(header => (
               <TableHeader {...getHeaderProps({ header }) }>
                 {header.header}
@@ -74,7 +92,7 @@ const renderTableWithUpdate = (updateCallback) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => <Row key={row.id} row={row} updateCallback={updateCallback} />)}
+          {rows.map(row => <Row key={row.id} row={row} updateCallback={updateCallback} getSelectionProps={getSelectionProps}/>)}
         </TableBody>
       </Table>
     </TableContainer>);
@@ -112,6 +130,13 @@ class InviteUser extends Component {
   }
 }
 
+function removeUser(user, investigationSlug) {
+  return authorizedDELETE(`/forms/investigations/${investigationSlug}/groups/${user.role}/users/${user.id}`)
+}
+
+function removeInvitation(invitation) {
+  return authorizedDELETE(`/forms/invitations/${invitation.id}`)
+}
 
 class App extends Component {
     constructor(props){
@@ -126,6 +151,7 @@ class App extends Component {
         this.loadUsers = this.loadUsers.bind(this);
         this.loadInvitations = this.loadInvitations.bind(this);
         this.inviteUser = this.inviteUser.bind(this);
+        this.removeUsers = this.removeUsers.bind(this);
     }
 
     componentDidMount(){
@@ -156,8 +182,21 @@ class App extends Component {
         .then(this.loadUsers)
     }
 
+    removeUsers(users){
+      const userEmails = users.map(user => user.id);
+      const selectedUsers = this.state.users.filter(user => userEmails.indexOf(user.email) !== -1);
+      const selectedInvitations = this.state.invitations.filter(user => userEmails.indexOf(user.email) !== -1)
+
+      const removeUserPromises = selectedUsers.map(user => removeUser(user, this.state.slug));
+      Promise.all(removeUserPromises).then(this.loadUsers);
+
+      const removeInvitationPromises = selectedInvitations.map(invitation => removeInvitation(invitation));
+      Promise.all(removeInvitationPromises).then(this.loadInvitations);
+    }
+
+
     render() {
-      const combinedUsers = this.state.users.concat(this.state.invitations).map(user => {user.id = user.email; return user});
+      const combinedUsers = this.state.users.concat(this.state.invitations).map(user => assign({}, user, {id: user.email}));
       const headers = [{key: "first_name", header: "Vorname"},
                        {key: "last_name", header: "Nachname"},
                        {key: "email", header: "E-Mail"},
@@ -166,7 +205,7 @@ class App extends Component {
             <DataTable
                 rows={combinedUsers}
                 headers={headers}
-                render={renderTableWithUpdate(this.updateUserRole)}/>
+                render={renderTableWithUpdate(this.updateUserRole, this.removeUsers)}/>
             <div>
                 <InviteUser inviteCallback={this.inviteUser}/>
             </div>

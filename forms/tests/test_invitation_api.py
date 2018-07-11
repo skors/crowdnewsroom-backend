@@ -79,10 +79,10 @@ class InvitationAPITestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, [])
 
-        Invitation.objects.create(user=user, investigation=investigation)
+        invitation = Invitation.objects.create(user=user, investigation=investigation)
 
         response = self.client.get(reverse("invitations", kwargs={"investigation_slug": investigation.slug}))
-        self.assertEqual(response.data, [{"email": user.email}])
+        self.assertEqual(response.data, [{"email": user.email, "id": invitation.id}])
 
     def test_list_invitations_lists_for_investigation(self):
         admin = UserFactory.create()
@@ -91,11 +91,68 @@ class InvitationAPITestCase(APITestCase):
         other_investigation = InvestigationFactory.create()
         investigation.add_user(admin, "A")
 
-        Invitation.objects.create(user=user, investigation=investigation)
+        invitation = Invitation.objects.create(user=user, investigation=investigation)
         Invitation.objects.create(user=user, investigation=other_investigation)
 
         self.client.force_login(admin)
 
         response = self.client.get(reverse("invitations", kwargs={"investigation_slug": investigation.slug}))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, [{"email": user.email}])
+        self.assertEqual(response.data, [{"email": user.email, "id": invitation.id}])
+
+    def test_remove_invitation(self):
+        admin = UserFactory.create()
+        user = UserFactory.create()
+
+        investigation = InvestigationFactory.create()
+        investigation.add_user(admin, "A")
+
+        invitation = Invitation.objects.create(user=user, investigation=investigation)
+
+        self.client.force_login(admin)
+
+        response = self.client.delete(reverse("invitation", kwargs={"invitation_id": invitation.id}))
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(Invitation.objects.count(), 0)
+
+    def test_remove_wrong_investigaiton(self):
+        admin = UserFactory.create()
+        user = UserFactory.create()
+
+        investigation = InvestigationFactory.create()
+        other_investigation = InvestigationFactory.create()
+        investigation.add_user(admin, "A")
+
+        invitation = Invitation.objects.create(user=user, investigation=other_investigation)
+
+        self.client.force_login(admin)
+
+        response = self.client.delete(reverse("invitation", kwargs={"invitation_id": invitation.id}))
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(Invitation.objects.count(), 1)
+
+    def test_remove_wrong_permissions(self):
+        editor = UserFactory.create()
+        user = UserFactory.create()
+
+        investigation = InvestigationFactory.create()
+        investigation.add_user(editor, "E")
+
+        invitation = Invitation.objects.create(user=user, investigation=investigation)
+
+        self.client.force_login(editor)
+
+        response = self.client.delete(reverse("invitation", kwargs={"invitation_id": invitation.id}))
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(Invitation.objects.count(), 1)
+
+    def test_remove_unauthorized(self):
+        user = UserFactory.create()
+
+        investigation = InvestigationFactory.create()
+
+        invitation = Invitation.objects.create(user=user, investigation=investigation)
+
+        response = self.client.delete(reverse("invitation", kwargs={"invitation_id": invitation.id}))
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(Invitation.objects.count(), 1)
