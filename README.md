@@ -96,3 +96,21 @@ The source code for this project is published under [GNU AGPL License](https://g
 ## About
 This project uses [BrowserStack](https://www.browserstack.com/) for cross-browser testing and [Crowdin](https://crowdin.com) for translations. Cheers to these tools to support non-profit and Open Source initiatives.
 
+
+## Permissions
+
+|                                            |  Owner |  Admin | Editor | Viewer|
+|--------------------------------------------|:------:|:------:|:------:|:-----:|
+| Create new investigation                   | x      |  x     |   x    |  x    |
+| Delete investigation                       | x      |        |        |       |
+| Add owners  to investigation               | x      |        |        |       |
+| Change user roles                          | x      |  x     |        |       |
+| Customise investigation                    | x      |  x     |        |       |
+| Add or remove new users in an investigation| x      |  x     |        |       |
+| Choose, edit, or create an Interviewer     | x      |  x     |        |       |
+| Edit a response                            | x      |  x     |        |       |
+| Change bucket of response                  | x      |  x     | x      |       |
+| Manage assignees/tags for response         | x      |  x     | x      |       |
+| Download CSV file                          | x      |  x     | x      |       |
+| Make comments on responses                 | x      |  x     | x      | x     |
+| Leave an investigation                     | x      |  x     | x      | x     |
