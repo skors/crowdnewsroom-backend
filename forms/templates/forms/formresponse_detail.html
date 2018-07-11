@@ -13,15 +13,15 @@
              data-response-id="{{ formresponse.id }}"
              data-investigation-slug="{{ investigation.slug }}">
             <div>
-                <h3 class="mb-2">{% trans "Manage Tags" %}</h3>
+                <h3>{% trans "Manage Tags" %}</h3>
                 <div id="tag-picker"></div>
             </div>
             <div>
-                <h3 class="mb-2">{% trans "Manage Ownership" %}</h3>
+                <h3>{% trans "Manage Ownership" %}</h3>
                 <div id="assignee-picker"></div>
             </div>
             <div>
-                <h3 class="mb-2">{% trans "Manage Bucket" %}</h3>
+                <h3>{% trans "Manage Bucket" %}</h3>
                 <div id="bucket-picker"></div>
             </div>
         </div>
@@ -30,7 +30,7 @@
     <div class="content-block">
         <h3>{% trans "View details" %}</h3>
 
-        <section class="bx--structured-list cnr-fixed-width-list">
+        <section class="bx--structured-list cnr--list">
           <div class="bx--structured-list-thead">
             <div class="bx--structured-list-row bx--structured-list-row--header-row">
               <div class="bx--structured-list-th">{% trans "Question" %}</div>
@@ -42,24 +42,28 @@
             <div class="bx--structured-list-row">
               <div class="bx--structured-list-td bx--structured-list-content--nowrap" title="{{ entry.title }}">{{ entry.title | truncatewords:5 }}</div>
               <div class="bx--structured-list-td">
+
+                <div class="cnr--inline-edit">
                   {% if entry.type == "text" %}
-                  <span class="value">{{ entry.value }}</span>
-                      {% if entry.data_type == "string" %}
-                          <button class="edit-inline-button button-unstyled">edit</button>
-                          <span class="edit-inline">
-                                  <form action="{{formresponse.id}}/edit" method="POST">
-                                      {% csrf_token %}
-                                      <input type="text"
-                                             name="json__{{entry.json_name}}"
-                                             value="{{ entry.value}}">
-                                      <input type="submit">
-                                  </form>
-                              </span>
+                    <span class="cnr--inline-edit__value">{{ entry.value }}</span>
+                    {% if entry.data_type == "string" %}
+                      <form class="cnr--inline-edit__form" action="{{formresponse.id}}/edit" method="POST">
+                        {% csrf_token %}
+                        <input type="text"
+                                class="bx--text-input"
+                                name="json__{{entry.json_name}}"
+                                value="{{ entry.value}}">
+                        <input type="submit"
+                                class="bx--btn bx--btn--secondary">
+                      </form>
+                      <button class="cnr--inline-edit__button">edit</button>
                     {% endif %}
                   {% endif %}
                   {% if entry.type == "link" %}
                     <a href="{{entry.value}}" target="_blank">Download</a>
                   {% endif %}
+                </div>
+
               </div>
             </div>
             {% endfor %}
@@ -70,77 +74,88 @@
     <div class="content-block comments">
         <h3>{% trans "Comments" %}</h3>
             {% for comment in formresponse.visible_comments.all %}
-                <div class="card mt-5">
+                <div class="card" >
                   <div class="card-header">
-                      <span class="author">{{ comment.author.first_name }} {{ comment.author.last_name }}</span>
-                      <span class="date"> - {{ comment.date | date:"SHORT_DATETIME_FORMAT" }}</span>
-                        <div class="float-right">
-                          {% if request.user == comment.author %}
-                              <button class="toggle-edit button-unstyled">{% trans "edit" %}</button>
-                              <div tabindex="0" data-tooltip-trigger data-tooltip-target="#delete-tooltip-{{ comment.id }}" role="tooltip" class="bx--tooltip__trigger button-unstyled">
-                                {% trans "delete" %}
-                              </div>
-                              <div id="delete-tooltip-{{ comment.id }}" data-floating-menu-direction="bottom" class="bx--tooltip">
-                                  <form action="{% url 'comment_delete' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id comment_id=comment.id %}" method="post">
-                                    <span class="bx--tooltip__caret"></span>
-                                      <input type="submit" class="bx--btn bx--btn--danger" value="{%  trans "Delete comment" %}" />
-                                      <input type="checkbox" style="display: none;" name="archived" checked/>
-                                      <input type="hidden" name="text" value="{{ comment.text }}" />
-                                      {% csrf_token %}
-                                  </form>
-                              </div>
-                          {% endif %}
-                        </div>
-                  </div>
-                  <div class="card-body">
-                      <div class="part">
-                        {{ comment.text }}
+                      <div>
+                        <span class="author">{{ comment.author.first_name }} {{ comment.author.last_name }}</span>
+                        <span class="date"> - {{ comment.date | date:"SHORT_DATETIME_FORMAT" }}</span>
                       </div>
-                      <form class="part d-none" action="{% url 'comment_delete' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id comment_id=comment.id %}" method="post">
-                          <div class="form-group">
-                              {% csrf_token %}
-                              <label for="{{ comment_form.text.id_for_label }}" class="sr-only">
-                              {{ comment_form.text.label }}
-                              </label>
-                              <textarea name="text" class="bx--text-area bx--text-area--v2" rows="2">{{ comment.text }}</textarea>
-                              <input type="submit" class="btn btn-primary" value="{% trans 'edit comment' %}"/>
+                      <div>
+                        {% if request.user == comment.author %}
+                          <button class="toggle-edit cnr--button-unstyled">{% trans "edit" %}</button>
+                          <div tabindex="0" data-tooltip-trigger data-tooltip-target="#delete-tooltip-{{ comment.id }}" role="tooltip" class="bx--tooltip__trigger">
+                            {% trans "delete" %}
                           </div>
-                      </form>
+                          <div id="delete-tooltip-{{ comment.id }}" data-floating-menu-direction="bottom" class="bx--tooltip">
+                            <form action="{% url 'comment_delete' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id comment_id=comment.id %}" method="post">
+                              <span class="bx--tooltip__caret"></span>
+                                <input type="submit" class="bx--btn bx--btn--danger" value="{%  trans "Delete comment" %}" />
+                                <input type="checkbox" style="display: none;" name="archived" checked/>
+                                <input type="hidden" name="text" value="{{ comment.text }}" />
+                                {% csrf_token %}
+                            </form>
+                          </div>
+                        {% endif %}
+                      </div>
                   </div>
+
+                  <div class="card-body">
+                    <div class="part">
+                      {{ comment.text }}
+                    </div>
+                    <form class="part cnr--inline-edit__item--hidden" action="{% url 'comment_delete' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id comment_id=comment.id %}" method="post">
+                      <div class="bx--form-item">
+                          {% csrf_token %}
+                          <div class="bx--form-item">
+                            <label for="{{ comment_form.text.id_for_label }}" class="sr-only">
+                            {{ comment_form.text.label }}
+                            </label>
+                            <textarea name="text" class="bx--text-area" rows="2">{{ comment.text }}</textarea>
+                          </div>
+                          <div class="bx--form-item">
+                            <input type="submit" class="bx--btn bx--btn--primary" value="{% trans 'edit comment' %}"/>
+                          </div>
+                      </div>
+                    </form>
+                  </div>
+
                 </div>
             {% endfor %}
             <form action="{% url 'response_details_comments' investigation_slug=formresponse.form_instance.form.investigation.slug form_slug=formresponse.form_instance.form.slug response_id=formresponse.id %}"
-                  method="post"
-                  class="mt-4">
+                  method="post">
                 {% csrf_token %}
-                <label for="{{ comment_form.text.id_for_label }}" class="sr-only">
+                <div class="bx--form-item">
+                  <label for="{{ comment_form.text.id_for_label }}" class="sr-only">
                     {{ comment_form.text.label }}
-                </label>
+                  </label>
                 {{ comment_form.text }}
-                <input type="submit" class="btn btn-primary mt-2" value="{% trans 'add comment' %}"/>
+                </div>
+                <div class="bx--form-item">
+                  <input type="submit" class="bx--btn bx--btn--primary" value="{% trans 'add comment' %}"/>
+                </div>
             </form>
         </ul>
     </div>
 {% render_bundle "formResponseDetails" %}
 
 <script>
-    var editElements = document.querySelectorAll(".edit-inline");
-    editElements.forEach(function(element) { element.classList.add("d-none"); });
+    var editElements = document.querySelectorAll(".cnr--inline-edit__form");
+    editElements.forEach(function(element) { element.classList.add("cnr--inline-edit__item--hidden"); });
 
     function toggleEdit(event) {
         var button = event.target;
-        button.parentElement.querySelector(".edit-inline").classList.toggle("d-none");
-        button.parentElement.querySelector(".value").classList.toggle("d-none");
+        button.parentElement.querySelector(".cnr--inline-edit__form").classList.toggle("cnr--inline-edit__item--hidden");
+        button.parentElement.querySelector(".cnr--inline-edit__value").classList.toggle("cnr--inline-edit__item--hidden");
     }
 
-    document.querySelectorAll(".edit-inline-button").forEach(function(button){
+    document.querySelectorAll(".cnr--inline-edit__button").forEach(function(button){
      button.addEventListener("click", toggleEdit);
     });
 
     function toggleEditComment(event){
         var button = event.target;
         button.closest(".card").querySelectorAll(".part").forEach(function(part) {
-            part.classList.toggle("d-none");
+            part.classList.toggle("cnr--inline-edit__item--hidden");
         });
     }
 

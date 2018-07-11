@@ -1,32 +1,62 @@
-.button-unstyled
-    background: none repeat scroll 0 0 transparent
-    border: none
-    border-spacing: 0
-    cursor: pointer
-    text-decoration: underline
-    font-weight: normal !important
-
 .comment-delete-button
   display: inline-block
-
-.cnr-fixed-width-list .bx--structured-list-td:first-child
-  width: 33%
-
-.edit-inline-button
-  float: right
 
 .formresponse-details--actions
   display: flex
   justify-content: space-between
+
+  h3
+    padding-bottom: 0.5em
 
   & > div
     width: 33%
     padding: 10px
 
 .comments
-  .card, .card-header
-    border: none
+  .card
+    margin: 1em 0 3em 0
 
-  .author
-    font-weight: bolder
+    .author
+      font-weight: bolder
 
+    .card-header
+      display: flex
+      justify-content: space-between
+      padding-bottom: .5em
+      border-bottom: 2px solid $brand-01
+
+    .card-body
+      padding-top: 1em
+
+    .toggle-edit
+      font-size: 15px
+
+.cnr--list
+  .bx--structured-list-td:first-child
+    width: 33%
+
+.cnr--inline-edit
+  display: flex
+  width: 100%
+  justify-content: space-between
+
+.cnr--inline-edit__button
+  background: transparent
+  border: none
+  border-spacing: 0
+  cursor: pointer
+  text-decoration: underline
+  font-weight: normal
+  display: inline-block
+
+.cnr--inline-edit__form
+  width: 100%
+
+  input
+    display: inline
+    max-width: 50%
+    min-width: auto
+    margin-right: 0.5rem
+
+.cnr--inline-edit__item--hidden
+  display: none
