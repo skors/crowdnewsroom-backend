@@ -436,3 +436,10 @@ class Comment(models.Model):
     form_response = models.ForeignKey(FormResponse, on_delete=models.CASCADE, related_name="comments")
     text = models.TextField()
     archived = models.BooleanField(default=False)
+
+
+class Invitation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
+    pending = models.BooleanField
+

@@ -1,14 +1,18 @@
 import datetime
+import uuid
+from django.contrib.auth.forms import PasswordResetForm
+from django.core.exceptions import ObjectDoesNotExist
 
 from django.http import Http404, HttpResponse
 from django.utils import timezone
-from rest_framework import generics, permissions, serializers
+from rest_framework import generics, permissions, serializers, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, DjangoObjectPermissions
+from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 
-from .models import FormResponse, FormInstance, Investigation, Tag, User, UserGroup
+from .models import FormResponse, FormInstance, Investigation, Tag, User, UserGroup, Invitation
 
 
 class InvestigationSerializer(ModelSerializer):
@@ -235,3 +239,57 @@ class UserGroupMembershipDelete(generics.DestroyAPIView):
 class FormResponseCreate(generics.CreateAPIView):
     queryset = FormResponse
     serializer_class = FormResponseSerializer
+
+
+class InvitationSerializer(ModelSerializer):
+    email = serializers.SerializerMethodField()
+
+    def get_email(self, invitation):
+        return invitation.user.email
+
+    class Meta:
+        model = Invitation
+        fields = ("email", )
+
+
+class InvestigationPermissions(DjangoObjectPermissions):
+    def has_permission(self, request, view):
+        investigation = Investigation.objects.get(slug=view.kwargs.get("investigation_slug"))
+        if not request.user.has_perm("manage_investigation", investigation):
+            return False
+        return True
+
+
+def create_and_invite_user(email, request):
+    user = User.objects.create(email=email, is_active=True)
+    user.set_password(uuid.uuid4())
+    user.save()
+
+    form = PasswordResetForm(data={"email": email})
+    form.full_clean()
+    form.save(request=request,
+              email_template_name="registration/set_initial_password_email.html")
+    return user
+
+
+class InvitationList(generics.ListCreateAPIView):
+    serializer_class = InvitationSerializer
+    permission_classes = (InvestigationPermissions, )
+
+    def get_queryset(self):
+        investigation = get_object_or_404(Investigation, slug=self.kwargs.get("investigation_slug"))
+        return Invitation.objects.filter(investigation=investigation).all()
+
+    def create(self, request, investigation_slug):
+        investigation = get_object_or_404(Investigation, slug=investigation_slug)
+        email = request.data.get("email")
+        try:
+            user = User.objects.get(email=email)
+        except ObjectDoesNotExist:
+            user = create_and_invite_user(email, request)
+
+        invitation = Invitation.objects.create(user=user, investigation=investigation)
+        serializer = self.get_serializer()
+        serialized = serializer.to_representation(invitation)
+        return Response(serialized, status=status.HTTP_201_CREATED)
+
