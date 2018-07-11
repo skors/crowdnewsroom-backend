@@ -8,6 +8,7 @@ const devMode = process.env.NODE_ENV !== "production";
 module.exports = {
   mode: process.env.NODE_ENV,
   context: path.resolve(__dirname),
+  devtool: devMode ? "eval-source-map" : false,
   entry: {
     main: "./src/scripts/index",
     style: "./src/styles/main.sass",
