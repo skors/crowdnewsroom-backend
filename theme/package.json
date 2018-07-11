@@ -73,9 +73,11 @@
     "font-awesome": "^4.7.0",
     "js-cookie": "^2.2.0",
     "moment": "^2.22.1",
+    "optimize-css-assets-webpack-plugin": "^4.0.3",
     "query-string": "5",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
-    "source-sans-pro": "^2.20.2"
+    "source-sans-pro": "^2.20.2",
+    "uglifyjs-webpack-plugin": "^1.2.7"
   }
 }

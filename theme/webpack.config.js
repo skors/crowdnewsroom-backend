@@ -1,5 +1,7 @@
 const path = require("path");
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const BundleTracker = require("webpack-bundle-tracker");
 const webpack = require("webpack");
 
@@ -64,6 +66,15 @@ module.exports = {
     }),
     new webpack.HotModuleReplacementPlugin()
   ],
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true
+      }),
+      new OptimizeCSSAssetsPlugin({})
+    ]
+  },
   devServer: devMode
     ? {
         hot: true,
