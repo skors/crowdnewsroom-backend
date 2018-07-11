@@ -1,6 +1,7 @@
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const BundleTracker = require("webpack-bundle-tracker");
+const webpack = require("webpack");
 
 const devMode = process.env.NODE_ENV !== "production";
 
@@ -8,13 +9,13 @@ module.exports = {
   mode: process.env.NODE_ENV,
   context: path.resolve(__dirname),
   entry: {
-    main: ["./src/scripts/index"],
+    main: "./src/scripts/index",
     style: "./src/styles/main.sass",
     formResponseDetails: "./src/scripts/form-response-details",
     formResponseList: "./src/scripts/form-response-list"
   },
   output: {
-    publicPath: "http://127.0.0.1:1339/",
+    publicPath: devMode ? "http://127.0.0.1:1339/" : "/static/js/",
     path: path.join(__dirname, "static", "js"),
     filename: "bundle-[name]-[hash].min.js"
   },
@@ -59,12 +60,16 @@ module.exports = {
     }),
     new BundleTracker({
       filename: "./webpack-stats.json"
-    })
+    }),
+    new webpack.HotModuleReplacementPlugin()
   ],
-  devServer: {
-    port: 1339,
-    inline: true,
-    progress: true,
-    headers: { "Access-Control-Allow-Origin": "http://localhost:8000" } // django runserver
-  }
+  devServer: devMode
+    ? {
+        hot: true,
+        port: 1339,
+        inline: true,
+        progress: true,
+        headers: { "Access-Control-Allow-Origin": "http://localhost:8000" } // django runserver
+      }
+    : {}
 };
