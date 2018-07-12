@@ -6,7 +6,7 @@ from django.utils.datetime_safe import datetime
 from django.utils.text import slugify
 
 from forms.models import Investigation, Form, FormInstance
-from forms.tests.factories import FormResponseFactory
+from forms.tests.factories import FormResponseFactory, TagFactory
 from forms.utils import create_form_csv
 
 
@@ -52,15 +52,15 @@ class Utils(TestCase):
         lines = buffer.getvalue().split('\n')
 
         header = lines[0].strip()
-        expected_header = "email,meta_id,meta_status,meta_submission_date,meta_url,meta_version,name"
+        expected_header = "email,meta_id,meta_status,meta_submission_date,meta_tags,meta_url,meta_version,name"
         self.assertEquals(header, expected_header)
 
         first = lines[1].strip()
-        expected_first = "peter@example.com,{},Inbox,2018-01-01 00:00:00+00:00,http://example.com,0,Peter".format(response_1.id)
+        expected_first = "peter@example.com,{},Inbox,2018-01-01 00:00:00+00:00,,http://example.com,0,Peter".format(response_1.id)
         self.assertEquals(first, expected_first)
 
         second = lines[2].strip()
-        expected_second = "katharina@example.com,{},Inbox,2018-01-02 00:00:00+00:00,http://example.com,0,Katharina".format(response_2.id)
+        expected_second = "katharina@example.com,{},Inbox,2018-01-02 00:00:00+00:00,,http://example.com,0,Katharina".format(response_2.id)
         self.assertEquals(second, expected_second)
 
     def test_create_form_csv_file(self):
@@ -89,13 +89,14 @@ class Utils(TestCase):
         lines = buffer.getvalue().split('\n')
 
         header = lines[0].strip()
-        expected_header = "meta_id,meta_status,meta_submission_date,meta_url,meta_version,name,picture"
+        expected_header = "meta_id,meta_status,meta_submission_date,meta_tags,meta_url,meta_version,name,picture"
         self.assertEquals(header, expected_header)
 
         first = lines[1].strip()
         expected_first = ",".join([str(response.id),
                                    "Inbox",
                                    "2018-01-02 00:00:00+00:00",
+                                   "",  # no tags
                                    "https://example.com/forms/admin/investigations/first-investigation/forms/first-form/responses/{}".format(
                                        response.id),
                                    "0",
@@ -174,3 +175,50 @@ class Utils(TestCase):
 
         self.assertEqual(len(lines), 2)
 
+    def test_create_form_csv_includes_tags(self):
+        buffer = StringIO()
+        build_absolute_uri = lambda x: "http://example.com"
+
+        form_instance = FormInstance.objects.create(form=self.form,
+                                                    form_json=[{
+                                                        "schema": {
+                                                            "slug": "first",
+                                                            "properties": {
+                                                                "name": {"type": "string"},
+                                                                "email": {"type": "string"}
+                                                            }
+                                                        }
+                                                    }])
+
+        first_tag = TagFactory.create(name="First Tag", slug="first-tag")
+        second_tag = TagFactory.create(name="Second Tag, with, commas", slug="second-tag")
+
+        response_1 = FormResponseFactory.create(form_instance=form_instance,
+                                                submission_date=datetime(2018, 1, 1, tzinfo=pytz.utc),
+                                                json={
+                                                    "name": "Peter",
+                                                    "email": "peter@example.com"
+                                                })
+        response_1.tags.set([first_tag, second_tag])
+        response_2 = FormResponseFactory.create(form_instance=form_instance,
+                                                submission_date=datetime(2018, 1, 2, tzinfo=pytz.utc),
+                                                json={
+                                                    "name": "Katharina",
+                                                    "email": "katharina@example.com"
+                                                })
+        create_form_csv(self.form, self.investigation.slug, build_absolute_uri, buffer)
+        lines = buffer.getvalue().split('\n')
+
+        header = lines[0].strip()
+        expected_header = "email,meta_id,meta_status,meta_submission_date,meta_tags,meta_url,meta_version,name"
+        self.assertEquals(header, expected_header)
+
+        first = lines[1].strip()
+        expected_first = 'peter@example.com,{},Inbox,2018-01-01 00:00:00+00:00,"First Tag, Second Tag  with  commas",http://example.com,0,Peter'.format(
+            response_1.id)
+        self.assertEquals(first, expected_first)
+
+        second = lines[2].strip()
+        expected_second = "katharina@example.com,{},Inbox,2018-01-02 00:00:00+00:00,,http://example.com,0,Katharina".format(
+            response_2.id)
+        self.assertEquals(second, expected_second)
