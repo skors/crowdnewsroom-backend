@@ -1,9 +1,34 @@
 from django.urls import reverse
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APITransactionTestCase
 from unittest.mock import patch
 
 from forms.models import Invitation, User
 from forms.tests.factories import InvestigationFactory, UserFactory
+
+
+class InvitationAPITransactionTestCase(APITransactionTestCase):
+    """ These tests rely on database functions and must therefore
+        inherit from APITransactionTestCase.
+        See https://stackoverflow.com/a/34801920/4099396 for more details"""
+    def test_one_invitation_per_user_investigation(self):
+        user = UserFactory.create()
+        admin = UserFactory.create()
+        investigation = InvestigationFactory.create()
+        investigation.add_user(admin, "A")
+
+        self.client.force_login(admin)
+
+        self.assertEqual(Invitation.objects.count(), 0)
+
+        response = self.client.post(reverse("invitations", kwargs={"investigation_slug": investigation.slug}),
+                                    data={"email": user.email})
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Invitation.objects.count(), 1)
+
+        response = self.client.post(reverse("invitations", kwargs={"investigation_slug": investigation.slug}),
+                                    data={"email": user.email})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(Invitation.objects.count(), 1)
 
 
 class InvitationAPITestCase(APITestCase):

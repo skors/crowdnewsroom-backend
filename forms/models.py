@@ -443,3 +443,6 @@ class Invitation(models.Model):
     investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
     pending = models.BooleanField
 
+    class Meta:
+        unique_together = ('user', 'investigation')
+

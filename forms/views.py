@@ -2,6 +2,7 @@ import datetime
 import uuid
 from django.contrib.auth.forms import PasswordResetForm
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
 
 from django.http import Http404, HttpResponse
 from django.utils import timezone
@@ -288,7 +289,11 @@ class InvitationList(generics.ListCreateAPIView):
         except ObjectDoesNotExist:
             user = create_and_invite_user(email, request)
 
-        invitation = Invitation.objects.create(user=user, investigation=investigation)
+        try:
+            invitation = Invitation.objects.create(user=user, investigation=investigation)
+        except IntegrityError:
+            return Response({"message": "invitation already exists"}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = self.get_serializer()
         serialized = serializer.to_representation(invitation)
         return Response(serialized, status=status.HTTP_201_CREATED)
