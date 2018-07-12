@@ -2,6 +2,7 @@ import pytz
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.utils import timezone
+from unittest.mock import patch
 
 from forms.models import Comment, UserGroup, User
 from forms.tests.factories import UserFactory, CommentFactory,\
@@ -100,7 +101,8 @@ class FormReponseListTest(TestCase):
         User.objects.create_superuser('admin@crowdnewsroom.org', 'password')
         self.client.login(email='admin@crowdnewsroom.org', password='password')
 
-    def test_deleted_comment_not_shown_in_response_list(self):
+    @patch('webpack_loader.loader.WebpackLoader.get_bundle')
+    def test_deleted_comment_not_shown_in_response_list(self, *args):
         response_list = self.client.get(make_url_for_response_list(self.form_instance.form, "inbox"))
         self.assertContains(response_list, "blup", html=True)
 
