@@ -229,3 +229,24 @@ class UserGroupAPITestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
 
         self.assertEqual(investigation.get_users(OWNER).count(), 1)
+
+    def test_remove_owner_as_admin_fails(self):
+        investigation = InvestigationFactory.create()
+        admin = UserFactory.create()
+        other_owner = UserFactory.create()
+
+        investigation.add_user(admin, ADMIN)
+        investigation.add_user(other_owner, OWNER)
+
+        self.assertEqual(investigation.get_users(OWNER).count(), 1)
+
+        self.client.force_login(admin)
+
+        url_params = {"investigation_slug": investigation.slug,
+                      "user_id": other_owner.id,
+                      "role": "O"}
+
+        response = self.client.delete(reverse("user_group_membership", kwargs=url_params))
+        self.assertEqual(response.status_code, 403)
+
+        self.assertEqual(investigation.get_users(OWNER).count(), 1)
