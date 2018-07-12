@@ -10,7 +10,7 @@ import { DataTable,
  FormGroup,
  Button } from "carbon-components-react";
 import {authorizedDELETE, authorizedFetch, authorizedPOST} from "./api";
-import {assign} from "lodash";
+import {assign, snakeCase} from "lodash";
 
 
 const {
@@ -56,13 +56,13 @@ function Row({row, updateCallback, getSelectionProps}){
 function Cell({cell, row, changeUserCallback}){
   if (cell.info.header === "role") {
     if (cell.value) {
-      return <TableCell>
+      return <TableCell className={`user-${snakeCase(row.id)}`}>
         <RoleDropdown selectedRole={cell.value}
                       user={row.id}
                       updateCallback={changeUserCallback}/>
       </TableCell>
     }
-    return <TableCell><i>Invitation Pending</i></TableCell>;
+    return <TableCell className={`user-${snakeCase(row.id)}`}><i>Invitation Pending</i></TableCell>;
   }
   return <TableCell key={cell.id}>{cell.value}</TableCell>
 }
@@ -92,7 +92,7 @@ const renderTableWithUpdate = (updateCallback, removeUsers) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => <Row key={row.id} row={row} updateCallback={updateCallback} getSelectionProps={getSelectionProps}/>)}
+          {rows.map(row => <Row data-id={row.id} key={row.id} row={row} updateCallback={updateCallback} getSelectionProps={getSelectionProps}/>)}
         </TableBody>
       </Table>
     </TableContainer>);
@@ -120,6 +120,8 @@ class InviteUser extends Component {
     return <Form onSubmit={this.submit}>
       <FormGroup legendText="Benutzer einladen">
         <TextInput
+          invalidText={this.props.error}
+          invalid={this.props.error !== null}
           labelText="Email"
           value={this.state.email}
           onChange={this.updateEmail}
@@ -145,6 +147,7 @@ class App extends Component {
         this.state = {
             users: [],
             invitations: [],
+            emailError: null,
             slug
         };
         this.updateUserRole = this.updateUserRole.bind(this);
@@ -160,8 +163,24 @@ class App extends Component {
     }
 
     inviteUser(email){
-      console.log(email);
-      authorizedPOST(`/forms/investigations/${this.state.slug}/invitations`, {body: JSON.stringify({email})}).then(this.loadInvitations);
+      const handleError = (error) => {
+        error.response.json().then(json => {
+          if (json.email){
+            this.setState({emailError: json.email[0]})
+          }
+          else {
+            const td = document.querySelector(`.user-${snakeCase(email)}`);
+            const tr = td.parentElement;
+            tr.classList.add("shake");
+            setTimeout(() => tr.classList.remove("shake"), 800)
+          }
+        });
+      }
+
+      authorizedPOST(`/forms/investigations/${this.state.slug}/invitations`, {body: JSON.stringify({email})})
+        .then(this.setState({emailError: null}))
+        .then(this.loadInvitations)
+        .catch(handleError);
     }
 
     loadUsers(){
@@ -207,7 +226,7 @@ class App extends Component {
                 headers={headers}
                 render={renderTableWithUpdate(this.updateUserRole, this.removeUsers)}/>
             <div>
-                <InviteUser inviteCallback={this.inviteUser}/>
+                <InviteUser inviteCallback={this.inviteUser} error={this.state.emailError}/>
             </div>
         </div>;
     }

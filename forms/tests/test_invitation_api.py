@@ -108,6 +108,24 @@ class InvitationAPITestCase(APITestCase):
         self.assertEqual(Invitation.objects.count(), 1)
         self.assertEqual(User.objects.count(), 3)
 
+    def test_invite_validates_email_address(self):
+        admin = UserFactory.create()
+        investigation = InvestigationFactory.create()
+        investigation.add_user(admin, "A")
+
+        self.client.force_login(admin)
+
+        # The two users are: `admin` form above
+        # and `AnonymousUser` from DRF
+        self.assertEqual(User.objects.count(), 2)
+        self.assertEqual(Invitation.objects.count(), 0)
+
+        response = self.client.post(reverse("invitations", kwargs={"investigation_slug": investigation.slug}),
+                                    data={"email": "invalid@@@"})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(Invitation.objects.count(), 0)
+        self.assertEqual(User.objects.count(), 2)
+
     def test_list_invitations(self):
         admin = UserFactory.create()
         user = UserFactory.create()

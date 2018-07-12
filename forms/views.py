@@ -1,7 +1,7 @@
 import datetime
 import uuid
 from django.contrib.auth.forms import PasswordResetForm
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import IntegrityError
 
 from django.http import Http404, HttpResponse
@@ -262,12 +262,13 @@ class InvestigationPermissions(DjangoObjectPermissions):
 
 
 def create_and_invite_user(email, request):
+    form = PasswordResetForm(data={"email": email})
+    if form.errors:
+        raise ValidationError(form.errors)
+
     user = User.objects.create(email=email, is_active=True)
     user.set_password(uuid.uuid4())
     user.save()
-
-    form = PasswordResetForm(data={"email": email})
-    form.full_clean()
     form.save(request=request,
               email_template_name="registration/set_initial_password_email.html")
     return user
@@ -287,7 +288,10 @@ class InvitationList(generics.ListCreateAPIView):
         try:
             user = User.objects.get(email=email)
         except ObjectDoesNotExist:
-            user = create_and_invite_user(email, request)
+            try:
+                user = create_and_invite_user(email, request)
+            except ValidationError as errors:
+                return Response(errors.error_dict, status.HTTP_400_BAD_REQUEST)
 
         if user in investigation.all_users:
             return Response({"message": "user is  in investigation already"}, status=status.HTTP_400_BAD_REQUEST)
