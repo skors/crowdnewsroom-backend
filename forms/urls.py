@@ -6,7 +6,8 @@ from forms.admin_views import InvestigationListView, FormResponseListView, FormR
     form_response_batch_edit, form_response_json_edit_view, UserSettingsView, \
     CommentDeleteView, InvestigationUsersView
 from forms.views import FormInstanceDetail, FormResponseCreate, InvestigationDetail, FormResponseDetail, TagList, \
-    AssigneeList, UserList, UserGroupUserList, UserGroupMembershipDelete, InvitationList, InvitationDetails
+    AssigneeList, UserList, UserGroupUserList, UserGroupMembershipDelete, InvitationList, InvitationDetails, \
+    UserInvitationList
 
 
 class BucketConverter:
@@ -33,6 +34,7 @@ urlpatterns = [
     path('investigations/<slug:investigation_slug>/groups/<role>/users/<int:user_id>', UserGroupMembershipDelete.as_view(), name="user_group_membership"),
     path('investigations/<slug:investigation_slug>/invitations', InvitationList.as_view(), name="invitations"),
     path('invitations/<int:invitation_id>', InvitationDetails.as_view(), name="invitation"),
+    path('invitations', UserInvitationList.as_view(), name="user_invitations"),
 
     path('admin/investigations', InvestigationListView.as_view(), name="investigation_list"),
     path('admin/user_settings', UserSettingsView.as_view(), name="user_settings"),

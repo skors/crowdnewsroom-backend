@@ -441,8 +441,15 @@ class Comment(models.Model):
 class Invitation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
-    pending = models.BooleanField
+    accepted = models.NullBooleanField()
 
     class Meta:
         unique_together = ('user', 'investigation')
+
+
+@receiver(models.signals.post_save, sender=Invitation)
+def add_user_to_investigation(sender, instance, created, *args, **kwargs):
+    invitation = instance
+    if invitation.accepted:
+        invitation.investigation.add_user(invitation.user, "V")
 

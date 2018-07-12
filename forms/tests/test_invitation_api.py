@@ -215,3 +215,44 @@ class InvitationAPITestCase(APITestCase):
         response = self.client.delete(reverse("invitation", kwargs={"invitation_id": invitation.id}))
         self.assertEqual(response.status_code, 403)
         self.assertEqual(Invitation.objects.count(), 1)
+
+    def test_list_for_user(self):
+        user = UserFactory.create()
+        investigation = InvestigationFactory.create()
+        invitation = Invitation.objects.create(user=user, investigation=investigation)
+
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("user_invitations"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data[0]["id"], invitation.id)
+        self.assertEqual(len(response.data), 1)
+
+    def test_user_can_accept(self):
+        user = UserFactory.create()
+        investigation = InvestigationFactory.create()
+        invitation = Invitation.objects.create(user=user, investigation=investigation)
+
+        self.client.force_login(user)
+
+        response = self.client.patch(reverse("invitation", kwargs={"invitation_id": invitation.id}),
+                                     data={"accepted": True})
+        self.assertEqual(response.status_code, 200)
+
+        self.assertQuerysetEqual(investigation.get_users("V").all(), [repr(user)])
+
+    def test_cannot_accept_invitation_for_someone_else(self):
+        admin = UserFactory.create()
+        user = UserFactory.create()
+        investigation = InvestigationFactory.create()
+        investigation.add_user(admin, "A")
+
+        invitation = Invitation.objects.create(user=user, investigation=investigation)
+
+        self.client.force_login(admin)
+
+        response = self.client.patch(reverse("invitation", kwargs={"invitation_id": invitation.id}),
+                                     data={"accepted": True})
+        self.assertEqual(response.status_code, 403)
+
+        self.assertQuerysetEqual(investigation.get_users("V").all(), [])

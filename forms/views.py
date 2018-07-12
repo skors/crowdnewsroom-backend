@@ -308,19 +308,40 @@ class InvitationList(generics.ListCreateAPIView):
 
 class InvitationPermissions(DjangoObjectPermissions):
     def has_permission(self, request, view):
-        # Since this only handles DELETE we only care about
+        # Since this only handles PATCH and DELETE we only care about
         # object permissions and not class permissions.
         # It is therefore save to return True here
         return True
 
     def has_object_permission(self, request, view, obj):
         invitation = obj
-        investigation = invitation.investigation
-        return request.user.has_perm("manage_investigation", investigation)
+        if request.method == "PATCH":
+            return invitation.user == request.user
+        elif request.method == "DELETE":
+            investigation = invitation.investigation
+            return request.user.has_perm("manage_investigation", investigation)
+        # "This should never happen"
+        return False
 
 
-class InvitationDetails(generics.DestroyAPIView):
+class UserInvitationSerializer(ModelSerializer):
+    investigation = InvestigationSerializer()
+
+    class Meta:
+        model = Invitation
+        fields = ("investigation", "id", "accepted")
+
+
+class InvitationDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset = Invitation
     lookup_url_kwarg = "invitation_id"
+    serializer_class = UserInvitationSerializer
     permission_classes = (InvitationPermissions, )
 
+
+class UserInvitationList(generics.ListAPIView):
+    serializer_class = UserInvitationSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def get_queryset(self):
+        return Invitation.objects.filter(user=self.request.user).all()
