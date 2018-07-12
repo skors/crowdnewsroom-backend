@@ -90,9 +90,6 @@ do not currently have those you can skip those test by running:
 python manage.py test --exclude-tag browsertest
 ```
 
-## License
-The source code for this project is published under [GNU AGPL License](https://github.com/correctiv/crowdnewsroom-backend/blob/master/LICENSE)
-
 ## About
 This project uses [BrowserStack](https://www.browserstack.com/) for cross-browser testing and [Crowdin](https://crowdin.com) for translations. Cheers to these tools to support non-profit and Open Source initiatives.
 
