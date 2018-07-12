@@ -141,7 +141,7 @@ class InvitationAPITestCase(APITestCase):
         invitation = Invitation.objects.create(user=user, investigation=investigation)
 
         response = self.client.get(reverse("invitations", kwargs={"investigation_slug": investigation.slug}))
-        self.assertEqual(response.data, [{"email": user.email, "id": invitation.id}])
+        self.assertEqual(response.data, [{"email": user.email, "id": invitation.id, "accepted": None}])
 
     def test_list_invitations_lists_for_investigation(self):
         admin = UserFactory.create()
@@ -157,7 +157,7 @@ class InvitationAPITestCase(APITestCase):
 
         response = self.client.get(reverse("invitations", kwargs={"investigation_slug": investigation.slug}))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, [{"email": user.email, "id": invitation.id}])
+        self.assertEqual(response.data, [{"email": user.email, "id": invitation.id, "accepted": None}])
 
     def test_remove_invitation(self):
         admin = UserFactory.create()

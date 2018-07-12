@@ -250,7 +250,7 @@ class InvitationSerializer(ModelSerializer):
 
     class Meta:
         model = Invitation
-        fields = ("email", "id")
+        fields = ("email", "id", "accepted")
 
 
 class InvestigationPermissions(DjangoObjectPermissions):

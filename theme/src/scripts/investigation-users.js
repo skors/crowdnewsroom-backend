@@ -190,8 +190,8 @@ class App extends Component {
     }
 
     loadInvitations(){
-      authorizedFetch(`/forms/investigations/${this.state.slug}/invitations`).then(users => {
-        this.setState({invitations: users});
+      authorizedFetch(`/forms/investigations/${this.state.slug}/invitations`).then(invitations => {
+        this.setState({invitations: invitations.filter(invitation => invitation.accepted === null)});
       })
     }
 
