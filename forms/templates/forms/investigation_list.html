@@ -30,7 +30,9 @@
                     <h3 class="cnr--list-header__title"><a href="{% url 'form_list' investigation.slug %}">{{investigation.name}}</a></h3>
                     <div class="cnr--list-header__actions">
                         {% if "manage_investigation" in investigation_perms %}
-                        <button class="bx--btn bx--btn--secondary">{% trans "Edit" %}</button>
+                        <a class="bx--btn bx--btn--secondary"
+                           href="{% url 'admin_investigation_users' investigation.slug %}"
+                        >{% trans "Edit" %}</a>
                         {% endif %}
                         <a class="bx--btn bx--btn--primary"
                             href="{% url 'form_list' investigation.slug %}">{% trans "View" %}</a>
