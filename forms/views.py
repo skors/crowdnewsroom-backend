@@ -289,6 +289,9 @@ class InvitationList(generics.ListCreateAPIView):
         except ObjectDoesNotExist:
             user = create_and_invite_user(email, request)
 
+        if user in investigation.all_users:
+            return Response({"message": "user is  in investigation already"}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
             invitation = Invitation.objects.create(user=user, investigation=investigation)
         except IntegrityError:

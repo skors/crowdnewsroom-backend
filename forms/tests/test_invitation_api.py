@@ -30,6 +30,22 @@ class InvitationAPITransactionTestCase(APITransactionTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(Invitation.objects.count(), 1)
 
+    def test_cannot_invite_users_that_are_members_already(self):
+        editor = UserFactory.create()
+        admin = UserFactory.create()
+        investigation = InvestigationFactory.create()
+        investigation.add_user(admin, "A")
+        investigation.add_user(editor, "E")
+
+        self.client.force_login(admin)
+
+        self.assertEqual(Invitation.objects.count(), 0)
+
+        response = self.client.post(reverse("invitations", kwargs={"investigation_slug": investigation.slug}),
+                                    data={"email": editor.email})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(Invitation.objects.count(), 0)
+
 
 class InvitationAPITestCase(APITestCase):
     def test_invite_user_unauthorized(self):
