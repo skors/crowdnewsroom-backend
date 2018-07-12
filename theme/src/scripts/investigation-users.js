@@ -201,7 +201,7 @@ class App extends Component {
                        {key: "last_name", header: "Nachname"},
                        {key: "email", header: "E-Mail"},
                        {key: "role", header: "Rolle"}];
-        return <div>
+        return <div className="cnr--datatable-overflowable">
             <DataTable
                 rows={combinedUsers}
                 headers={headers}
