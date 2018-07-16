@@ -10,7 +10,7 @@ import { DataTable,
  FormGroup,
  Button } from "carbon-components-react";
 import {authorizedDELETE, authorizedFetch, authorizedPOST} from "./api";
-import {assign, snakeCase} from "lodash";
+import {assign, snakeCase, find} from "lodash";
 
 
 const {
@@ -195,7 +195,8 @@ class App extends Component {
       })
     }
 
-    updateUserRole(userID, role){
+    updateUserRole(email, role){
+      const userID = find(this.state.users, {email}).id;
       const payload = {id: userID};
       authorizedPOST(`/forms/investigations/${this.state.slug}/groups/${role}/users`, {body: JSON.stringify(payload)})
         .then(this.loadUsers)
