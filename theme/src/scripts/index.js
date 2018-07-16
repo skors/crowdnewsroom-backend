@@ -6,8 +6,6 @@ if (module.hot) {
 
 import "babel-polyfill";
 
-import "expose-loader?charts!./charts.js";
-import "./charts.js";
 import "./closest-polyfill.js";
 
 import { Tooltip, OverflowMenu } from "carbon-components";
