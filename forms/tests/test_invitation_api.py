@@ -256,3 +256,32 @@ class InvitationAPITestCase(APITestCase):
         self.assertEqual(response.status_code, 403)
 
         self.assertQuerysetEqual(investigation.get_users("V").all(), [])
+
+    def test_cannot_accept_invitation_for_another_investigation(self):
+        user = UserFactory.create()
+        investigation = InvestigationFactory.create()
+        wrong_investigation = InvestigationFactory.create()
+
+        invitation = Invitation.objects.create(user=user, investigation=investigation)
+
+        self.client.force_login(user)
+
+        self.client.patch(reverse("invitation", kwargs={"invitation_id": invitation.id}),
+                                     data={"investigation": {"id": wrong_investigation.id},
+                                           "accepted": True},
+                                     format="json")
+
+        self.assertQuerysetEqual(wrong_investigation.get_users("V").all(), [])
+
+    def test_cannot_change_id_of_invitation(self):
+        user = UserFactory.create()
+        investigation = InvestigationFactory.create()
+
+        invitation = Invitation.objects.create(user=user, investigation=investigation)
+        self.client.force_login(user)
+
+        self.client.patch(reverse("invitation", kwargs={"invitation_id": invitation.id}),
+                                     data={"id": 123})
+
+        self.assertEqual(Invitation.objects.filter(id=123).all().count(), 0)
+        self.assertEqual(Invitation.objects.filter(id=invitation.id).all().count(), 1)

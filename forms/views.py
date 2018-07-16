@@ -325,7 +325,7 @@ class InvitationPermissions(DjangoObjectPermissions):
 
 
 class UserInvitationSerializer(ModelSerializer):
-    investigation = InvestigationSerializer()
+    investigation = InvestigationSerializer(read_only=True)
 
     class Meta:
         model = Invitation
