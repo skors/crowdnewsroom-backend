@@ -24,7 +24,8 @@ class InvestigationUserTest(APITestCase):
              "first_name": self.admin_user.first_name,
              "last_name": self.admin_user.last_name,
              "email": self.admin_user.email,
-             "role": "O"}
+             "role": "O",
+             "is_requester": True}
         ]})
 
     def test_get_users_multiple_users(self):
@@ -41,10 +42,12 @@ class InvestigationUserTest(APITestCase):
              "first_name": self.admin_user.first_name,
              "last_name": self.admin_user.last_name,
              "email": self.admin_user.email,
-             "role": "O"},
+             "role": "O",
+             "is_requester": True},
             {"id": investigation_editor.id,
              "first_name": investigation_editor.first_name,
              "last_name": investigation_editor.last_name,
              "email": investigation_editor.email,
-             "role": "E"}
+             "role": "E",
+             "is_requester": False}
         ]})

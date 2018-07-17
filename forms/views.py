@@ -167,7 +167,8 @@ class InvestigationUsersSerializer(serializers.ModelSerializer):
                        "last_name": user.last_name,
                        "email": user.email,
                        "role": user_group.role,
-                       "id": user.id
+                       "id": user.id,
+                       "is_requester": self.context["request"].user == user
                        }
 
     class Meta:
