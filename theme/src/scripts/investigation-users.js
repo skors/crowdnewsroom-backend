@@ -68,7 +68,7 @@ function Cell({cell, row, changeUserCallback}){
 }
 
 const renderTableWithUpdate = (updateCallback, removeUsers) => {
-  return ({ rows, headers, getHeaderProps, getBatchActionProps, getSelectionProps, selectedRows }) => (
+  return ({ rows, headers, getHeaderProps, getBatchActionProps, getSelectionProps, selectedRows, onInputChange }) => (
     <TableContainer>
       <TableToolbar>
         <TableBatchActions {...getBatchActionProps()}>
@@ -78,7 +78,7 @@ const renderTableWithUpdate = (updateCallback, removeUsers) => {
             Remove
           </TableBatchAction>
         </TableBatchActions>
-        <TableToolbarSearch />
+        <TableToolbarSearch onChange={onInputChange}/>
       </TableToolbar>
       <Table>
         <TableHead>
