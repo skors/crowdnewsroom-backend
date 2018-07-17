@@ -378,7 +378,7 @@ def form_response_file_view(request, *args, **kwargs):
     form = get_object_or_404(Form, slug=form_slug)
     form_response = get_object_or_404(FormResponse, id=response_id)
     if form.investigation.slug != investigation_slug or form_response.form_instance.form != form:
-        raise HttpResponse(status_code=403)
+        return HttpResponseForbidden()
 
     file = form_response.json.get(file_field)
     if not file:
