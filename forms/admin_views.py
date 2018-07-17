@@ -72,8 +72,11 @@ class InvestigationListView(LoginRequiredMixin, BreadCrumbMixin, ListView):
 
 
 class InvestigationAuthMixin(PermissionRequiredMixin, LoginRequiredMixin):
-    permission_required = 'forms.view_investigation'
+    permission_required = 'view_investigation'
     return_403 = True
+
+    def get_permission_object(self):
+        return Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
 
 
 class FormListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
@@ -436,3 +439,4 @@ class UserSettingsView(LoginRequiredMixin, BreadCrumbMixin, TemplateView):
 
 class InvestigationUsersView(InvestigationAuthMixin, TemplateView):
     template_name = "forms/investigation_users.html"
+    permission_required = "manage_investigation"
