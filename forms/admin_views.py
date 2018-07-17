@@ -265,9 +265,8 @@ class CommentDeleteView(InvestigationAuthMixin, UpdateView):
         return super().check_permissions(request)
 
 
-
 @login_required(login_url="/admin/login")
-@permission_required('forms.view_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
+@permission_required('manage_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
 def form_response_batch_edit(request, *args, **kwargs):
     action = request.POST.get("action")
     ids = [int(id) for id in request.POST.getlist("selected_responses", [])]
