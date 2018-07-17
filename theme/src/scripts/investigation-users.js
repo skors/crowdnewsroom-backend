@@ -3,13 +3,11 @@ import ReactDOM from "react-dom";
 import {
   DataTable,
   DropdownV2,
-  DropdownItem,
-  Select,
-  SelectItem,
   TextInput,
   Form,
   FormGroup,
-  Button, DataTableSkeleton
+  Button,
+  DataTableSkeleton
 } from "carbon-components-react";
 import {authorizedDELETE, authorizedFetch, authorizedPOST} from "./api";
 import {assign, snakeCase, find, endsWith} from "lodash";
@@ -150,15 +148,22 @@ class InviteUser extends Component {
 
   render() {
     return <Form onSubmit={this.submit}>
-      <FormGroup legendText="Benutzer einladen">
-        <TextInput
-          invalidText={this.props.error}
-          invalid={this.props.error !== null}
-          labelText="Email"
-          value={this.state.email}
-          onChange={this.updateEmail}
-        />
-        <Button onClick={this.submit}>Einladen</Button>
+      <FormGroup>
+        <div className="invite-users">
+          <TextInput
+            invalidText={this.props.error}
+            invalid={this.props.error !== null}
+            labelText="Email"
+            value={this.state.email}
+            onChange={this.updateEmail}
+          />
+          <div className="bx--form-item invite-users--button" >
+            <Button onClick={this.submit}>Einladen</Button>
+          </div>
+        </div>
+        <div>
+          Enter the email of the collaborator you would like to invite. This persons will receive an email and will be able to create an account.
+        </div>
       </FormGroup>
     </Form>
   }
@@ -270,14 +275,36 @@ class App extends Component {
                        {key: "last_name", header: "Nachname"},
                        {key: "email", header: "E-Mail"},
                        {key: "role", header: "Rolle"}];
-        return <div className="cnr--datatable-overflowable">
+        return <div className="investigation-users">
+          <div className="investigation-users--section">
+            Invite members of your team to help contribute to your investigation by assigning them specific permissions. Each collaborator will be able to access your project through their own Crowdnewsroom account. As the creator, you remain ultimately responsible for your project and for your team's interactions with contributors. Pick collaborators that you trust and that will do a good job working with your community. Have questions about how this works? Visit our FAQ.
+          </div>
+
+          <div className="investigation-users--section">
+            <h2>Invite a new Collaborator</h2>
+            <InviteUser inviteCallback={this.inviteUser} error={this.state.emailError}/>
+          </div>
+
+          <div className="cnr--datatable-overflowable investigation-users--section">
+            <h2>Manage the collaborators</h2>
             <DataTable
                 rows={rows}
                 headers={headers}
                 render={renderTableWithUpdate(this.updateUserRole, this.removeUsers, availableRoles)}/>
             <div>
-                <InviteUser inviteCallback={this.inviteUser} error={this.state.emailError}/>
+              <dl className="roles-list">
+                <dt className="roles-list--dt">Admin</dt>
+                <dd className="roles-list--dd">An admin can manage the investigation settings page & the collaborators </dd>
+
+                <dt className="roles-list--dt">Editor</dt>
+                <dd className="roles-list--dd">The editor can see everything about the data collected via this investigation</dd>
+
+                <dt className="roles-list--dt">Viewer</dt>
+                <dd className="roles-list--dd">A viewer can see the data collected via this investigation but is not able to modify; to sort it or to download it</dd>
+
+              </dl>
             </div>
+          </div>
         </div>;
     }
 }
