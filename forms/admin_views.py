@@ -399,7 +399,7 @@ def form_response_file_view(request, *args, **kwargs):
 
 
 @login_required(login_url="/admin/login")
-@permission_required('forms.view_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
+@permission_required('manage_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
 def form_response_json_edit_view(request, *args, **kwargs):
     form_slug = kwargs.get("form_slug")
     investigation_slug = kwargs.get("investigation_slug")
