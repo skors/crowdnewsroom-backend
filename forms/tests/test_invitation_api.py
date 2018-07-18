@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase, APITransactionTestCase
 from unittest.mock import patch
 
-from forms.models import Invitation, User
+from forms.models import Invitation, User, INVESTIGATION_ROLES
 from forms.tests.factories import InvestigationFactory, UserFactory
 
 
@@ -14,7 +14,7 @@ class InvitationAPITransactionTestCase(APITransactionTestCase):
         user = UserFactory.create()
         admin = UserFactory.create()
         investigation = InvestigationFactory.create()
-        investigation.add_user(admin, "A")
+        investigation.add_user(admin, INVESTIGATION_ROLES.ADMIN)
 
         self.client.force_login(admin)
 
@@ -34,8 +34,8 @@ class InvitationAPITransactionTestCase(APITransactionTestCase):
         editor = UserFactory.create()
         admin = UserFactory.create()
         investigation = InvestigationFactory.create()
-        investigation.add_user(admin, "A")
-        investigation.add_user(editor, "E")
+        investigation.add_user(admin, INVESTIGATION_ROLES.ADMIN)
+        investigation.add_user(editor, INVESTIGATION_ROLES.EDITOR)
 
         self.client.force_login(admin)
 
@@ -59,7 +59,7 @@ class InvitationAPITestCase(APITestCase):
     def test_invite_user_non_admin(self):
         editor = UserFactory.create()
         investigation = InvestigationFactory.create()
-        investigation.add_user(editor, "E")
+        investigation.add_user(editor, INVESTIGATION_ROLES.EDITOR)
 
         self.client.force_login(editor)
 
@@ -71,7 +71,7 @@ class InvitationAPITestCase(APITestCase):
         user = UserFactory.create()
         admin = UserFactory.create()
         investigation = InvestigationFactory.create()
-        investigation.add_user(admin, "A")
+        investigation.add_user(admin, INVESTIGATION_ROLES.ADMIN)
 
         self.client.force_login(admin)
 
@@ -92,7 +92,7 @@ class InvitationAPITestCase(APITestCase):
 
         admin = UserFactory.create()
         investigation = InvestigationFactory.create()
-        investigation.add_user(admin, "A")
+        investigation.add_user(admin, INVESTIGATION_ROLES.ADMIN)
 
         self.client.force_login(admin)
 
@@ -111,7 +111,7 @@ class InvitationAPITestCase(APITestCase):
     def test_invite_validates_email_address(self):
         admin = UserFactory.create()
         investigation = InvestigationFactory.create()
-        investigation.add_user(admin, "A")
+        investigation.add_user(admin, INVESTIGATION_ROLES.ADMIN)
 
         self.client.force_login(admin)
 
@@ -130,7 +130,7 @@ class InvitationAPITestCase(APITestCase):
         admin = UserFactory.create()
         user = UserFactory.create()
         investigation = InvestigationFactory.create()
-        investigation.add_user(admin, "A")
+        investigation.add_user(admin, INVESTIGATION_ROLES.ADMIN)
 
         self.client.force_login(admin)
 
@@ -148,7 +148,7 @@ class InvitationAPITestCase(APITestCase):
         user = UserFactory.create()
         investigation = InvestigationFactory.create()
         other_investigation = InvestigationFactory.create()
-        investigation.add_user(admin, "A")
+        investigation.add_user(admin, INVESTIGATION_ROLES.ADMIN)
 
         invitation = Invitation.objects.create(user=user, investigation=investigation)
         Invitation.objects.create(user=user, investigation=other_investigation)
@@ -164,7 +164,7 @@ class InvitationAPITestCase(APITestCase):
         user = UserFactory.create()
 
         investigation = InvestigationFactory.create()
-        investigation.add_user(admin, "A")
+        investigation.add_user(admin, INVESTIGATION_ROLES.ADMIN)
 
         invitation = Invitation.objects.create(user=user, investigation=investigation)
 
@@ -180,7 +180,7 @@ class InvitationAPITestCase(APITestCase):
 
         investigation = InvestigationFactory.create()
         other_investigation = InvestigationFactory.create()
-        investigation.add_user(admin, "A")
+        investigation.add_user(admin, INVESTIGATION_ROLES.ADMIN)
 
         invitation = Invitation.objects.create(user=user, investigation=other_investigation)
 
@@ -195,7 +195,7 @@ class InvitationAPITestCase(APITestCase):
         user = UserFactory.create()
 
         investigation = InvestigationFactory.create()
-        investigation.add_user(editor, "E")
+        investigation.add_user(editor, INVESTIGATION_ROLES.EDITOR)
 
         invitation = Invitation.objects.create(user=user, investigation=investigation)
 
@@ -245,7 +245,7 @@ class InvitationAPITestCase(APITestCase):
         admin = UserFactory.create()
         user = UserFactory.create()
         investigation = InvestigationFactory.create()
-        investigation.add_user(admin, "A")
+        investigation.add_user(admin, INVESTIGATION_ROLES.ADMIN)
 
         invitation = Invitation.objects.create(user=user, investigation=investigation)
 

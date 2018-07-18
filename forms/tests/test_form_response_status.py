@@ -2,7 +2,7 @@ import json
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from forms.models import FormResponse, UserGroup
+from forms.models import FormResponse, UserGroup, INVESTIGATION_ROLES
 from forms.tests.factories import FormResponseFactory, UserFactory
 
 
@@ -20,7 +20,7 @@ class FormReponseStatusTest(APITestCase):
         self.response = FormResponseFactory.create()
 
         admin_user_group = UserGroup.objects.filter(investigation=self.response.form_instance.form.investigation,
-                                                    role="A").first()
+                                                    role=INVESTIGATION_ROLES.ADMIN).first()
         admin_user_group.group.user_set.add(self.admin_user)
 
         self.client.force_login(self.admin_user)

@@ -1,5 +1,7 @@
 import smtplib
 import math
+
+from collections import namedtuple
 from datetime import timedelta
 
 from django.core.mail import send_mail
@@ -19,6 +21,9 @@ from django.contrib.postgres.fields import JSONField
 from django.dispatch import receiver
 from guardian.shortcuts import assign_perm, get_users_with_perms
 from django.db.models.functions import TruncDate
+
+Roles = namedtuple('Roles', ['ADMIN', 'OWNER', 'EDITOR', 'VIEWER'])
+INVESTIGATION_ROLES = Roles(ADMIN="A", OWNER="O", EDITOR="E", VIEWER="V")
 
 
 class Investigation(models.Model, UniqueSlugMixin):
@@ -102,14 +107,14 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
 
 class UserGroup(models.Model):
     ROLES = (
-        ('O', _('Owner')),
-        ('A', _('Admin')),
-        ('E', _('Editor')),
-        ('V', _('Viewer'))
+        (INVESTIGATION_ROLES.OWNER, _('Owner')),
+        (INVESTIGATION_ROLES.ADMIN, _('Admin')),
+        (INVESTIGATION_ROLES.EDITOR, _('Editor')),
+        (INVESTIGATION_ROLES.VIEWER, _('Viewer'))
     )
     investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    role = models.CharField(max_length=1, choices=ROLES, default='V')
+    role = models.CharField(max_length=1, choices=ROLES, default=INVESTIGATION_ROLES.VIEWER)
 
     def add_user(self, user):
         user_groups = UserGroup.objects.filter(investigation=self.investigation)
@@ -119,9 +124,9 @@ class UserGroup(models.Model):
 
     def assign_permissions(self):
         assign_perm("view_investigation", self.group, self.investigation)
-        if self.role in ["O", "A"]:
+        if self.role in [INVESTIGATION_ROLES.OWNER, INVESTIGATION_ROLES.ADMIN]:
             assign_perm("manage_investigation", self.group, self.investigation)
-        if self.role == "O":
+        if self.role == INVESTIGATION_ROLES.OWNER:
             assign_perm("master_investigation", self.group, self.investigation)
 
 

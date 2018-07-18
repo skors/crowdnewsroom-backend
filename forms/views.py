@@ -13,7 +13,7 @@ from rest_framework.permissions import IsAuthenticated, DjangoObjectPermissions
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 
-from .models import FormResponse, FormInstance, Investigation, Tag, User, UserGroup, Invitation
+from .models import FormResponse, FormInstance, Investigation, Tag, User, UserGroup, Invitation, INVESTIGATION_ROLES
 
 
 class InvestigationSerializer(ModelSerializer):
@@ -207,7 +207,7 @@ class UserGroupUserList(generics.ListCreateAPIView):
             raise PermissionDenied(detail="not allowed!")
 
         role = self.kwargs.get("role")
-        if role == "O" and not request.user.has_perm("master_investigation", investigation):
+        if role == INVESTIGATION_ROLES.OWNER and not request.user.has_perm("master_investigation", investigation):
             raise PermissionDenied(detail="not allowed!")
 
 
@@ -234,7 +234,7 @@ class UserGroupMembershipDelete(generics.DestroyAPIView):
             raise PermissionDenied(detail="not allowed!")
 
         role = self.kwargs.get("role")
-        if role == "O" and not request.user.has_perm("master_investigation", investigation):
+        if role == INVESTIGATION_ROLES.OWNER and not request.user.has_perm("master_investigation", investigation):
             raise PermissionDenied(detail="not allowed!")
 
 
