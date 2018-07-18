@@ -3,7 +3,7 @@ from unittest.mock import patch
 from django.test import TestCase, Client
 from django.urls import reverse
 
-from forms.models import User
+from forms.models import User, INVESTIGATION_ROLES
 from forms.tests.factories import FormInstanceFactory, UserFactory, InvestigationFactory
 
 
@@ -12,7 +12,7 @@ class FormReponseCSVDownloadTest(TestCase):
         self.form_instance = FormInstanceFactory.create()
         self.owner = UserFactory.create()
         self.investigation = self.form_instance.form.investigation
-        self.investigation.add_user(self.owner, "O")
+        self.investigation.add_user(self.owner, INVESTIGATION_ROLES.OWNER)
 
     @patch('forms.admin_views.create_form_csv', return_value=None)
     def test_file_download(self, mock_create_form_csv):
@@ -43,7 +43,7 @@ class FormReponseCSVDownloadTest(TestCase):
     def test_file_download_fails_for_wrong_investigation(self, mock_create_form_csv):
         other_owner = UserFactory.create()
         other_investigation = InvestigationFactory.create()
-        other_investigation.add_user(other_owner, "O")
+        other_investigation.add_user(other_owner, INVESTIGATION_ROLES.OWNER)
 
         self.client.force_login(other_owner)
 

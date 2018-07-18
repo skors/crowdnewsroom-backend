@@ -2,13 +2,8 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 from unittest import TestCase
 
-from forms.models import UserGroup, Investigation
+from forms.models import UserGroup, Investigation, INVESTIGATION_ROLES
 from forms.tests.factories import InvestigationFactory, UserFactory
-
-OWNER = "O"
-EDITOR = "E"
-ADMIN = "A"
-VIEWER = "V"
 
 class UserGroupTestCase(TestCase):
     def test_create_groups(self):
@@ -40,7 +35,7 @@ class UserGroupAPITestCase(APITestCase):
         investigation = InvestigationFactory.create()
         user = UserFactory.create()
 
-        investigation.add_user(user, OWNER)
+        investigation.add_user(user, INVESTIGATION_ROLES.OWNER)
 
         self.client.force_login(user)
 
@@ -53,8 +48,8 @@ class UserGroupAPITestCase(APITestCase):
         owner = UserFactory.create()
         viewer = UserFactory.create()
 
-        investigation.add_user(owner, OWNER)
-        investigation.add_user(viewer, VIEWER)
+        investigation.add_user(owner, INVESTIGATION_ROLES.OWNER)
+        investigation.add_user(viewer, INVESTIGATION_ROLES.VIEWER)
 
         self.client.force_login(owner)
 
@@ -70,9 +65,9 @@ class UserGroupAPITestCase(APITestCase):
         owner = UserFactory.create()
         viewer = UserFactory.create()
 
-        investigation.add_user(owner, OWNER)
+        investigation.add_user(owner, INVESTIGATION_ROLES.OWNER)
 
-        self.assertEqual(investigation.get_users(VIEWER).count(), 0)
+        self.assertEqual(investigation.get_users(INVESTIGATION_ROLES.VIEWER).count(), 0)
 
         self.client.force_login(owner)
 
@@ -84,17 +79,17 @@ class UserGroupAPITestCase(APITestCase):
                                             "last_name": viewer.last_name,
                                             "id": viewer.id}])
 
-        self.assertEqual(investigation.get_users(VIEWER).count(), 1)
+        self.assertEqual(investigation.get_users(INVESTIGATION_ROLES.VIEWER).count(), 1)
 
     def test_change_usergroup_for_user(self):
         investigation = InvestigationFactory.create()
         owner = UserFactory.create()
         viewer = UserFactory.create()
 
-        investigation.add_user(owner, OWNER)
-        investigation.add_user(viewer, VIEWER)
+        investigation.add_user(owner, INVESTIGATION_ROLES.OWNER)
+        investigation.add_user(viewer, INVESTIGATION_ROLES.VIEWER)
 
-        self.assertEqual(investigation.get_users(VIEWER).count(), 1)
+        self.assertEqual(investigation.get_users(INVESTIGATION_ROLES.VIEWER).count(), 1)
 
         investigation_editors = UserGroup.objects.get(investigation=investigation, role="E")
         self.assertEqual(investigation_editors.group.user_set.count(), 0)
@@ -105,17 +100,17 @@ class UserGroupAPITestCase(APITestCase):
                                     data={"id": viewer.id})
         self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(investigation.get_users(VIEWER).count(), 0)
-        self.assertEqual(investigation.get_users(EDITOR).count(), 1)
+        self.assertEqual(investigation.get_users(INVESTIGATION_ROLES.VIEWER).count(), 0)
+        self.assertEqual(investigation.get_users(INVESTIGATION_ROLES.EDITOR).count(), 1)
 
     def test_add_user_as_editor_fails(self):
         investigation = InvestigationFactory.create()
         editor = UserFactory.create()
         viewer = UserFactory.create()
 
-        investigation.add_user(editor, EDITOR)
+        investigation.add_user(editor, INVESTIGATION_ROLES.EDITOR)
 
-        self.assertEqual(investigation.get_users(EDITOR).count(), 1)
+        self.assertEqual(investigation.get_users(INVESTIGATION_ROLES.EDITOR).count(), 1)
 
         self.client.force_login(editor)
 
@@ -123,22 +118,25 @@ class UserGroupAPITestCase(APITestCase):
                                     data={"id": viewer.id})
         self.assertEqual(response.status_code, 403)
 
-        self.assertEqual(investigation.get_users(EDITOR).count(), 1)
+        self.assertEqual(investigation.get_users(INVESTIGATION_ROLES.EDITOR).count(), 1)
 
     def test_admin_cannot_manage_owners(self):
         investigation = InvestigationFactory.create()
         admin = UserFactory.create()
         viewer = UserFactory.create()
 
-        investigation.add_user(admin, ADMIN)
+        investigation.add_user(admin, INVESTIGATION_ROLES.ADMIN)
 
         self.client.force_login(admin)
 
-        response = self.client.post(reverse("user_groups", kwargs={"investigation_slug": investigation.slug, "role": "O"}),
+        response = self.client.post(reverse("user_groups",
+                                            kwargs={"investigation_slug": investigation.slug,
+                                                    "role": INVESTIGATION_ROLES.OWNER}
+                                            ),
                                     data={"id": viewer.id})
         self.assertEqual(response.status_code, 403)
 
-        investigation_owners = UserGroup.objects.get(investigation=investigation, role="O")
+        investigation_owners = UserGroup.objects.get(investigation=investigation, role=INVESTIGATION_ROLES.OWNER)
         self.assertEqual(investigation_owners.group.user_set.count(), 0)
 
     def test_owners_can_manage_owners(self):
@@ -146,57 +144,57 @@ class UserGroupAPITestCase(APITestCase):
         owner = UserFactory.create()
         viewer = UserFactory.create()
 
-        investigation.add_user(owner, OWNER)
+        investigation.add_user(owner, INVESTIGATION_ROLES.OWNER)
 
         self.client.force_login(owner)
 
-        response = self.client.post(reverse("user_groups", kwargs={"investigation_slug": investigation.slug, "role": "O"}),
+        response = self.client.post(reverse("user_groups", kwargs={"investigation_slug": investigation.slug, "role": INVESTIGATION_ROLES.OWNER}),
                                     data={"id": viewer.id})
         self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(investigation.get_users(OWNER).count(), 2)
+        self.assertEqual(investigation.get_users(INVESTIGATION_ROLES.OWNER).count(), 2)
 
     def test_remove_self(self):
         investigation = InvestigationFactory.create()
         viewer = UserFactory.create()
 
-        investigation.add_user(viewer, VIEWER)
+        investigation.add_user(viewer, INVESTIGATION_ROLES.VIEWER)
 
         self.client.force_login(viewer)
         url_params = {"investigation_slug": investigation.slug,
                       "user_id": viewer.id,
-                      "role": VIEWER}
+                      "role": INVESTIGATION_ROLES.VIEWER}
 
         response = self.client.delete(reverse("user_group_membership", kwargs=url_params))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(investigation.get_users(VIEWER).count(), 0)
+        self.assertEqual(investigation.get_users(INVESTIGATION_ROLES.VIEWER).count(), 0)
 
     def test_remove_not_allowed(self):
         investigation = InvestigationFactory.create()
         editor = UserFactory.create()
         owner = UserFactory.create()
 
-        investigation.add_user(owner, OWNER)
-        investigation.add_user(editor, EDITOR)
+        investigation.add_user(owner, INVESTIGATION_ROLES.OWNER)
+        investigation.add_user(editor, INVESTIGATION_ROLES.EDITOR)
 
         self.client.force_login(editor)
         url_params = {"investigation_slug": investigation.slug,
                       "user_id": owner.id,
-                      "role": "O"}
+                      "role": INVESTIGATION_ROLES.OWNER}
 
         response = self.client.delete(reverse("user_group_membership", kwargs=url_params))
         self.assertEqual(response.status_code, 403)
 
-        self.assertEqual(investigation.get_users(OWNER).count(), 1)
-        self.assertEqual(investigation.get_users(EDITOR).count(), 1)
+        self.assertEqual(investigation.get_users(INVESTIGATION_ROLES.OWNER).count(), 1)
+        self.assertEqual(investigation.get_users(INVESTIGATION_ROLES.EDITOR).count(), 1)
 
     def test_remove_other_user(self):
         investigation = InvestigationFactory.create()
         editor = UserFactory.create()
         owner = UserFactory.create()
 
-        investigation.add_user(owner, OWNER)
-        investigation.add_user(editor, EDITOR)
+        investigation.add_user(owner, INVESTIGATION_ROLES.OWNER)
+        investigation.add_user(editor, INVESTIGATION_ROLES.EDITOR)
 
         self.client.force_login(owner)
         url_params = {"investigation_slug": investigation.slug,
@@ -206,47 +204,47 @@ class UserGroupAPITestCase(APITestCase):
         response = self.client.delete(reverse("user_group_membership", kwargs=url_params))
         self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(investigation.get_users(OWNER).count(), 1)
-        self.assertEqual(investigation.get_users(EDITOR).count(), 0)
+        self.assertEqual(investigation.get_users(INVESTIGATION_ROLES.OWNER).count(), 1)
+        self.assertEqual(investigation.get_users(INVESTIGATION_ROLES.EDITOR).count(), 0)
 
     def test_remove_owner_as_owner_works(self):
         investigation = InvestigationFactory.create()
         owner = UserFactory.create()
         other_owner = UserFactory.create()
 
-        investigation.add_user(owner, OWNER)
-        investigation.add_user(other_owner, OWNER)
+        investigation.add_user(owner, INVESTIGATION_ROLES.OWNER)
+        investigation.add_user(other_owner, INVESTIGATION_ROLES.OWNER)
 
-        self.assertEqual(investigation.get_users(OWNER).count(), 2)
+        self.assertEqual(investigation.get_users(INVESTIGATION_ROLES.OWNER).count(), 2)
 
         self.client.force_login(owner)
 
         url_params = {"investigation_slug": investigation.slug,
                       "user_id": other_owner.id,
-                      "role": "O"}
+                      "role": INVESTIGATION_ROLES.OWNER}
 
         response = self.client.delete(reverse("user_group_membership", kwargs=url_params))
         self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(investigation.get_users(OWNER).count(), 1)
+        self.assertEqual(investigation.get_users(INVESTIGATION_ROLES.OWNER).count(), 1)
 
     def test_remove_owner_as_admin_fails(self):
         investigation = InvestigationFactory.create()
         admin = UserFactory.create()
         other_owner = UserFactory.create()
 
-        investigation.add_user(admin, ADMIN)
-        investigation.add_user(other_owner, OWNER)
+        investigation.add_user(admin, INVESTIGATION_ROLES.ADMIN)
+        investigation.add_user(other_owner, INVESTIGATION_ROLES.OWNER)
 
-        self.assertEqual(investigation.get_users(OWNER).count(), 1)
+        self.assertEqual(investigation.get_users(INVESTIGATION_ROLES.OWNER).count(), 1)
 
         self.client.force_login(admin)
 
         url_params = {"investigation_slug": investigation.slug,
                       "user_id": other_owner.id,
-                      "role": "O"}
+                      "role": INVESTIGATION_ROLES.OWNER}
 
         response = self.client.delete(reverse("user_group_membership", kwargs=url_params))
         self.assertEqual(response.status_code, 403)
 
-        self.assertEqual(investigation.get_users(OWNER).count(), 1)
+        self.assertEqual(investigation.get_users(INVESTIGATION_ROLES.OWNER).count(), 1)

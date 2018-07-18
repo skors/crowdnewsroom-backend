@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 
-from forms.models import User, FormResponse
+from forms.models import User, FormResponse, INVESTIGATION_ROLES
 from forms.tests.factories import FormResponseFactory, FormInstanceFactory, TagFactory, UserFactory, \
     InvestigationFactory, FormFactory
 
@@ -17,7 +17,7 @@ class FormReponseListViewTest(TestCase):
     def setUp(self):
         owner = UserFactory.create()
         self.investigation = InvestigationFactory.create()
-        self.investigation.add_user(owner, "O")
+        self.investigation.add_user(owner, INVESTIGATION_ROLES.OWNER)
 
         self.form = FormFactory(investigation=self.investigation)
         self.client.force_login(owner)

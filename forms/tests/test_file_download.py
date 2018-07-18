@@ -4,6 +4,7 @@ from django.http import Http404
 from django.test import TestCase
 
 from forms.admin_views import _get_file_data
+from forms.models import INVESTIGATION_ROLES
 from forms.tests.factories import FormResponseFactory, UserFactory, InvestigationFactory, FormFactory, \
     FormInstanceFactory
 
@@ -12,7 +13,7 @@ class ResponseFileDownloadTest(TestCase):
     def setUp(self):
         self.owner = UserFactory.create()
         self.investigation = InvestigationFactory.create()
-        self.investigation.add_user(self.owner, "O")
+        self.investigation.add_user(self.owner, INVESTIGATION_ROLES.OWNER)
         self.form = FormFactory.create(investigation=self.investigation)
         self.form_instance = FormInstanceFactory.create(form=self.form)
 
@@ -66,7 +67,7 @@ class ResponseFileDownloadTest(TestCase):
     def test_file_download_fails_for_wrong_user(self):
         other_owner = UserFactory.create()
         other_investigation = InvestigationFactory.create()
-        other_investigation.add_user(other_owner, "O")
+        other_investigation.add_user(other_owner, INVESTIGATION_ROLES.OWNER)
 
         form_response = FormResponseFactory.create(json={"file_field": ["data:image/png;base64,abc123"]},
                                                    form_instance=self.form_instance)
@@ -79,7 +80,7 @@ class ResponseFileDownloadTest(TestCase):
     def test_file_download_fails_for_wrong_investigation(self):
         other_owner = UserFactory.create()
         other_investigation = InvestigationFactory.create()
-        other_investigation.add_user(other_owner, "O")
+        other_investigation.add_user(other_owner, INVESTIGATION_ROLES.OWNER)
 
         form_response = FormResponseFactory.create(json={"file_field": ["data:image/png;base64,abc123"]},
                                                    form_instance=self.form_instance)

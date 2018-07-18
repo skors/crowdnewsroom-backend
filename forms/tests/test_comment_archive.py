@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils import timezone
 from unittest.mock import patch
 
-from forms.models import Comment, UserGroup, User
+from forms.models import Comment, UserGroup, User, INVESTIGATION_ROLES
 from forms.tests.factories import UserFactory, CommentFactory,\
     FormResponseFactory, FormInstanceFactory
 
@@ -39,7 +39,7 @@ class FormReponseAssigneesTest(TestCase):
         self.comment = CommentFactory.create(author=self.user1)
 
         admin_user_group = UserGroup.objects.filter(investigation=self.comment.form_response.form_instance.form.investigation,
-                                                    role="A").first()
+                                                    role=INVESTIGATION_ROLES.ADMIN).first()
         admin_user_group.group.user_set.add(self.user1)
         admin_user_group.group.user_set.add(self.user2)
 

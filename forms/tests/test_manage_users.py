@@ -2,7 +2,7 @@ from django.test import override_settings
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from forms.models import User, UserGroup
+from forms.models import User, UserGroup, INVESTIGATION_ROLES
 from forms.tests.factories import UserFactory, InvestigationFactory
 
 
@@ -11,7 +11,7 @@ class InvestigationUserTest(APITestCase):
     def setUp(self):
         self.admin_user = UserFactory.create()  # type: User
         self.investigation = InvestigationFactory.create()
-        self.investigation.add_user(self.admin_user, "O")
+        self.investigation.add_user(self.admin_user, INVESTIGATION_ROLES.OWNER)
 
         self.client.force_login(self.admin_user)
 
@@ -24,7 +24,7 @@ class InvestigationUserTest(APITestCase):
              "first_name": self.admin_user.first_name,
              "last_name": self.admin_user.last_name,
              "email": self.admin_user.email,
-             "role": "O",
+             "role": INVESTIGATION_ROLES.OWNER,
              "is_requester": True}
         ]})
 
@@ -42,7 +42,7 @@ class InvestigationUserTest(APITestCase):
              "first_name": self.admin_user.first_name,
              "last_name": self.admin_user.last_name,
              "email": self.admin_user.email,
-             "role": "O",
+             "role": INVESTIGATION_ROLES.OWNER,
              "is_requester": True},
             {"id": investigation_editor.id,
              "first_name": investigation_editor.first_name,
