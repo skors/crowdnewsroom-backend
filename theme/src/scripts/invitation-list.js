@@ -13,7 +13,6 @@ function InvestigationInvitation({ invitation, acceptCallback }) {
               Invitation: {invitation.investigation.name}
             </h3>
             <div className="cnr-list-header__action">
-              <button className="bx--btn bx--btn--secondary">Ignore</button>
               <Button onClick={() => acceptCallback(invitation)}>Accept</Button>
             </div>
           </div>
