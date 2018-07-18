@@ -271,6 +271,7 @@ def create_and_invite_user(email, request):
     user.set_password(uuid.uuid4())
     user.save()
     form.save(request=request,
+              from_email="no-reply@crowdnewsroom.org",
               email_template_name="registration/set_initial_password_email.html")
     return user
 
