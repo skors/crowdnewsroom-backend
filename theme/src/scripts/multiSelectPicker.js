@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { render } from 'react-dom';
 import { MultiSelect } from "carbon-components-react";
-import {authorizedFetch, authorizedPUT} from "./api";
+import {authorizedFetch, authorizedPATCH} from "./api";
 
 export default class MultiSelectPicker extends Component {
   constructor(props){
@@ -33,7 +33,7 @@ export default class MultiSelectPicker extends Component {
   }
 
   updateSelection({selectedItems}){
-    authorizedPUT(`/forms/responses/${this.props.responseId}`,
+    authorizedPATCH(`/forms/responses/${this.props.responseId}`,
       {body: JSON.stringify({[this.props.property]: selectedItems.map(item => item.id)})})
     .then(this.update);
   }

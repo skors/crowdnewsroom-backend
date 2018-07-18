@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load render_bundle from webpack_loader %}
+
+{% block title %}{% trans "Manage Investigation" %}{% endblock %}
+{% block headertitle %}{% trans "Manage Investigation" %}{% endblock %}
+
+{% block main %}
+<div class="forms-list main-content-padded">
+    <div id="investigation-details"></div>
+</div>
+
+{% render_bundle "investigationDetails" %}
+{% endblock %}

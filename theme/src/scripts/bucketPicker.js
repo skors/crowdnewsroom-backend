@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { DropdownV2, InlineNotification } from "carbon-components-react";
-import {authorizedFetch, authorizedPUT} from "./api";
+import {authorizedFetch, authorizedPATCH} from "./api";
 
 const INBOX_LABEL = gettext('Inbox');
 const VERIFIED_LABEL = gettext('Verified');
@@ -38,7 +38,7 @@ export default class BucketPicker extends Component {
   }
 
   updateSelection({selectedItem}){
-    authorizedPUT(`/forms/responses/${this.props.responseId}`,
+    authorizedPATCH(`/forms/responses/${this.props.responseId}`,
       {body: JSON.stringify({status: selectedItem.id})}
     ).then(this.update);
   }
