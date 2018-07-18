@@ -1,14 +1,19 @@
 import datetime
+import uuid
+from django.contrib.auth.forms import PasswordResetForm
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.db import IntegrityError
 
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.utils import timezone
-from rest_framework import generics, permissions, serializers
+from rest_framework import generics, permissions, serializers, status
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.permissions import DjangoObjectPermissions
-from rest_framework.relations import PrimaryKeyRelatedField
+from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticated, DjangoObjectPermissions
+from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 
-from .models import FormResponse, FormInstance, Investigation, Tag, User
+from .models import FormResponse, FormInstance, Investigation, Tag, User, UserGroup, Invitation
 
 
 class InvestigationSerializer(ModelSerializer):
@@ -135,7 +140,7 @@ class TagList(InvestigationListAPIView):
 class AssigneeSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ("first_name", "last_name", "id")
+        fields = ("first_name", "last_name", "email", "id")
 
 
 class AssigneeList(InvestigationListAPIView):
@@ -150,6 +155,194 @@ class AssigneeList(InvestigationListAPIView):
         return User.objects.filter(id__in=[user.id for user in investigation_users])
 
 
+class InvestigationUsersSerializer(serializers.ModelSerializer):
+    users = serializers.SerializerMethodField()
+
+    def get_users(self, investigation):
+        user_groups = UserGroup.objects.filter(investigation=investigation).all()
+
+        for user_group in user_groups:
+            for user in user_group.group.user_set.all():
+                yield {"first_name": user.first_name,
+                       "last_name": user.last_name,
+                       "email": user.email,
+                       "role": user_group.role,
+                       "id": user.id,
+                       "is_requester": self.context["request"].user == user
+                       }
+
+    class Meta:
+        model = Investigation
+        fields = ("users",)
+
+
+class UserList(generics.RetrieveAPIView):
+    serializer_class = InvestigationUsersSerializer
+    lookup_url_kwarg = "investigation_slug"
+    queryset = Investigation
+    lookup_field = "slug"
+
+
+class UserGroupUserList(generics.ListCreateAPIView):
+    serializer_class = AssigneeSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        user_group = UserGroup.objects.get(investigation__slug=self.kwargs.get("investigation_slug"),
+                                           role=self.kwargs.get("role"))
+        return User.objects.filter(groups=user_group.group)
+
+    def create(self, request, *args, **kwargs):
+        user_group = UserGroup.objects.get(investigation__slug=self.kwargs.get("investigation_slug"),
+                                           role=self.kwargs.get("role"))
+        user = User.objects.get(id=request.data.get("id"))
+        user_group.add_user(user)
+        return self.get(request, *args, **kwargs)
+
+    def check_permissions(self, request):
+        super().check_permissions(request)
+
+        investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
+        if not request.user.has_perm("manage_investigation", investigation):
+            raise PermissionDenied(detail="not allowed!")
+
+        role = self.kwargs.get("role")
+        if role == "O" and not request.user.has_perm("master_investigation", investigation):
+            raise PermissionDenied(detail="not allowed!")
+
+
+class UserGroupMembershipDelete(generics.DestroyAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def delete(self, request, investigation_slug, role, user_id):
+        user_group = UserGroup.objects.get(investigation__slug=investigation_slug, role=role)
+        user = User.objects.get(id=user_id)
+        user_group.group.user_set.remove(user)
+        return HttpResponse(200)
+
+    def check_permissions(self, request):
+        super().check_permissions(request)
+
+        user_id = self.kwargs.get("user_id")
+        user = get_object_or_404(User, id=user_id)
+        if request.user == user:
+            # users can always remove themselves
+            return True
+
+        investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
+        if not request.user.has_perm("manage_investigation", investigation):
+            raise PermissionDenied(detail="not allowed!")
+
+        role = self.kwargs.get("role")
+        if role == "O" and not request.user.has_perm("master_investigation", investigation):
+            raise PermissionDenied(detail="not allowed!")
+
+
 class FormResponseCreate(generics.CreateAPIView):
     queryset = FormResponse
     serializer_class = FormResponseSerializer
+
+
+class InvitationSerializer(ModelSerializer):
+    email = serializers.SerializerMethodField()
+
+    def get_email(self, invitation):
+        return invitation.user.email
+
+    class Meta:
+        model = Invitation
+        fields = ("email", "id", "accepted")
+
+
+class InvestigationPermissions(DjangoObjectPermissions):
+    def has_permission(self, request, view):
+        investigation = Investigation.objects.get(slug=view.kwargs.get("investigation_slug"))
+        if not request.user.has_perm("manage_investigation", investigation):
+            return False
+        return True
+
+
+def create_and_invite_user(email, request):
+    form = PasswordResetForm(data={"email": email})
+    if form.errors:
+        raise ValidationError(form.errors)
+
+    user = User.objects.create(email=email, is_active=True)
+    user.set_password(uuid.uuid4())
+    user.save()
+    form.save(request=request,
+              email_template_name="registration/set_initial_password_email.html")
+    return user
+
+
+class InvitationList(generics.ListCreateAPIView):
+    serializer_class = InvitationSerializer
+    permission_classes = (InvestigationPermissions, )
+
+    def get_queryset(self):
+        investigation = get_object_or_404(Investigation, slug=self.kwargs.get("investigation_slug"))
+        return Invitation.objects.filter(investigation=investigation).all()
+
+    def create(self, request, investigation_slug):
+        investigation = get_object_or_404(Investigation, slug=investigation_slug)
+        email = request.data.get("email")
+        try:
+            user = User.objects.get(email=email)
+        except ObjectDoesNotExist:
+            try:
+                user = create_and_invite_user(email, request)
+            except ValidationError as errors:
+                return Response(errors.error_dict, status.HTTP_400_BAD_REQUEST)
+
+        if user in investigation.all_users:
+            return Response({"message": "user is  in investigation already"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            invitation = Invitation.objects.create(user=user, investigation=investigation)
+        except IntegrityError:
+            return Response({"message": "invitation already exists"}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.get_serializer()
+        serialized = serializer.to_representation(invitation)
+        return Response(serialized, status=status.HTTP_201_CREATED)
+
+
+class InvitationPermissions(DjangoObjectPermissions):
+    def has_permission(self, request, view):
+        # Since this only handles PATCH and DELETE we only care about
+        # object permissions and not class permissions.
+        # It is therefore save to return True here
+        return True
+
+    def has_object_permission(self, request, view, obj):
+        invitation = obj
+        if request.method == "PATCH":
+            return invitation.user == request.user
+        elif request.method == "DELETE":
+            investigation = invitation.investigation
+            return request.user.has_perm("manage_investigation", investigation)
+        # "This should never happen"
+        return False
+
+
+class UserInvitationSerializer(ModelSerializer):
+    investigation = InvestigationSerializer(read_only=True)
+
+    class Meta:
+        model = Invitation
+        fields = ("investigation", "id", "accepted")
+
+
+class InvitationDetails(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Invitation
+    lookup_url_kwarg = "invitation_id"
+    serializer_class = UserInvitationSerializer
+    permission_classes = (InvitationPermissions, )
+
+
+class UserInvitationList(generics.ListAPIView):
+    serializer_class = UserInvitationSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def get_queryset(self):
+        return Invitation.objects.filter(user=self.request.user).all()
