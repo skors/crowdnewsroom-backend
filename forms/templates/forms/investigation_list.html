@@ -3,6 +3,7 @@
 {% load guardian_tags %}
 {% load static %}
 {% load render_bundle from webpack_loader %}
+{% load forms_tags %}
 
 {% block title %}Investigations{% endblock %}
 {% block headertitle %}{% trans "Your Investigations" %}{% endblock %}
@@ -38,6 +39,7 @@
                             href="{% url 'form_list' investigation.slug %}">{% trans "View" %}</a>
                     </div>
                 </div>
+                <div class="investigation-meta">
                 {% with stats=investigation.submission_stats %}
                 <ul id="investigation-stats">
                     <li><i class="fas fa-chart-line text-primary"></i>
@@ -63,6 +65,18 @@
                     </li>
                 </ul>
                 {% endwith %}
+
+                {% user_role_for_investigation request.user investigation as role %}
+                <div class="investigation-meta__actions">
+                    {% if role == "O" %}
+                        <i></i>
+                    {% else %}
+                        <button class="cnr--button-unstyled"
+                                onClick="leaveInvestigation('{{investigation.slug}}', '{{ role }}', {{ request.user.id}})">
+                            Leave investigation</button>
+                    {% endif %}
+                </div>
+                </div>
             </div>
         </div>
 

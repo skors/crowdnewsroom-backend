@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { Button } from "carbon-components-react";
-import { authorizedFetch, authorizedPUT } from "./api";
+import {authorizedDELETE, authorizedFetch, authorizedPUT} from "./api";
 
 function InvestigationInvitation({ invitation, acceptCallback }) {
   return (
@@ -73,6 +73,12 @@ class App extends Component {
     );
   }
 }
+
+window.leaveInvestigation = (investigationSlug, role, userId) => {
+  authorizedDELETE(`/forms/investigations/${investigationSlug}/groups/${role}/users/${userId}`).then(() => {
+    window.location.reload();
+  })
+};
 
 const rootElement = document.getElementById("invitation-list");
 ReactDOM.render(<App />, rootElement);
