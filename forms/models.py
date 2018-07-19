@@ -45,6 +45,7 @@ class Investigation(models.Model, UniqueSlugMixin):
     methodology = models.TextField(blank=True)
     faq = models.TextField(blank=True)
     data_privacy_url = models.URLField(null=True, blank=True)
+    color = models.CharField(max_length=100, blank=True)
 
     @property
     def cover_image_url(self):
