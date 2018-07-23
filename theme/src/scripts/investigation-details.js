@@ -53,8 +53,9 @@ class App extends Component {
   }
 
   updateSlug(event) {
+    const slug = event.target.value;
     this.setState(state => (
-      {investigation: {...state.investigation, slug: event.target.value}}
+      {investigation: {...state.investigation, slug}}
     ), this.validateSlug);
   }
 
@@ -82,6 +83,7 @@ class App extends Component {
   }
 
   handleErrors(exception) {
+    Notifications.error("Something went wrong. Please check the form fields for details.");
     exception.response.json().then(errors => {
       this.setState({errors});
     });
@@ -111,13 +113,18 @@ class App extends Component {
         body: JSON.stringify(this.state.investigation)
       }).then(investigation => {
         window.location.pathname += `${investigation.slug}/users`
-      });
+      }).catch(this.handleErrors);
     }
 
   }
 
   render() {
-    const data_privacy_url_error = _.get(this.state.errors, ["data_privacy_url", "0"], false);
+    const data_privacy_url_error = _.get(this.state.errors, ["data_privacy_url", "0"]);
+    const name_error = _.get(this.state.errors, ["name", "0"]);
+    let slug_error = _.get(this.state.errors, ["slug", "0"]);
+    if (this.slugInValid) {
+      slug_error = "The slug can only contain lowercase letters and hyphens (-)";
+    }
 
     return (
       <Form>
@@ -127,6 +134,8 @@ class App extends Component {
             labelText="Name"
             value={this.state.investigation.name}
             onChange={this.updateName}
+            invalidText={name_error}
+            invalid={name_error}
           />
           <TextInput
             id="slug"
@@ -134,8 +143,8 @@ class App extends Component {
             disabled={this.isEdit}
             onChange={this.updateSlug}
             value={this.state.investigation.slug}
-            invalidText="The slug can only contain lowercase letters and hyphens (-)"
-            invalid={this.slugInValid}
+            invalidText={slug_error}
+            invalid={slug_error}
           />
 
           <FormGroup legendText="Description">

@@ -1,8 +1,13 @@
 import Noty from 'noty';
 
-const success = (text) => {
-    new Noty({text, timeout: 2000, type: "success"}).show();
-};
+const notificationFactory = (notificationType) => {
+  return (text) => {
+    new Noty({text, timeout: 2000, type: notificationType}).show();
+  }
+}
 
-export default {success};
+const success = notificationFactory("success");
+const error = notificationFactory("error");
+
+export default {success, error};
 
