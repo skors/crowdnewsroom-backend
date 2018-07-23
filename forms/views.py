@@ -13,10 +13,13 @@ from rest_framework.permissions import IsAuthenticated, DjangoObjectPermissions
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 
+from .fields import Base64ImageField
 from .models import FormResponse, FormInstance, Investigation, Tag, User, UserGroup, Invitation, INVESTIGATION_ROLES
 
 
 class InvestigationSerializer(ModelSerializer):
+    logo = Base64ImageField(required=False)
+
     class Meta:
         model = Investigation
         fields = "__all__"

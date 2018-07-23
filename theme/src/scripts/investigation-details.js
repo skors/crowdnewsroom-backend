@@ -16,6 +16,7 @@ class App extends Component {
     this.updateSlug = this.updateSlug.bind(this);
     this.updateField = this.updateField.bind(this);
     this.sendToServer = this.sendToServer.bind(this);
+    this.updateLogo = this.updateLogo.bind(this);
   }
 
   componentDidMount() {
@@ -58,10 +59,32 @@ class App extends Component {
     })
   }
 
+  updateLogo(event) {
+    function getBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+    getBase64(event.target.files[0]).then(base64File => {
+      this.setState({logo: base64File}, () => console.log(this.state));
+    });
+  }
+
   sendToServer() {
     if (this.isEdit) {
+      // this is not pretty but we want to make sure that we only
+      // send the `logo` property if the user added/changed the
+      // logo (compared to them not touching an existing one)
+      const investigation = Object.assign({}, this.state);
+      if (investigation.logo && investigation.logo.startsWith("http")) {
+        delete investigation.logo;
+      }
+
       authorizedPATCH(`/forms/investigations/${this.state.slug}`, {
-        body: JSON.stringify(this.state)
+        body: JSON.stringify(investigation)
       });
     } else {
       authorizedPOST(`/forms/investigations`, {
@@ -106,6 +129,20 @@ class App extends Component {
               onChange={this.updateField}
               value={this.state.data_privacy_url}
             />
+          </FormGroup>
+
+          <FormGroup legendText="Visual Design">
+            <div className="bx--file__container">
+              <img className="investigation-details__filepreview" src={this.state.logo} />
+              <FileUploader
+                labelTitle="Upload"
+                buttonLabel="Add file"
+                filenameStatus="edit"
+                accept={[".jpg", ".png"]}
+                name="file"
+                onChange={this.updateLogo}
+              />
+            </div>
           </FormGroup>
 
         </FormGroup>
