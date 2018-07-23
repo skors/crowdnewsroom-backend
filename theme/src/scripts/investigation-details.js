@@ -138,7 +138,7 @@ class App extends Component {
                 labelTitle="Upload"
                 buttonLabel="Add file"
                 filenameStatus="edit"
-                accept={[".jpg", ".png"]}
+                accept={[".jpg", ".png", ".gif"]}
                 name="file"
                 onChange={this.updateLogo}
               />
