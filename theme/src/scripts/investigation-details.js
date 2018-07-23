@@ -60,7 +60,7 @@ class App extends Component {
 
   sendToServer() {
     if (this.isEdit) {
-      authorizedPATCH(`/forms/investigations/${this.state.originalSlug}`, {
+      authorizedPATCH(`/forms/investigations/${this.state.slug}`, {
         body: JSON.stringify(this.state)
       });
     } else {
@@ -95,11 +95,13 @@ class App extends Component {
 
           <FormGroup legendText="Description">
             <TextArea
+              id="short_description"
               labelText="Short Description"
               onChange={this.updateField}
               value={this.state.short_description}
             />
             <TextInput
+              id="data_privacy_url"
               labelText="Data Privacy URL"
               onChange={this.updateField}
               value={this.state.data_privacy_url}
