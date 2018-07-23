@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import {Form, FormGroup, TextInput, TextArea, FileUploader, Button} from "carbon-components-react";
 import _ from "lodash";
 import {authorizedFetch, authorizedPATCH, authorizedPOST} from "./api";
+import Notifications from "./notifications";
 
 class App extends Component {
   constructor(props) {
@@ -87,6 +88,7 @@ class App extends Component {
   }
 
   handleSuccess(investigaiton){
+    Notifications.success("Successfully updated investigation.");
     this.setState({errors: {}})
   }
 
