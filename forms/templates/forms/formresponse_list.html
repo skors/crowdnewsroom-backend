@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load forms_tags %}
 {% load tz %}
+{% load guardian_tags %}
 {% load render_bundle from webpack_loader %}
 
 {% block title %}{% trans "Responses" %}{% endblock %}
@@ -110,6 +111,7 @@
       </form>
     </div>
 
+{% get_obj_perms request.user for investigation as "investigation_perms" %}
 <div class="response-container">
     <form action="batch_edit" method="POST">
         {% csrf_token %}
@@ -176,10 +178,12 @@
             <table class="bx--data-table-v2 cnr-data-table">
                 <thead>
                 <tr>
+                     {% if "manage_investigation" in investigation_perms %}
                     <th scope="col">
                         <input type="checkbox" class="bx--checkbox" id="selectAllResponsesCheckbox" />
                         <label for="selectAllResponsesCheckbox" class="bx--checkbox-label" aria-label="Select all rows"></label>
                     </th>
+                    {% endif %}
                     <th scope="col">{% trans "Email" %}</th>
                     <th scope="col">{% trans "Submission Date" %}</th>
                     <th scope="col">{% trans "Comments" %}</th>
@@ -189,10 +193,12 @@
                 <tbody>
                 {% for response in formresponse_list %}
                 <tr>
+                   {% if "manage_investigation" in investigation_perms %}
                     <td>
                         <input class="bx--checkbox" id="selectResponsesCheckbox{{response.id}}" type="checkbox" value="{{response.id}}" name="selected_responses" />
                         <label for="selectResponsesCheckbox{{response.id}}" class="bx--checkbox-label" aria-label="Select row"></label>
                     </td>
+                    {% endif %}
                     <td>
                         <a href="{% url 'response_details' investigation.slug form.slug response.id %}"
                         style="text-decoration: none">

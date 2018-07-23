@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load render_bundle from webpack_loader %}
+
+{% block title %}User Management{% endblock %}
+{% block headertitle %}{% trans "User Management" %}{% endblock %}
+
+{% block main %}
+<div class="forms-list main-content-padded">
+    <div id="user-management"></div>
+</div>
+
+{% render_bundle "investigationUsers" %}
+{% endblock %}

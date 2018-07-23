@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 from guardian.decorators import permission_required
 from guardian.mixins import PermissionRequiredMixin
-from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, TemplateView, DeleteView
 from guardian.shortcuts import get_objects_for_user
@@ -72,8 +72,11 @@ class InvestigationListView(LoginRequiredMixin, BreadCrumbMixin, ListView):
 
 
 class InvestigationAuthMixin(PermissionRequiredMixin, LoginRequiredMixin):
-    permission_required = 'forms.view_investigation'
+    permission_required = 'view_investigation'
     return_403 = True
+
+    def get_permission_object(self):
+        return Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
 
 
 class FormListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
@@ -262,9 +265,8 @@ class CommentDeleteView(InvestigationAuthMixin, UpdateView):
         return super().check_permissions(request)
 
 
-
 @login_required(login_url="/admin/login")
-@permission_required('forms.view_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
+@permission_required('manage_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
 def form_response_batch_edit(request, *args, **kwargs):
     action = request.POST.get("action")
     ids = [int(id) for id in request.POST.getlist("selected_responses", [])]
@@ -324,14 +326,14 @@ def form_response_batch_edit(request, *args, **kwargs):
 
 
 @login_required(login_url="/admin/login")
-@permission_required('forms.view_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
+@permission_required('manage_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
 def form_response_csv_view(request, *args, **kwargs):
     form_slug = kwargs.get("form_slug")
     investigation_slug = kwargs.get("investigation_slug")
 
     form = get_object_or_404(Form, slug=form_slug)
     if form.investigation.slug != investigation_slug:
-        raise HttpResponse(status_code=403)
+        return HttpResponseForbidden()
 
     filter_params = _get_filter_params(kwargs, request.GET)
 
@@ -376,7 +378,7 @@ def form_response_file_view(request, *args, **kwargs):
     form = get_object_or_404(Form, slug=form_slug)
     form_response = get_object_or_404(FormResponse, id=response_id)
     if form.investigation.slug != investigation_slug or form_response.form_instance.form != form:
-        raise HttpResponse(status_code=403)
+        return HttpResponseForbidden()
 
     file = form_response.json.get(file_field)
     if not file:
@@ -397,7 +399,7 @@ def form_response_file_view(request, *args, **kwargs):
 
 
 @login_required(login_url="/admin/login")
-@permission_required('forms.view_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
+@permission_required('manage_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
 def form_response_json_edit_view(request, *args, **kwargs):
     form_slug = kwargs.get("form_slug")
     investigation_slug = kwargs.get("investigation_slug")
@@ -432,3 +434,8 @@ def form_response_json_edit_view(request, *args, **kwargs):
 
 class UserSettingsView(LoginRequiredMixin, BreadCrumbMixin, TemplateView):
     template_name = "forms/user_settings.html"
+
+
+class InvestigationUsersView(InvestigationAuthMixin, TemplateView):
+    template_name = "forms/investigation_users.html"
+    permission_required = "manage_investigation"

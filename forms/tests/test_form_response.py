@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 
-from forms.models import FormResponse, UserGroup
+from forms.models import FormResponse, UserGroup, INVESTIGATION_ROLES
 from forms.tests.factories import FormResponseFactory, FormInstanceFactory, \
     UserFactory, TagFactory, InvestigationFactory
 
@@ -107,15 +107,34 @@ class FormReponseBatchEditTest(TestCase):
                 responses[index].append(response)
 
         user = UserFactory.create()
-        admin_user_group = UserGroup.objects.filter(investigation=investigations[0],
-                                                    role="A").first()
-        admin_user_group.group.user_set.add(user)
+
+        self.investigation = investigations[0]
+        self.investigation.add_user(user, INVESTIGATION_ROLES.ADMIN)
 
         self.responses = responses
         self.admin_user = user
 
-        self.client = Client()
         self.client.force_login(self.admin_user)
+
+    def test_assign_tags_fails_for_editor(self):
+        editor = UserFactory.create()
+        self.investigation.add_user(editor, "E")
+
+        self.client.force_login(editor)
+
+        responses = self.responses[0]
+        form = responses[0].form_instance.form
+
+        TagFactory.create(name='Pasta', slug='pasta',
+                          investigation=self.investigation)
+
+        payload = {
+            "selected_responses": [responses[3].id, responses[4].id],
+            "tag": "pasta"
+        }
+
+        response = self.client.post(make_url(form), data=payload)
+        self.assertEqual(response.status_code, 403)
 
     def test_assign_tags_multiple(self):
         responses = self.responses[0]
@@ -155,7 +174,7 @@ class FormReponseBatchEditTest(TestCase):
         responses = self.responses[0]
         form = responses[0].form_instance.form
         investigation = form.investigation
-        editor_group = UserGroup.objects.filter(investigation=investigation, role="O").first().group
+        editor_group = UserGroup.objects.filter(investigation=investigation, role=INVESTIGATION_ROLES.OWNER).first().group
         user = UserFactory.create()
         user.groups.add(editor_group)
 

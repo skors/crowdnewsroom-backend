@@ -2,6 +2,8 @@
 {% load i18n %}
 {% load guardian_tags %}
 {% load static %}
+{% load render_bundle from webpack_loader %}
+{% load forms_tags %}
 
 {% block title %}Investigations{% endblock %}
 {% block headertitle %}{% trans "Your Investigations" %}{% endblock %}
@@ -29,12 +31,15 @@
                     <h3 class="cnr--list-header__title"><a href="{% url 'form_list' investigation.slug %}">{{investigation.name}}</a></h3>
                     <div class="cnr--list-header__actions">
                         {% if "manage_investigation" in investigation_perms %}
-                        <button class="bx--btn bx--btn--secondary">{% trans "Edit" %}</button>
+                        <a class="bx--btn bx--btn--secondary"
+                           href="{% url 'admin_investigation_users' investigation.slug %}"
+                        >{% trans "Edit" %}</a>
                         {% endif %}
                         <a class="bx--btn bx--btn--primary"
                             href="{% url 'form_list' investigation.slug %}">{% trans "View" %}</a>
                     </div>
                 </div>
+                <div class="investigation-meta">
                 {% with stats=investigation.submission_stats %}
                 <ul id="investigation-stats">
                     <li><i class="fas fa-chart-line text-primary"></i>
@@ -60,12 +65,28 @@
                     </li>
                 </ul>
                 {% endwith %}
+
+                {% user_role_for_investigation request.user investigation as role %}
+                <div class="investigation-meta__actions">
+                    {% if role == "O" %}
+                        <i></i>
+                    {% else %}
+                        <button class="cnr--button-unstyled"
+                                onClick="leaveInvestigation('{{investigation.slug}}', '{{ role }}', {{ request.user.id}})">
+                            Leave investigation</button>
+                    {% endif %}
+                </div>
+                </div>
             </div>
         </div>
 
         {% endfor %}
         </div>
     </div>
+
+    <div id="invitation-list"></div>
 </div>
+
+{% render_bundle "invitationList" %}
 
 {% endblock %}

@@ -2,13 +2,16 @@
 {% load i18n %}
 {% load forms_tags %}
 {% load render_bundle from webpack_loader %}
+{% load guardian_tags %}
 
 {% block title %}{% trans "Submission Details" %}{% endblock %}
 {% block headertitle %}{% trans "Submission Details" %}{% endblock %}
 
 
 {% block main %}
+    {% get_obj_perms request.user for investigation as "investigation_perms" %}
     <div class="formresponse-details main-content-padded">
+        {% if "manage_investigation" in investigation_perms %}
         <div class="formresponse-details--actions"
              data-response-id="{{ formresponse.id }}"
              data-investigation-slug="{{ investigation.slug }}">
@@ -25,6 +28,7 @@
                 <div id="bucket-picker"></div>
             </div>
         </div>
+        {% endif %}
     </div>
 
     <div class="content-block">
@@ -46,7 +50,7 @@
                 <div class="cnr--inline-edit">
                   {% if entry.type == "text" %}
                     <span class="cnr--inline-edit__value">{{ entry.value }}</span>
-                    {% if entry.data_type == "string" %}
+                    {% if entry.data_type == "string" and "manage_investigation" in investigation_perms %}
                       <form class="cnr--inline-edit__form" action="{{formresponse.id}}/edit" method="POST">
                         {% csrf_token %}
                         <input type="text"
