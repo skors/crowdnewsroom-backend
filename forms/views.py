@@ -112,8 +112,11 @@ class FormResponseMetaSerializer(ModelSerializer):
 
 
 def get_investigation(instance):
+    """ returns this objects related investigation (used for authentication)"""
     if isinstance(instance, FormResponse):
         return instance.form_instance.form.investigation
+    if isinstance(instance, Tag):
+        return instance.investigation
 
 
 class CanEditInvestigation(permissions.BasePermission):
@@ -138,22 +141,32 @@ class FormResponseDetail(generics.RetrieveUpdateAPIView):
             serializer.save()
 
 
-class InvestigationListAPIView(generics.ListAPIView):
-    def list(self, request, *args, **kwargs):
-        investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
-        if not request.user.has_perm("view_investigation", investigation):
-            raise PermissionDenied(detail="not allowed!")
-        return super().list(request, *args, **kwargs)
-
-
 class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
         fields = "__all__"
+        read_only_fields = ("investigation",)
+
+    def create(self, validated_data, *args, **kwargs):
+        view = self.context.get("view")
+        investigation_slug = view.kwargs.get("investigation_slug")
+        investigation = get_object_or_404(Investigation, slug=investigation_slug)
+
+        tag = Tag(**validated_data)
+        tag.investigation = investigation
+        tag.save()
+        return tag
 
 
-class TagList(InvestigationListAPIView):
+class InvestigationObjectPermissions(DjangoObjectPermissions):
+    def has_permission(self, request, view):
+        investigation = Investigation.objects.get(slug=request.parser_context["kwargs"].get("investigation_slug"))
+        return request.user.has_perm("view_investigation", investigation)
+
+
+class TagList(generics.ListCreateAPIView):
     serializer_class = TagSerializer
+    permission_classes = (InvestigationObjectPermissions, )
 
     def get_queryset(self):
         investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
@@ -166,8 +179,9 @@ class AssigneeSerializer(ModelSerializer):
         fields = ("first_name", "last_name", "email", "id")
 
 
-class AssigneeList(InvestigationListAPIView):
+class AssigneeList(generics.ListAPIView):
     serializer_class = AssigneeSerializer
+    permission_classes = (InvestigationObjectPermissions, )
 
     def get_queryset(self):
         investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
@@ -407,3 +421,9 @@ class FormInstanceTemplateDetails(generics.RetrieveAPIView):
     queryset = FormInstanceTemplate.objects.all()
     serializer_class = FormInstanceDetailsTemplateSerializer
     permission_classes = (IsAuthenticated, )
+
+
+class TagEditDelete(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Tag
+    serializer_class = TagSerializer
+    permission_classes = (IsAuthenticated, CanEditInvestigation)
