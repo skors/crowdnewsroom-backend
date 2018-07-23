@@ -155,7 +155,7 @@ class App extends Component {
 
           <FormGroup legendText="Visual Design">
             <div className="bx--file__container">
-              <img className="investigation-details__filepreview" src={this.state.logo} />
+              <img className="investigation-details__filepreview" src={this.state.investigation.logo} />
               <FileUploader
                 labelTitle="Upload"
                 buttonLabel="Add file"
