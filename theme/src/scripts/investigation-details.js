@@ -99,8 +99,9 @@ class App extends Component {
       // this is not pretty but we want to make sure that we only
       // send the `logo` property if the user added/changed the
       // logo (compared to them not touching an existing one)
+      // we also do not want to send it if it is `null`
       const investigation = Object.assign({}, this.state.investigation);
-      if (investigation.logo && investigation.logo.startsWith("http")) {
+      if ((investigation.logo && investigation.logo.startsWith("http")) || investigation.logo === null) {
         delete investigation.logo;
       }
 
