@@ -4,7 +4,7 @@ from django.urls import path, register_converter
 from forms.admin_views import InvestigationListView, FormResponseListView, FormResponseDetailView, CommentAddView, \
     form_response_csv_view, FormListView, form_response_file_view, \
     form_response_batch_edit, form_response_json_edit_view, UserSettingsView, \
-    CommentDeleteView, InvestigationUsersView, InvestigationView, InvestigationCreateView
+    CommentDeleteView, InvestigationView, InvestigationCreateView
 from forms.views import FormInstanceDetail, FormResponseCreate, InvestigationDetail, FormResponseDetail, TagList, \
     AssigneeList, UserList, UserGroupUserList, UserGroupMembershipDelete, InvitationList, InvitationDetails, \
     UserInvitationList, InvestigationCreate
@@ -41,7 +41,6 @@ urlpatterns = [
     path('admin/user_settings', UserSettingsView.as_view(), name="user_settings"),
     path('admin/investigations/', InvestigationCreateView.as_view(), name="admin_investigation_new"),
     path('admin/investigations/<slug:investigation_slug>', InvestigationView.as_view(), name="admin_investigation"),
-    path('admin/investigations/<slug:investigation_slug>/users', InvestigationUsersView.as_view(), name="admin_investigation_users"),
     path('admin/investigations/<slug:investigation_slug>/forms', FormListView.as_view(), name="form_list"),
     path('admin/investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses/batch_edit', form_response_batch_edit, name="form_responses_edit"),
     path('admin/investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses',

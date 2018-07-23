@@ -1,11 +1,10 @@
 import React, {Component} from "react";
-import ReactDOM from "react-dom";
 import {Form, FormGroup, TextInput, TextArea, FileUploader, Button} from "carbon-components-react";
 import _ from "lodash";
 import {authorizedFetch, authorizedPATCH, authorizedPOST} from "./api";
 import Notifications from "./notifications";
 
-class App extends Component {
+export default class InvestigationDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -186,5 +185,3 @@ class App extends Component {
   }
 }
 
-const rootElement = document.getElementById("investigation-details");
-ReactDOM.render(<App />, rootElement);
