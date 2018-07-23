@@ -8,8 +8,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: "",
-      slug: "",
+      investigation: {name: "", slug:""},
+      errors: {}
     };
 
     this.updateName = this.updateName.bind(this);
@@ -17,6 +17,8 @@ class App extends Component {
     this.updateField = this.updateField.bind(this);
     this.sendToServer = this.sendToServer.bind(this);
     this.updateLogo = this.updateLogo.bind(this);
+    this.handleErrors = this.handleErrors.bind(this);
+    this.handleSuccess = this.handleSuccess.bind(this);
   }
 
   componentDidMount() {
@@ -24,39 +26,42 @@ class App extends Component {
     const slug = urlParts[urlParts.length - 1];
     if (slug !== "" ){
       authorizedFetch(`/forms/investigations/${slug}`).then(investigation => {
-        this.setState(investigation);
+        this.setState({investigation});
       })
     }
   }
 
   get isEdit(){
-    return this.state.id;
+    return this.state.investigation.id;
   }
 
   get slugInValid() {
-    return this.state.slug && !this.state.slug.match(/^[a-z-]+$/)
+    return this.state.investigation.slug && !this.state.investigation.slug.match(/^[a-z-]+$/)
   }
 
   updateName(event) {
-    const newState = { name: event.target.value}
+    const newProps = { name: event.target.value};
 
     if (!this.isEdit){
-      newState.slug = _.kebabCase(event.target.value)
+      newProps.slug = _.kebabCase(event.target.value)
     }
 
-    this.setState(newState);
+    this.setState(state => ({
+      investigation: {...state.investigation, ...newProps}
+    }));
   }
 
   updateSlug(event) {
-    this.setState( { slug: event.target.value },
-      this.validateSlug
-    );
+    this.setState(state => (
+      {investigation: {...state.investigation, slug: event.target.value}}
+    ), this.validateSlug);
   }
 
   updateField(event) {
-    this.setState({
-      [event.target.id]: event.target.value
-    })
+    const newProps = { [event.target.id]: event.target.value};
+    this.setState(state => ({
+      investigation: {...state.investigation, ...newProps}
+    }))
   }
 
   updateLogo(event) {
@@ -69,8 +74,20 @@ class App extends Component {
       });
     }
     getBase64(event.target.files[0]).then(base64File => {
-      this.setState({logo: base64File}, () => console.log(this.state));
+      this.setState(state => ({
+        investigation: {...state.investigation, logo: base64File}
+      }));
     });
+  }
+
+  handleErrors(exception) {
+    exception.response.json().then(errors => {
+      this.setState({errors});
+    });
+  }
+
+  handleSuccess(investigaiton){
+    this.setState({errors: {}})
   }
 
   sendToServer() {
@@ -78,17 +95,18 @@ class App extends Component {
       // this is not pretty but we want to make sure that we only
       // send the `logo` property if the user added/changed the
       // logo (compared to them not touching an existing one)
-      const investigation = Object.assign({}, this.state);
+      const investigation = Object.assign({}, this.state.investigation);
       if (investigation.logo && investigation.logo.startsWith("http")) {
         delete investigation.logo;
       }
 
-      authorizedPATCH(`/forms/investigations/${this.state.slug}`, {
+      authorizedPATCH(`/forms/investigations/${this.state.investigation.slug}`, {
         body: JSON.stringify(investigation)
-      });
+      }).then(this.handleSuccess)
+        .catch(this.handleErrors);
     } else {
       authorizedPOST(`/forms/investigations`, {
-        body: JSON.stringify(this.state)
+        body: JSON.stringify(this.state.investigation)
       }).then(investigation => {
         window.location.pathname += `${investigation.slug}/users`
       });
@@ -97,13 +115,15 @@ class App extends Component {
   }
 
   render() {
+    const data_privacy_url_error = _.get(this.state.errors, ["data_privacy_url", "0"], false);
+
     return (
       <Form>
         <FormGroup legendText="Name of your Investigation">
           <TextInput
             id="name"
             labelText="Name"
-            value={this.state.name}
+            value={this.state.investigation.name}
             onChange={this.updateName}
           />
           <TextInput
@@ -111,7 +131,7 @@ class App extends Component {
             labelText="URL of the form"
             disabled={this.isEdit}
             onChange={this.updateSlug}
-            value={this.state.slug}
+            value={this.state.investigation.slug}
             invalidText="The slug can only contain lowercase letters and hyphens (-)"
             invalid={this.slugInValid}
           />
@@ -121,13 +141,15 @@ class App extends Component {
               id="short_description"
               labelText="Short Description"
               onChange={this.updateField}
-              value={this.state.short_description}
+              value={this.state.investigation.short_description}
             />
             <TextInput
               id="data_privacy_url"
               labelText="Data Privacy URL"
+              invalidText={data_privacy_url_error}
+              invalid={data_privacy_url_error}
               onChange={this.updateField}
-              value={this.state.data_privacy_url}
+              value={this.state.investigation.data_privacy_url}
             />
           </FormGroup>
 

@@ -64,6 +64,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free-webfonts": "^1.0.6",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "^6.9.0",
     "carbon-components": "^9.1.10",
     "carbon-components-react": "^6.7.4",
