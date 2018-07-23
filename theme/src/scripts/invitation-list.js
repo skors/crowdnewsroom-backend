@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { Button } from "carbon-components-react";
-import {authorizedDELETE, authorizedFetch, authorizedPUT} from "./api";
+import {authorizedDELETE, authorizedFetch, authorizedPATCH} from "./api";
 
 function InvestigationInvitation({ invitation, acceptCallback }) {
   return (
@@ -43,7 +43,7 @@ class App extends Component {
   }
 
   acceptInvitation(invitation) {
-    authorizedPUT(`/forms/invitations/${invitation.id}`, {
+    authorizedPATCH(`/forms/invitations/${invitation.id}`, {
       body: JSON.stringify({ accepted: true })
     }).then(() => {
       window.location.reload();

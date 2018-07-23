@@ -64,6 +64,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free-webfonts": "^1.0.6",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "^6.9.0",
     "carbon-components": "^9.1.10",
     "carbon-components-react": "^6.7.4",
@@ -73,6 +74,7 @@
     "font-awesome": "^4.7.0",
     "js-cookie": "^2.2.0",
     "moment": "^2.22.1",
+    "noty": "^3.2.0-beta",
     "optimize-css-assets-webpack-plugin": "^4.0.3",
     "query-string": "5",
     "react": "^16.4.0",

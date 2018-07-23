@@ -13,22 +13,44 @@ from rest_framework.permissions import IsAuthenticated, DjangoObjectPermissions
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 
+from .fields import Base64ImageField
 from .models import FormResponse, FormInstance, Investigation, Tag, User, UserGroup, Invitation, INVESTIGATION_ROLES
 
 
 class InvestigationSerializer(ModelSerializer):
+    logo = Base64ImageField(required=False)
+
     class Meta:
         model = Investigation
         fields = "__all__"
 
 
-class InvestigationDetail(generics.RetrieveAPIView):
+class InvestigationPermissions(DjangoObjectPermissions):
+    perms_map = {
+        'GET': [],
+        'OPTIONS': [],
+        'HEAD': [],
+        'POST': [],
+        'PUT': ['manage_investigation'],
+        'PATCH': ['manage_investigation'],
+        'DELETE': ['master_investigation'],
+    }
+
+    def has_permission(self, request, view):
+        # We never want to check model-based permissions, only
+        # object-based permissions. This is why we override
+        # this method and rely on `has_object_permission` alone
+        return True
+
+
+class InvestigationDetail(generics.RetrieveUpdateDestroyAPIView):
     # TODO: This should filter to make sure to only return
     # Investigations that are published and not in draft or unlisted state
-    queryset = Investigation
+    queryset = Investigation.objects.all()
     serializer_class = InvestigationSerializer
     lookup_url_kwarg = "investigation_slug"
     lookup_field = "slug"
+    permission_classes = (InvestigationPermissions, )
 
 
 class FormSerializer(ModelSerializer):
@@ -254,7 +276,7 @@ class InvitationSerializer(ModelSerializer):
         fields = ("email", "id", "accepted")
 
 
-class InvestigationPermissions(DjangoObjectPermissions):
+class InvestigationInvitationPermissions(DjangoObjectPermissions):
     def has_permission(self, request, view):
         investigation = Investigation.objects.get(slug=view.kwargs.get("investigation_slug"))
         if not request.user.has_perm("manage_investigation", investigation):
@@ -278,7 +300,7 @@ def create_and_invite_user(email, request):
 
 class InvitationList(generics.ListCreateAPIView):
     serializer_class = InvitationSerializer
-    permission_classes = (InvestigationPermissions, )
+    permission_classes = (InvestigationInvitationPermissions, )
 
     def get_queryset(self):
         investigation = get_object_or_404(Investigation, slug=self.kwargs.get("investigation_slug"))
@@ -347,3 +369,16 @@ class UserInvitationList(generics.ListAPIView):
 
     def get_queryset(self):
         return Invitation.objects.filter(user=self.request.user).all()
+
+
+class InvestigationCreate(generics.CreateAPIView):
+    queryset = Investigation
+    serializer_class = InvestigationSerializer
+
+    permission_classes = (IsAuthenticated, )
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        new_investigation = Investigation.objects.get(id=response.data.get('id'))
+        new_investigation.add_user(request.user, "O")
+        return response
