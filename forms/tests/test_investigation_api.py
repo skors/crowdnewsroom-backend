@@ -71,6 +71,7 @@ class InvestigationAPITest(APITestCase):
                          'text': '',
                          'methodology': '',
                          'faq': '',
+                         'color': '',
                          'data_privacy_url': None}
         self.assertEqual(response.data, expected_json)
 

@@ -8,7 +8,7 @@ export default class InvestigationDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      investigation: {name: "", slug:""},
+      investigation: {name: "", slug:"", color: "#FF0000"},
       errors: {}
     };
 
@@ -148,6 +148,7 @@ export default class InvestigationDetails extends Component {
             invalidText={slug_error}
             invalid={slug_error}
           />
+        </FormGroup>
 
           <FormGroup legendText="Description">
             <TextArea
@@ -178,9 +179,20 @@ export default class InvestigationDetails extends Component {
                 onChange={this.updateLogo}
               />
             </div>
+
+            <div className="investigation-color">
+              <div className="bx--form-item investigation-color__half">
+                <input type="color"
+                       className="bx--text-input bx--text__input"
+                       value={this.state.investigation.color}
+                       onChange={this.updateField}
+                       id="color"/>
+                <label className="bx--label" htmlFor="color"> Brand Color </label>
+              </div>
+              <div className="bx--form-item investigation-color__preview investigation-color__half" style={{backgroundColor: this.state.investigation.color}} />
+            </div>
           </FormGroup>
 
-        </FormGroup>
         <Button onClick={this.sendToServer}>Submit</Button>
       </Form>
     );
