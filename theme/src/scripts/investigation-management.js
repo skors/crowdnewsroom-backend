@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { HashRouter, Route, Link } from "react-router-dom";
 import InvestigationDetails from "./investigation-details";
 import InvestigationUsers from "./investigation-users";
+import {Redirect} from "react-router";
 
 const CarbonMenuLink = ({ label, to, activeOnlyWhenExact }) => {
   return <Route
@@ -26,6 +27,9 @@ const App = () => (
           </ul>
       </nav>
       <div>
+        <Route exact path="/">
+          <Redirect to="/details" />
+        </Route>
         <Route path="/details" component={InvestigationDetails} />
         <Route path="/users" component={InvestigationUsers} />
       </div>
