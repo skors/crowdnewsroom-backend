@@ -436,13 +436,9 @@ class UserSettingsView(LoginRequiredMixin, BreadCrumbMixin, TemplateView):
     template_name = "forms/user_settings.html"
 
 
-class InvestigationUsersView(InvestigationAuthMixin, TemplateView):
-    template_name = "forms/investigation_users.html"
-    permission_required = "manage_investigation"
-
-
 class InvestigationView(InvestigationAuthMixin, TemplateView):
     template_name = "forms/investigation_details.html"
+    permission_required = "manage_investigation"
 
 
 class InvestigationCreateView(TemplateView):

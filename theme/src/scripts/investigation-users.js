@@ -177,10 +177,10 @@ function removeInvitation(invitation) {
   return authorizedDELETE(`/forms/invitations/${invitation.id}`)
 }
 
-class App extends Component {
+export default class InvestigationUsers extends Component {
     constructor(props){
         super(props);
-        const [match, slug] = window.location.pathname.match(/investigations\/([a-z-]+)\/users/);
+        const [match, slug] = window.location.pathname.match(/investigations\/([a-z-]+)/);
         this.state = {
             users: [],
             invitations: [],
@@ -308,6 +308,3 @@ class App extends Component {
         </div>;
     }
 }
-
-const rootElement = document.getElementById("user-management");
-ReactDOM.render(<App />, rootElement);

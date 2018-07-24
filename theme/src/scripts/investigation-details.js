@@ -1,11 +1,10 @@
 import React, {Component} from "react";
-import ReactDOM from "react-dom";
 import {Form, FormGroup, TextInput, TextArea, FileUploader, Button} from "carbon-components-react";
 import _ from "lodash";
 import {authorizedFetch, authorizedPATCH, authorizedPOST} from "./api";
 import Notifications from "./notifications";
 
-class App extends Component {
+export default class InvestigationDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -113,7 +112,9 @@ class App extends Component {
       authorizedPOST(`/forms/investigations`, {
         body: JSON.stringify(this.state.investigation)
       }).then(investigation => {
-        window.location.pathname += `${investigation.slug}/users`
+        const newPathname = `${window.location.pathname}${investigation.slug}`;
+        const newHash = "#/users";
+        window.location.assign(`${location.origin}${newPathname}${newHash}`)
       }).catch(this.handleErrors);
     }
 
@@ -186,5 +187,3 @@ class App extends Component {
   }
 }
 
-const rootElement = document.getElementById("investigation-details");
-ReactDOM.render(<App />, rootElement);
