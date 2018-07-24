@@ -20,7 +20,7 @@ const CarbonMenuLink = ({ label, to, activeOnlyWhenExact }) => {
 const App = () => (
   <HashRouter>
     <div>
-      <nav data-tabs className="bx--tabs" role="navigation">
+      <nav data-tabs className="bx--tabs investigation-management__tabs" role="navigation">
           <ul className="bx--tabs__nav bx--tabs__nav--hidden" role="tablist">
             <CarbonMenuLink to="/details" label="Details"/>
             <CarbonMenuLink to="/users" label="Users"/>
