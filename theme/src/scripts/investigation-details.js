@@ -112,7 +112,9 @@ export default class InvestigationDetails extends Component {
       authorizedPOST(`/forms/investigations`, {
         body: JSON.stringify(this.state.investigation)
       }).then(investigation => {
-        window.location.pathname += `${investigation.slug}/users`
+        const newPathname = `${window.location.pathname}${investigation.slug}`;
+        const newHash = "#/users";
+        window.location.assign(`${location.origin}${newPathname}${newHash}`)
       }).catch(this.handleErrors);
     }
 
