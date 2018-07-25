@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
 import { Button, TextInput } from "carbon-components-react";
 import {
   authorizedDELETE,
@@ -70,6 +70,10 @@ class Tag extends Component {
   }
 }
 
+Tag.propTypes = {
+  tag: PropTypes.object.isRequired,
+};
+
 function TagList({ tags, updateCallback }) {
   return (
     <ul className="bx--list--unordered">
@@ -84,6 +88,13 @@ function TagList({ tags, updateCallback }) {
     </ul>
   );
 }
+
+TagList.propTypes = {
+  tags: PropTypes.arrayOf(PropTypes.object).isRequired,
+  updateCallback: PropTypes.func.isRequired,
+};
+
+
 
 class AddTag extends Component {
   constructor(props) {
@@ -122,6 +133,10 @@ class AddTag extends Component {
   }
 }
 
+AddTag.propTypes = {
+  callback: PropTypes.func.isRequired,
+};
+
 export default class TagManagement extends Component {
   constructor(props) {
     super(props);
@@ -150,7 +165,6 @@ export default class TagManagement extends Component {
   loadTags() {
     authorizedFetch(`/forms/investigations/${this.state.slug}/tags`).then(
       tags => {
-        console.log("got tags", tags);
         this.setState({ tags });
       }
     );
