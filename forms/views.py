@@ -15,7 +15,7 @@ from rest_framework.serializers import ModelSerializer
 
 from .fields import Base64ImageField
 from .models import FormResponse, FormInstance, Investigation, Tag, User, UserGroup, Invitation, INVESTIGATION_ROLES, \
-    FormInstanceTemplate
+    FormInstanceTemplate, Form
 
 
 class InvestigationSerializer(ModelSerializer):
@@ -427,3 +427,40 @@ class TagEditDelete(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tag
     serializer_class = TagSerializer
     permission_classes = (IsAuthenticated, CanEditInvestigation)
+
+
+class FormInstanceSerializer(ModelSerializer):
+    class Meta:
+        model = FormInstance
+        fields = "__all__"
+        read_only_fields = ("form", "version")
+
+    def create(self, validated_data, *args, **kwargs):
+        view = self.context.get("view")
+
+        form = get_object_or_404(Form, id=view.kwargs.get("form_id"))
+
+        latest_form_instance = FormInstance.get_latest_for_form(form.slug)
+        next_version = 1 if not latest_form_instance else latest_form_instance.version + 1
+
+        form_instance = FormInstance(**validated_data)
+        form_instance.form = form
+        form_instance.version = next_version
+        form_instance.save()
+
+        return form_instance
+
+
+class FormInstancePermissions(DjangoObjectPermissions):
+    def has_permission(self, request, view):
+        form_id = view.kwargs.get("form_id")
+        form = get_object_or_404(Form, id=form_id)
+        investigation = form.investigation
+        return request.user.has_perm("manage_investigation", investigation)
+
+
+class FormInstanceCreate(generics.CreateAPIView):
+    queryset = FormInstance.objects.all()
+    serializer_class = FormInstanceSerializer
+
+    permission_classes = (IsAuthenticated, FormInstancePermissions)
