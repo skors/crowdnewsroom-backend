@@ -148,9 +148,9 @@ class InviteUser extends Component {
 
   render() {
     return <Form onSubmit={this.submit}>
-      <FormGroup>
         <div className="invite-users">
           <TextInput
+            id="invite-user"
             invalidText={this.props.error}
             invalid={this.props.error !== null}
             labelText="Email"
@@ -164,7 +164,6 @@ class InviteUser extends Component {
         <div>
           Enter the email of the collaborator you would like to invite. This persons will receive an email and will be able to create an account.
         </div>
-      </FormGroup>
     </Form>
   }
 }
