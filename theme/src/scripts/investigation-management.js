@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { HashRouter, Route, Link } from "react-router-dom";
 import InvestigationDetails from "./investigation-details";
 import InvestigationUsers from "./investigation-users";
+import InvestigationTags from "./investigation-tags";
 import {Redirect, Switch} from "react-router";
 
 const CarbonMenuLink = ({ label, to, activeOnlyWhenExact }) => {
@@ -33,12 +34,14 @@ const App = () => (
           <ul className="bx--tabs__nav bx--tabs__nav--hidden" role="tablist">
             <CarbonMenuLink to="/details" label="Details"/>
             {hasSlug() &&  <CarbonMenuLink to="/users" label="Users"/> }
+            {hasSlug() &&  <CarbonMenuLink to="/tags" label="Tags"/> }
           </ul>
       </nav>
       <div>
         <Switch>
           <Route path="/details" component={InvestigationDetails} />
           <Route path="/users" component={InvestigationUsers} />
+          <Route path="/tags" component={InvestigationTags} />
           <Route exact path="/">
             <Redirect to="/details" />
           </Route>
