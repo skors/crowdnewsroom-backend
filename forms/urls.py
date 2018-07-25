@@ -8,7 +8,7 @@ from forms.admin_views import InvestigationListView, FormResponseListView, FormR
 from forms.views import FormInstanceDetail, FormResponseCreate, InvestigationDetail, FormResponseDetail, TagList, \
     AssigneeList, UserList, UserGroupUserList, UserGroupMembershipDelete, InvitationList, InvitationDetails, \
     InvestigationCreate, UserInvitationList, FormInstanceTemplateList, FormInstanceTemplateDetails, TagEditDelete, \
-    FormInstanceCreate
+    UserInvitationList, InvestigationCreate, FormInstanceListCreate
 
 
 class BucketConverter:
@@ -40,7 +40,7 @@ urlpatterns = [
     path('templates', FormInstanceTemplateList.as_view(), name="template_list"),
     path('templates/<int:pk>', FormInstanceTemplateDetails.as_view(), name="template"),
     path('tags/<int:pk>', TagEditDelete.as_view(), name="tag_details"),
-    path('forms/<int:form_id>/form_instances', FormInstanceCreate.as_view(), name="form_forminstances"),
+    path('forms/<int:form_id>/form_instances', FormInstanceListCreate.as_view(), name="form_forminstances"),
 
     path('admin/investigations', InvestigationListView.as_view(), name="investigation_list"),
     path('admin/user_settings', UserSettingsView.as_view(), name="user_settings"),

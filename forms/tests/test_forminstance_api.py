@@ -56,3 +56,52 @@ class FormInstanceAPITest(APITestCase):
                                     format="json")
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data.get('version'), 2)
+
+
+class FormInstanceListAPITest(APITestCase):
+    def setUp(self):
+        self.investigation_owner = UserFactory.create()
+        self.investigation = InvestigationFactory.create()
+        self.form = FormFactory.create(investigation=self.investigation)
+        self.investigation.add_user(self.investigation_owner, INVESTIGATION_ROLES.OWNER)
+
+    def test_list_form_instances_needs_authorization(self):
+        response = self.client.get(make_url(self.form))
+        # should really be a 401...
+        self.assertEqual(response.status_code, 403)
+
+    def test_owner_can_list_empty(self):
+        self.client.force_login(self.investigation_owner)
+
+        response = self.client.get(make_url(self.form))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, [])
+
+    def test_owner_can_get_latest_instance(self):
+        self.client.force_login(self.investigation_owner)
+        FormInstanceFactory.create(form=self.form, version=1)
+        FormInstanceFactory.create(form=self.form, version=2)
+
+        # this is another investigation, should not appear in list
+        FormInstanceFactory.create(version=5)
+
+        response = self.client.get(make_url(self.form))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 2)
+
+    def test_owner_can_list_with_limit(self):
+        self.client.force_login(self.investigation_owner)
+        FormInstanceFactory.create(form=self.form, version=1)
+        FormInstanceFactory.create(form=self.form, version=2)
+
+        # this is another investigation, should not appear in list
+        FormInstanceFactory.create(version=5)
+
+        url = reverse("form_forminstances", kwargs={"form_id": self.form.id})
+        response = self.client.get("{}?limit=1".format(url))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data.get("results")), 1)
+        self.assertEqual(response.data.get("results")[0]["version"], 2)

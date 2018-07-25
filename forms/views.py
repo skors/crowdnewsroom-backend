@@ -9,6 +9,7 @@ from django.utils import timezone
 from rest_framework import generics, permissions, serializers, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated, DjangoObjectPermissions
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
@@ -459,8 +460,13 @@ class FormInstancePermissions(DjangoObjectPermissions):
         return request.user.has_perm("manage_investigation", investigation)
 
 
-class FormInstanceCreate(generics.CreateAPIView):
-    queryset = FormInstance.objects.all()
+class FormInstanceListCreate(generics.ListCreateAPIView):
     serializer_class = FormInstanceSerializer
-
     permission_classes = (IsAuthenticated, FormInstancePermissions)
+    pagination_class = LimitOffsetPagination
+
+    def get_queryset(self):
+        return FormInstance.objects\
+            .filter(form_id=self.kwargs.get("form_id"))\
+            .order_by("-version") \
+            .all()
