@@ -1,10 +1,10 @@
-import React from "react";
+import React, {Component} from "react";
 import ReactDOM from "react-dom";
 import {Form, FormGroup, TextInput, Button} from "carbon-components-react";
 import _ from "lodash";
 import Notifications from "./notifications";
 
-class NewInterviewer extends React.Component {
+class NewInterviewer extends Component {
   constructor(props) {
     super(props);
     this.state = {
