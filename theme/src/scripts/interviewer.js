@@ -8,11 +8,16 @@ class NewInterviewer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      interviewer: {name: ""},
+      interviewer: {name: "", slug: ""},
       errors: {}
     };
 
     this.updateName = this.updateName.bind(this);
+    this.updateSlug = this.updateSlug.bind(this);
+  }
+
+  get slugInValid() {
+    return this.state.interviewer.slug && !this.state.interviewer.slug.match(/^[a-z-]+$/)
   }
 
   get isEdit(){
@@ -29,6 +34,13 @@ class NewInterviewer extends React.Component {
     this.setState(state => ({
       interviewer: {...state.interviewer, ...newProps}
     }));
+  }
+
+  updateSlug(event) {
+    const slug = event.target.value;
+    this.setState(state => (
+      {interviewer: {...state.interviewer, slug}}
+    ), this.validateSlug);
   }
 
   handleErrors(exception) {
@@ -68,6 +80,10 @@ class NewInterviewer extends React.Component {
 
   render (){
     const name_error = _.get(this.state.errors, ["name", "0"]);
+    let slug_error = _.get(this.state.errors, ["slug", "0"]);
+    if (this.slugInValid) {
+      slug_error = "The slug can only contain lowercase letters and hyphens (-)";
+    }
     return (
       <Form>
         <FormGroup legendText="New Interviewer">
@@ -78,6 +94,15 @@ class NewInterviewer extends React.Component {
             onChange={this.updateName}
             invalidText={name_error}
             invalid={name_error}
+          />
+          <TextInput
+            id="slug"
+            labelText="URL of the form"
+            disabled={this.isEdit}
+            onChange={this.updateSlug}
+            value={this.state.interviewer.slug}
+            invalidText={slug_error}
+            invalid={slug_error}
           />
         </FormGroup>
         <Button onClick={this.sendToServer}>Choose and continue</Button>
