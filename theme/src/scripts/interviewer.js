@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import ReactDOM from "react-dom";
 import {Form, FormGroup, TextInput, Button} from "carbon-components-react";
 import _ from "lodash";
+import {authorizedFetch, authorizedPOST} from "./api";
 import Notifications from "./notifications";
 
 class NewInterviewer extends Component {
@@ -14,10 +15,23 @@ class NewInterviewer extends Component {
 
     this.updateName = this.updateName.bind(this);
     this.updateSlug = this.updateSlug.bind(this);
+    this.sendToServer = this.sendToServer.bind(this);
+    this.handleErrors = this.handleErrors.bind(this);
+    this.handleSuccess = this.handleSuccess.bind(this);
   }
 
   get slugInValid() {
     return this.state.interviewer.slug && !this.state.interviewer.slug.match(/^[a-z-]+$/)
+  }
+
+  componentDidMount() {
+    const urlParts = window.location.pathname.split("/");
+    const slug = urlParts[urlParts.length - 1];
+    if (slug !== "" ){
+      authorizedFetch(`/forms/investigations/${slug}`).then(investigation => {
+        this.setState({investigation});
+      })
+    }
   }
 
   get isEdit(){
@@ -50,32 +64,18 @@ class NewInterviewer extends Component {
     });
   }
 
-  handleSuccess(investigaiton){
-    Notifications.success("Successfully updated investigation.");
+  handleSuccess(interviewer){
+    Notifications.success("Successfully updated interviewer.");
     this.setState({errors: {}})
   }
 
   sendToServer() {
-    if (this.isEdit) {
-      // this is not pretty but we want to make sure that we only
-      // send the `logo` property if the user added/changed the
-      // logo (compared to them not touching an existing one)
-      // we also do not want to send it if it is `null`
-      const interviewer = Object.assign({}, this.state.interviewer);
-
-//      authorizedPATCH(`/forms/investigations/${this.state.investigation.slug}`, {
-//        body: JSON.stringify(investigation)
-//      }).then(this.handleSuccess)
-//        .catch(this.handleErrors);
-//    } else {
-//      authorizedPOST(`/forms/investigations`, {
-//        body: JSON.stringify(this.state.investigation)
-//      }).then(investigation => {
-//        const newPathname = `${window.location.pathname}${investigation.slug}`;
-//        const newHash = "#/users";
-//        window.location.assign(`${location.origin}${newPathname}${newHash}`)
-//      }).catch(this.handleErrors);
-    }
+    authorizedPOST(`/forms/investigations`, {
+      body: JSON.stringify(this.state.interviewer)
+    }).then(interviewer => {
+      const newPathname = `${window.location.pathname}${interviewer.slug}`;
+      window.location.assign(`${location.origin}${newPathname}`)
+    }).catch(this.handleErrors);
   }
 
   render (){
