@@ -28,8 +28,8 @@ class NewInterviewer extends Component {
     const urlParts = window.location.pathname.split("/");
     const slug = urlParts[urlParts.length - 1];
     if (slug !== "" ){
-      authorizedFetch(`/forms/investigations/${slug}`).then(investigation => {
-        this.setState({investigation});
+      authorizedFetch(`/forms/interviewers/${slug}`).then(interviewer => {
+        this.setState({interviewer});
       })
     }
   }
@@ -70,7 +70,7 @@ class NewInterviewer extends Component {
   }
 
   sendToServer() {
-    authorizedPOST(`/forms/investigations`, {
+    authorizedPOST(`/forms/interviewers`, {
       body: JSON.stringify(this.state.interviewer)
     }).then(interviewer => {
       const newPathname = `${window.location.pathname}${interviewer.slug}`;

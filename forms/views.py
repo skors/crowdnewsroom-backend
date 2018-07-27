@@ -470,3 +470,11 @@ class FormInstanceListCreate(generics.ListCreateAPIView):
             .filter(form_id=self.kwargs.get("form_id"))\
             .order_by("-version") \
             .all()
+
+class InterviewerCreate(generics.CreateAPIView):
+    serializer_class = FormSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        return response
