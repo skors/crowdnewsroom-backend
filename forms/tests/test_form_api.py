@@ -3,7 +3,7 @@ from rest_framework.test import APITestCase, APITransactionTestCase
 from unittest.mock import patch
 
 from forms.models import Invitation, User, INVESTIGATION_ROLES, Form
-from forms.tests.factories import InvestigationFactory, UserFactory
+from forms.tests.factories import InvestigationFactory, UserFactory, FormFactory
 
 
 class FormAPITestCase(APITestCase):
@@ -57,3 +57,44 @@ class FormAPITestCase(APITestCase):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(Form.objects.count(), 0)
 
+
+    def test_get_requires_login(self):
+        form = FormFactory.create()
+
+        response = self.client.get(reverse("form_details", kwargs={"form_slug": form.slug}))
+        self.assertEqual(response.status_code, 403)
+
+    def test_can_get_form(self):
+        admin = UserFactory.create()
+        investigation = InvestigationFactory.create()
+        investigation.add_user(admin, INVESTIGATION_ROLES.ADMIN)
+        form = FormFactory.create(investigation=investigation)
+
+        self.client.force_login(admin)
+
+        response = self.client.get(reverse("form_details", kwargs={"form_slug": form.slug}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_wrong_investigation(self):
+        admin = UserFactory.create()
+        investigation = InvestigationFactory.create()
+        investigation.add_user(admin, INVESTIGATION_ROLES.ADMIN)
+        form = FormFactory.create()  # this will be part of another investigation
+
+        self.client.force_login(admin)
+
+        response = self.client.get(reverse("form_details", kwargs={"form_slug": form.slug}))
+        self.assertEqual(response.status_code, 403)
+
+    def test_admin_can_edit(self):
+        admin = UserFactory.create()
+        investigation = InvestigationFactory.create()
+        investigation.add_user(admin, INVESTIGATION_ROLES.ADMIN)
+        form = FormFactory.create(investigation=investigation)
+
+        self.client.force_login(admin)
+
+        response = self.client.patch(reverse("form_details", kwargs={"form_slug": form.slug}),
+                                     data={"name": "My new Name"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["name"], "My new Name")
