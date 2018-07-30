@@ -1,8 +1,9 @@
 import React, {Component} from "react";
 import {Form, FormGroup, TextInput, Button} from "carbon-components-react";
 import _ from "lodash";
-import {authorizedFetch, authorizedPOST} from "./api";
+import {authorizedFetch, authorizedPATCH, authorizedPOST} from "./api";
 import Notifications from "./notifications";
+
 
 export default class FormDetails extends Component {
   constructor(props) {
@@ -23,16 +24,15 @@ export default class FormDetails extends Component {
     return this.state.form.slug && !this.state.form.slug.match(/^[a-z-]+$/)
   }
 
-  get investigationSlug(){
-    const pattern = /investigations\/([\w-]+)\//;
-    const [match, investigationSlug] = window.location.pathname.match(pattern);
-    return investigationSlug;
+  get urlParams(){
+    const pattern = /investigations\/([\w-]+)\/interviewers\/?([\w-]+)?/;
+    const [match, investigationSlug, formSlug] = window.location.pathname.match(pattern);
+    return {investigationSlug, formSlug}
   }
 
   componentDidMount() {
-    const urlParts = window.location.pathname.split("/");
-    const slug = urlParts[urlParts.length - 2];
-    if (slug !== "" ){
+    const slug = this.urlParams.formSlug;
+    if (slug){
       authorizedFetch(`/forms/forms/${slug}`).then(form => {
         this.setState({form});
       })
@@ -74,13 +74,29 @@ export default class FormDetails extends Component {
     this.setState({errors: {}})
   }
 
-  sendToServer() {
-    authorizedPOST(`/forms/investigations/${this.investigationSlug}/forms`, {
+  createNewForm(){
+    authorizedPOST(`/forms/investigations/${this.urlParams.investigationSlug}/forms`, {
       body: JSON.stringify(this.state.form)
     }).then(form => {
       const newPathname = `${window.location.pathname}/${form.slug}`;
       window.location.assign(`${location.origin}${newPathname}`)
     }).catch(this.handleErrors);
+  }
+
+  updateForm(){
+    authorizedPATCH(`/forms/forms/${this.urlParams.formSlug}`, {
+      body: JSON.stringify(this.state.form)
+    }).then(form => {
+      Notifications.success("Successfully updated form");
+    }).catch(this.handleErrors);
+  }
+
+  sendToServer() {
+    if (this.isEdit) {
+      this.updateForm();
+    } else {
+      this.createNewForm();
+    }
   }
 
   render (){

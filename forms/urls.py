@@ -9,7 +9,7 @@ from forms.admin_views import InvestigationListView, FormResponseListView, FormR
 from forms.views import FormInstanceDetail, FormResponseCreate, InvestigationDetail, FormResponseDetail, TagList, \
     AssigneeList, UserList, UserGroupUserList, UserGroupMembershipDelete, InvitationList, InvitationDetails, \
     InvestigationCreate, UserInvitationList, FormInstanceTemplateList, FormInstanceTemplateDetails, TagEditDelete, \
-    FormInstanceListCreate, InterviewerCreate
+    FormInstanceListCreate, FormCreate, FormDetails
 
 
 class BucketConverter:
@@ -36,14 +36,14 @@ urlpatterns = [
     path('investigations/<slug:investigation_slug>/groups/<role>/users', UserGroupUserList.as_view(), name="user_groups"),
     path('investigations/<slug:investigation_slug>/groups/<role>/users/<int:user_id>', UserGroupMembershipDelete.as_view(), name="user_group_membership"),
     path('investigations/<slug:investigation_slug>/invitations', InvitationList.as_view(), name="invitations"),
-    path('investigations/<slug:investigation_slug>/interviewers', InterviewerCreate.as_view(), name="interviewers"),
+    path('investigations/<slug:investigation_slug>/forms', FormCreate.as_view(), name="interviewers"),
     path('invitations/<int:invitation_id>', InvitationDetails.as_view(), name="invitation"),
     path('invitations', UserInvitationList.as_view(), name="user_invitations"),
     path('templates', FormInstanceTemplateList.as_view(), name="template_list"),
     path('templates/<int:pk>', FormInstanceTemplateDetails.as_view(), name="template"),
     path('tags/<int:pk>', TagEditDelete.as_view(), name="tag_details"),
+    path('forms/<slug:form_slug>', FormDetails.as_view(), name="form_details"),
     path('forms/<int:form_id>/form_instances', FormInstanceListCreate.as_view(), name="form_forminstances"),
-    path('interviewers', InterviewerCreate.as_view(), name="interviewers"),
 
     path('admin/investigations', InvestigationListView.as_view(), name="investigation_list"),
     path('admin/user_settings', UserSettingsView.as_view(), name="user_settings"),

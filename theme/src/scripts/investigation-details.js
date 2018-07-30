@@ -117,7 +117,6 @@ export default class InvestigationDetails extends Component {
         window.location.assign(`${location.origin}${newPathname}${newHash}`)
       }).catch(this.handleErrors);
     }
-
   }
 
   render() {

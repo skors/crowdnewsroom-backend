@@ -118,6 +118,8 @@ def get_investigation(instance):
         return instance.form_instance.form.investigation
     if isinstance(instance, Tag):
         return instance.investigation
+    if isinstance(instance, Form):
+        return instance.investigation
 
 
 class CanEditInvestigation(permissions.BasePermission):
@@ -497,7 +499,14 @@ class FormSerializer(ModelSerializer):
         return form
 
 
-class InterviewerCreate(generics.CreateAPIView):
+class FormCreate(generics.CreateAPIView):
     serializer_class = FormSerializer
     permission_classes = (IsAuthenticated, InvestigationObjectManagePermissions)
 
+
+class FormDetails(generics.RetrieveUpdateAPIView):
+    serializer_class = FormSerializer
+    queryset = Form
+    lookup_field = "slug"
+    lookup_url_kwarg = "form_slug"
+    permission_classes = (IsAuthenticated, CanEditInvestigation)
