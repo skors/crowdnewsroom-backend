@@ -9,13 +9,14 @@ from django.utils import timezone
 from rest_framework import generics, permissions, serializers, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated, DjangoObjectPermissions
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 
 from .fields import Base64ImageField
 from .models import FormResponse, FormInstance, Investigation, Tag, User, UserGroup, Invitation, INVESTIGATION_ROLES, \
-    FormInstanceTemplate
+    FormInstanceTemplate, Form
 
 
 class InvestigationSerializer(ModelSerializer):
@@ -427,3 +428,45 @@ class TagEditDelete(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tag
     serializer_class = TagSerializer
     permission_classes = (IsAuthenticated, CanEditInvestigation)
+
+
+class FormInstanceSerializer(ModelSerializer):
+    class Meta:
+        model = FormInstance
+        fields = "__all__"
+        read_only_fields = ("form", "version")
+
+    def create(self, validated_data, *args, **kwargs):
+        view = self.context.get("view")
+
+        form = get_object_or_404(Form, id=view.kwargs.get("form_id"))
+
+        latest_form_instance = FormInstance.get_latest_for_form(form.slug)
+        next_version = 1 if not latest_form_instance else latest_form_instance.version + 1
+
+        form_instance = FormInstance(**validated_data)
+        form_instance.form = form
+        form_instance.version = next_version
+        form_instance.save()
+
+        return form_instance
+
+
+class FormInstancePermissions(DjangoObjectPermissions):
+    def has_permission(self, request, view):
+        form_id = view.kwargs.get("form_id")
+        form = get_object_or_404(Form, id=form_id)
+        investigation = form.investigation
+        return request.user.has_perm("manage_investigation", investigation)
+
+
+class FormInstanceListCreate(generics.ListCreateAPIView):
+    serializer_class = FormInstanceSerializer
+    permission_classes = (IsAuthenticated, FormInstancePermissions)
+    pagination_class = LimitOffsetPagination
+
+    def get_queryset(self):
+        return FormInstance.objects\
+            .filter(form_id=self.kwargs.get("form_id"))\
+            .order_by("-version") \
+            .all()
