@@ -1,15 +1,14 @@
 import React, {Component} from "react";
-import ReactDOM from "react-dom";
 import {Form, FormGroup, TextInput, Button} from "carbon-components-react";
 import _ from "lodash";
 import {authorizedFetch, authorizedPOST} from "./api";
 import Notifications from "./notifications";
 
-class NewInterviewer extends Component {
+export default class FormDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      interviewer: {name: "", slug: ""},
+      form: {name: "", slug: ""},
       errors: {}
     };
 
@@ -21,11 +20,11 @@ class NewInterviewer extends Component {
   }
 
   get slugInValid() {
-    return this.state.interviewer.slug && !this.state.interviewer.slug.match(/^[a-z-]+$/)
+    return this.state.form.slug && !this.state.form.slug.match(/^[a-z-]+$/)
   }
 
   get investigationSlug(){
-    const pattern = /investigations\/([\w-]+)\//
+    const pattern = /investigations\/([\w-]+)\//;
     const [match, investigationSlug] = window.location.pathname.match(pattern);
     return investigationSlug;
   }
@@ -34,14 +33,14 @@ class NewInterviewer extends Component {
     const urlParts = window.location.pathname.split("/");
     const slug = urlParts[urlParts.length - 2];
     if (slug !== "" ){
-      authorizedFetch(`/forms/interviewers/${slug}`).then(interviewer => {
-        this.setState({interviewer});
+      authorizedFetch(`/forms/forms/${slug}`).then(form => {
+        this.setState({form});
       })
     }
   }
 
   get isEdit(){
-    return this.state.interviewer.id;
+    return this.state.form.id;
   }
 
   updateName(event) {
@@ -52,14 +51,14 @@ class NewInterviewer extends Component {
     }
 
     this.setState(state => ({
-      interviewer: {...state.interviewer, ...newProps}
+      form: {...state.form, ...newProps}
     }));
   }
 
   updateSlug(event) {
     const slug = event.target.value;
     this.setState(state => (
-      {interviewer: {...state.interviewer, slug}}
+      {form: {...state.form, slug}}
     ), this.validateSlug);
   }
 
@@ -70,16 +69,16 @@ class NewInterviewer extends Component {
     });
   }
 
-  handleSuccess(interviewer){
-    Notifications.success("Successfully updated interviewer.");
+  handleSuccess(form){
+    Notifications.success("Successfully updated form.");
     this.setState({errors: {}})
   }
 
   sendToServer() {
-    authorizedPOST(`/forms/investigations/${this.investigationSlug}/interviewers`, {
-      body: JSON.stringify(this.state.interviewer)
-    }).then(interviewer => {
-      const newPathname = `${window.location.pathname}/${interviewer.slug}`;
+    authorizedPOST(`/forms/investigations/${this.investigationSlug}/forms`, {
+      body: JSON.stringify(this.state.form)
+    }).then(form => {
+      const newPathname = `${window.location.pathname}/${form.slug}`;
       window.location.assign(`${location.origin}${newPathname}`)
     }).catch(this.handleErrors);
   }
@@ -96,7 +95,7 @@ class NewInterviewer extends Component {
           <TextInput
             id="title"
             labelText="Interviewer title"
-            value={this.state.interviewer.name}
+            value={this.state.form.name}
             onChange={this.updateName}
             invalidText={name_error}
             invalid={name_error}
@@ -106,7 +105,7 @@ class NewInterviewer extends Component {
             labelText="URL of the form"
             disabled={this.isEdit}
             onChange={this.updateSlug}
-            value={this.state.interviewer.slug}
+            value={this.state.form.slug}
             invalidText={slug_error}
             invalid={slug_error}
           />
@@ -116,6 +115,3 @@ class NewInterviewer extends Component {
     )
   }
 };
-
-const rootElement = document.getElementById("interviewer-new");
-ReactDOM.render(<NewInterviewer />, rootElement);
