@@ -24,9 +24,15 @@ class NewInterviewer extends Component {
     return this.state.interviewer.slug && !this.state.interviewer.slug.match(/^[a-z-]+$/)
   }
 
+  get investigationSlug(){
+    const pattern = /investigations\/([\w-]+)\//
+    const [match, investigationSlug] = window.location.pathname.match(pattern);
+    return investigationSlug;
+  }
+
   componentDidMount() {
     const urlParts = window.location.pathname.split("/");
-    const slug = urlParts[urlParts.length - 1];
+    const slug = urlParts[urlParts.length - 2];
     if (slug !== "" ){
       authorizedFetch(`/forms/interviewers/${slug}`).then(interviewer => {
         this.setState({interviewer});
@@ -70,10 +76,10 @@ class NewInterviewer extends Component {
   }
 
   sendToServer() {
-    authorizedPOST(`/forms/interviewers`, {
+    authorizedPOST(`/forms/investigations/${this.investigationSlug}/interviewers`, {
       body: JSON.stringify(this.state.interviewer)
     }).then(interviewer => {
-      const newPathname = `${window.location.pathname}${interviewer.slug}`;
+      const newPathname = `${window.location.pathname}/${interviewer.slug}`;
       window.location.assign(`${location.origin}${newPathname}`)
     }).catch(this.handleErrors);
   }
