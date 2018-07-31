@@ -79,7 +79,8 @@ export default class FormDetails extends Component {
       body: JSON.stringify(this.state.form)
     }).then(form => {
       const newPathname = `${window.location.pathname}/${form.slug}`;
-      window.location.assign(`${location.origin}${newPathname}`)
+      const newHash = "#/form_instance";
+      window.location.assign(`${location.origin}${newPathname}${newHash}`);
     }).catch(this.handleErrors);
   }
 
