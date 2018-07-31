@@ -4,11 +4,12 @@ from django.urls import path, register_converter
 from forms.admin_views import InvestigationListView, FormResponseListView, FormResponseDetailView, CommentAddView, \
     form_response_csv_view, FormListView, form_response_file_view, \
     form_response_batch_edit, form_response_json_edit_view, UserSettingsView, \
-    CommentDeleteView, InvestigationView, InvestigationCreateView
+    CommentDeleteView, InvestigationView, InvestigationCreateView, \
+    InterviewerView
 from forms.views import FormInstanceDetail, FormResponseCreate, InvestigationDetail, FormResponseDetail, TagList, \
     AssigneeList, UserList, UserGroupUserList, UserGroupMembershipDelete, InvitationList, InvitationDetails, \
     InvestigationCreate, UserInvitationList, FormInstanceTemplateList, FormInstanceTemplateDetails, TagEditDelete, \
-    UserInvitationList, InvestigationCreate, FormInstanceListCreate
+    FormInstanceListCreate, FormCreate, FormDetails
 
 
 class BucketConverter:
@@ -35,11 +36,13 @@ urlpatterns = [
     path('investigations/<slug:investigation_slug>/groups/<role>/users', UserGroupUserList.as_view(), name="user_groups"),
     path('investigations/<slug:investigation_slug>/groups/<role>/users/<int:user_id>', UserGroupMembershipDelete.as_view(), name="user_group_membership"),
     path('investigations/<slug:investigation_slug>/invitations', InvitationList.as_view(), name="invitations"),
+    path('investigations/<slug:investigation_slug>/forms', FormCreate.as_view(), name="interviewers"),
     path('invitations/<int:invitation_id>', InvitationDetails.as_view(), name="invitation"),
     path('invitations', UserInvitationList.as_view(), name="user_invitations"),
     path('templates', FormInstanceTemplateList.as_view(), name="template_list"),
     path('templates/<int:pk>', FormInstanceTemplateDetails.as_view(), name="template"),
     path('tags/<int:pk>', TagEditDelete.as_view(), name="tag_details"),
+    path('forms/<slug:form_slug>', FormDetails.as_view(), name="form_details"),
     path('forms/<int:form_id>/form_instances', FormInstanceListCreate.as_view(), name="form_forminstances"),
 
     path('admin/investigations', InvestigationListView.as_view(), name="investigation_list"),
@@ -47,6 +50,8 @@ urlpatterns = [
     path('admin/investigations/', InvestigationCreateView.as_view(), name="admin_investigation_new"),
     path('admin/investigations/<slug:investigation_slug>', InvestigationView.as_view(), name="admin_investigation"),
     path('admin/investigations/<slug:investigation_slug>/forms', FormListView.as_view(), name="form_list"),
+    path('admin/investigations/<slug:investigation_slug>/interviewers', InterviewerView.as_view(), name="admin_interviewer_new"),
+    path('admin/investigations/<slug:investigation_slug>/interviewers/<slug:form_slug>', InterviewerView.as_view(), name="admin_interviewer_edit"),
     path('admin/investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses/batch_edit', form_response_batch_edit, name="form_responses_edit"),
     path('admin/investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses',
          lambda r, **kwargs: HttpResponseRedirect('./responses/inbox'),

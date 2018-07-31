@@ -444,3 +444,8 @@ class InvestigationView(InvestigationAuthMixin, TemplateView):
 class InvestigationCreateView(TemplateView):
     template_name = "forms/investigation_details.html"
 
+
+class InterviewerView(InvestigationAuthMixin, TemplateView):
+    template_name = "forms/interviewer_new.html"
+    permission_required = "manage_investigation"
+

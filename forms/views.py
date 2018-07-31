@@ -55,14 +55,14 @@ class InvestigationDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (InvestigationPermissions, )
 
 
-class FormSerializer(ModelSerializer):
+class FormInstanceSerializer(ModelSerializer):
     class Meta:
         model = FormInstance
         fields = "__all__"
 
 
 class FormInstanceDetail(generics.RetrieveAPIView):
-    serializer_class = FormSerializer
+    serializer_class = FormInstanceSerializer
     lookup_url_kwarg = "form_slug"
 
     def get_object(self, *args, **kwargs):
@@ -118,6 +118,8 @@ def get_investigation(instance):
         return instance.form_instance.form.investigation
     if isinstance(instance, Tag):
         return instance.investigation
+    if isinstance(instance, Form):
+        return instance.investigation
 
 
 class CanEditInvestigation(permissions.BasePermission):
@@ -160,14 +162,24 @@ class TagSerializer(ModelSerializer):
 
 
 class InvestigationObjectPermissions(DjangoObjectPermissions):
+    permission = "manage_investigation"
+
     def has_permission(self, request, view):
         investigation = Investigation.objects.get(slug=request.parser_context["kwargs"].get("investigation_slug"))
-        return request.user.has_perm("view_investigation", investigation)
+        return request.user.has_perm(self.permission, investigation)
+
+
+class InvestigationObjectViewPermissions(InvestigationObjectPermissions):
+    permission = "view_investigation"
+
+
+class InvestigationObjectManagePermissions(InvestigationObjectPermissions):
+    permission = "manage_investigation"
 
 
 class TagList(generics.ListCreateAPIView):
     serializer_class = TagSerializer
-    permission_classes = (InvestigationObjectPermissions, )
+    permission_classes = (InvestigationObjectViewPermissions,)
 
     def get_queryset(self):
         investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
@@ -182,7 +194,7 @@ class AssigneeSerializer(ModelSerializer):
 
 class AssigneeList(generics.ListAPIView):
     serializer_class = AssigneeSerializer
-    permission_classes = (InvestigationObjectPermissions, )
+    permission_classes = (InvestigationObjectViewPermissions,)
 
     def get_queryset(self):
         investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
@@ -470,3 +482,31 @@ class FormInstanceListCreate(generics.ListCreateAPIView):
             .filter(form_id=self.kwargs.get("form_id"))\
             .order_by("-version") \
             .all()
+
+
+class FormSerializer(ModelSerializer):
+    class Meta:
+        model = Form
+        fields = "__all__"
+        read_only_fields = ("investigation", )
+
+    def create(self, validated_data, *args, **kwargs):
+        investigation_slug = self.context['view'].kwargs.get("investigation_slug")
+        investigation = get_object_or_404(Investigation, slug=investigation_slug)
+        form = Form(**validated_data)
+        form.investigation = investigation
+        form.save()
+        return form
+
+
+class FormCreate(generics.CreateAPIView):
+    serializer_class = FormSerializer
+    permission_classes = (IsAuthenticated, InvestigationObjectManagePermissions)
+
+
+class FormDetails(generics.RetrieveUpdateAPIView):
+    serializer_class = FormSerializer
+    queryset = Form
+    lookup_field = "slug"
+    lookup_url_kwarg = "form_slug"
+    permission_classes = (IsAuthenticated, CanEditInvestigation)
