@@ -143,7 +143,7 @@ class InviteUser extends Component {
 
   render() {
     return <Form onSubmit={this.submit}>
-        <div className="invite-users">
+        <div className="cnr--inline-add">
           <TextInput
             id="invite-user"
             invalidText={this.props.error}
@@ -154,7 +154,7 @@ class InviteUser extends Component {
             placeholder="email@example.org"
             onChange={this.updateEmail}
           />
-          <div className="bx--form-item invite-users--button" >
+          <div className="bx--form-item cnr--inline-add--button" >
             <Button onClick={this.submit}>Einladen</Button>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Button, TextInput } from "carbon-components-react";
+import {Button, Form, TextInput} from "carbon-components-react";
 import {
   authorizedDELETE,
   authorizedFetch,
@@ -61,8 +61,7 @@ class Tag extends Component {
 
         <button
           className="cnr--button-unstyled"
-          onClick={() => this.deleteTag(this.props.tag.id)}
-        >
+          onClick={() => this.deleteTag(this.props.tag.id)} >
           delete
         </button>
       </div>
@@ -120,15 +119,17 @@ class AddTag extends Component {
 
   render() {
     return (
-      <div>
+      <Form className="cnr--inline-add" onSubmit={this.submit}>
         <TextInput
           id="tagName"
           value={this.state.name}
           labelText="Name"
           onChange={this.updateName}
         />
-        <Button onClick={this.submit}>Add</Button>
-      </div>
+        <div className="bx--form-item cnr--inline-add--button" >
+          <Button onClick={this.submit}>Add</Button>
+        </div>
+      </Form>
     );
   }
 }
