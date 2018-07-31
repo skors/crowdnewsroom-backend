@@ -14,11 +14,29 @@
             <svg class="bx--btn__icon" width="10" height="10" viewBox="0 0 10 10"><path d="M6 4h4v2H6v4H4V6H0V4h4V0h2v4z"></path></svg>
         </a>
     </div>
-    <ul>
-    {% for form in form_list %}
-        <li><a href="{% url "form_responses" investigation.slug form.slug 'inbox' %}">{{ form }}</a></li>
-    {% endfor %}
-    </ul>
+    <div class="bx--structured-list">
+        <div class="bx--structured-list-tbody">
+
+            {% for form in form_list %}
+                <div class="bx--structured-list-row">
+                    <div class="bx--structured-list-td">
+                        <div class="cnr--list-header">
+                            <h3 class="cnr--list-header__title">
+                                <a href="{% url 'form_responses' investigation.slug form.slug 'inbox' %}">{{ form }}</a>
+                            </h3>
+                            <div class="cnr--list-header__actions">
+                                <!--TODO: Check auth-->
+                                <a class="bx--btn bx--btn--secondary"
+                                   href="{% url 'admin_interviewer_edit' investigation.slug form.slug %}">{% trans "Edit" %}</a>
+                                <a class="bx--btn bx--btn--primary"
+                                   href="{% url 'form_responses' investigation.slug form.slug 'inbox' %}">{% trans "View" %}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 
 {% endblock %}
