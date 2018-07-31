@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% load guardian_tags %}
-{% load static %}
 
 {% block title %}Investigations{% endblock %}
 {% block headertitle %}{% trans "Forms for investigation" %}{% endblock %}
@@ -25,9 +23,10 @@
                                 <a href="{% url 'form_responses' investigation.slug form.slug 'inbox' %}">{{ form }}</a>
                             </h3>
                             <div class="cnr--list-header__actions">
-                                <!--TODO: Check auth-->
+                                {% if user_can_manage_investigation %}
                                 <a class="bx--btn bx--btn--secondary"
                                    href="{% url 'admin_interviewer_edit' investigation.slug form.slug %}">{% trans "Edit" %}</a>
+                                {% endif %}
                                 <a class="bx--btn bx--btn--primary"
                                    href="{% url 'form_responses' investigation.slug form.slug 'inbox' %}">{% trans "View" %}</a>
                             </div>
