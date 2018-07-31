@@ -115,6 +115,7 @@ class AddTag extends Component {
 
   submit() {
     this.props.callback(this.state);
+    this.setState({name: "", slug: ""})
   }
 
   render() {
