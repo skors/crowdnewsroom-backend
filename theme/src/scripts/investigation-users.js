@@ -150,6 +150,8 @@ class InviteUser extends Component {
             invalid={this.props.error !== null}
             labelText="Email"
             value={this.state.email}
+            hideLabel={true }
+            placeholder="email@example.org"
             onChange={this.updateEmail}
           />
           <div className="bx--form-item invite-users--button" >

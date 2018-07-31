@@ -15,3 +15,31 @@
 
   &__half
     width: 50%
+
+.colorPicker
+  order: 2
+
+  & ~ .bx--label
+    order: 1
+
+  &--popover
+    position: absolute
+    z-index: 2
+
+  &--cover
+    position: fixed
+    top: 0px
+    right: 0px
+    bottom: 0px
+    left: 0px
+
+  &--preview-wrapper
+    display: flex
+
+  &--preview
+    width: 40px
+    border: 2px solid $brand-01
+    border-left: none
+
+  .bx--btn--secondary
+    border-right: none

@@ -81,6 +81,39 @@ a:active
     overflow-x: visible
 
 
+.cnr--two-column-form
+  .bx--fieldset > .bx--label
+    // mirror h3 styles
+    font-size: 18px
+    margin-bottom: 2.0em
+
+  .bx--form-item
+    flex-direction: row
+    align-items: center
+
+    .bx--label
+      flex: 0 0 25%
+
+  &__fileupload
+    .bx--file, .bx--file-container
+      width: auto
+      margin-top: 1em
+
+    .bx--file-container
+      padding-left: 1em
+
+
+  &__fileupload-imgwrapper
+    display: flex
+
+    &:before
+      display: block
+      content: ''
+      flex: 0 0 25%
+
+
+
+
 
 body
   display: flex
