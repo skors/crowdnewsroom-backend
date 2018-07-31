@@ -1,22 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { HashRouter, Route, Link } from "react-router-dom";
+import { HashRouter, Route } from "react-router-dom";
 import InvestigationDetails from "./investigation-details";
 import InvestigationUsers from "./investigation-users";
 import InvestigationTags from "./investigation-tags";
 import {Redirect, Switch} from "react-router";
-
-const CarbonMenuLink = ({ label, to, activeOnlyWhenExact }) => {
-  return <Route
-    path={to}
-    exact={activeOnlyWhenExact}
-    children={({match}) => (
-      <div className={match ? "bx--tabs__nav-item bx--tabs__nav-item--selected": "bx--tabs__nav-item" }>
-        <Link to={to} className="bx--tabs__nav-link" role="tab">{label}</Link>
-      </div>
-    )}
-  />
-};
+import {CarbonMenuLink} from "./utils";
 
 function getInvestigationSlug(){
   const urlParts = window.location.pathname.split("/");
