@@ -118,14 +118,14 @@ function JSONField({ fieldName, label, onChange, value }) {
     onChange({ target: { id: fieldName, value: newValue }});
   }
   return (
-    <React.Fragment>
+    <div className="bx--form-item cnr--form-item__jsoneditor">
       <FormLabel htmlFor={fieldName}>{label}</FormLabel>
       <JsonEditor id={fieldName}
                   value={value}
                   onChange={fakeEvent}
                   onError={console.error}
                   allowedModes={["tree", "code", "text"]} />
-    </React.Fragment>
+    </div>
   );
 }
 
