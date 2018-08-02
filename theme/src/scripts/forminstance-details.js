@@ -183,14 +183,14 @@ class FormInstanceEditor extends Component {
           <FormGroup legendText={gettext("Email confirmation messages")}>
             <TextArea
               id="email_template"
-              labelText={gettext("Email Temaplte")}
+              labelText={gettext("Email Template")}
               onChange={this.handleChange}
               value={this.state.email_template}
             />
 
             <TextArea
               id="email_template_html"
-              labelText={gettext("HTML Email Temaplte")}
+              labelText={gettext("HTML Email Template")}
               onChange={this.handleChange}
               value={this.state.email_template_html}
             />
