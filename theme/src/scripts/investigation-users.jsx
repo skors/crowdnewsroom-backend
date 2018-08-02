@@ -1,11 +1,9 @@
 import React, {Component} from "react";
-import ReactDOM from "react-dom";
 import {
   DataTable,
   DropdownV2,
   TextInput,
   Form,
-  FormGroup,
   Button,
   DataTableSkeleton
 } from "carbon-components-react";
@@ -37,11 +35,16 @@ const getAvailableRoles = (user) => {
     {id: "V", text: gettext("Viewer")},
   ];
   const ownerRole = {id: "O", text: "Owner"};
-  if (user.role === "O"){
+  // there can be a case where no user is passed in here because they
+  // are not found in the list. This should only be the case when
+  // they are superusers. If they are superusers they have the
+  // same permissions as investigation onwners
+  const userIsSuperuser = !user;
+  if (userIsSuperuser || user.role === "O"){
     roles.unshift(ownerRole)
   }
   return roles;
-}
+};
 
 function RoleDropdown({selectedRole, user, updateCallback, availableRoles}) {
   const initialRole = availableRoles.find(role => role.id === selectedRole);
@@ -182,6 +185,7 @@ export default class InvestigationUsers extends Component {
             invitations: [],
             emailError: null,
             currentUser: null,
+            loading: true,
             slug
         };
         this.updateUserRole = this.updateUserRole.bind(this);
@@ -192,8 +196,9 @@ export default class InvestigationUsers extends Component {
     }
 
     componentDidMount(){
-      this.loadUsers();
-      this.loadInvitations();
+      const userPromise = this.loadUsers();
+      const invitationPromise = this.loadInvitations();
+      Promise.all([userPromise, invitationPromise]).then(() => {this.setState({loading: false})})
     }
 
     inviteUser(email){
@@ -217,14 +222,14 @@ export default class InvestigationUsers extends Component {
     }
 
     loadUsers(){
-      authorizedFetch(`/forms/investigations/${this.state.slug}/users`).then(json => {
+      return authorizedFetch(`/forms/investigations/${this.state.slug}/users`).then(json => {
         const currentUser = json.users.find(user => user.is_requester);
         this.setState({users: json.users, currentUser});
       })
     }
 
     loadInvitations(){
-      authorizedFetch(`/forms/investigations/${this.state.slug}/invitations`).then(invitations => {
+      return authorizedFetch(`/forms/investigations/${this.state.slug}/invitations`).then(invitations => {
         this.setState({invitations: invitations.filter(invitation => invitation.accepted === null)});
       })
     }
@@ -251,10 +256,6 @@ export default class InvestigationUsers extends Component {
     render() {
       const combinedUsers = this.state.users.concat(this.state.invitations);
 
-      if (!combinedUsers.length || !this.state.currentUser){
-        return <DataTableSkeleton/>
-      }
-
       const rows = combinedUsers.map(user => {
         return assign({}, user, {id: user.email})
       });
@@ -280,10 +281,14 @@ export default class InvestigationUsers extends Component {
 
           <div className="cnr--datatable-overflowable investigation-users--section">
             <h2>{gettext("Manage the collaborators")}</h2>
-            <DataTable
+            {this.state.loading ?
+              <DataTableSkeleton/>
+              :
+              <DataTable
                 rows={rows}
                 headers={headers}
                 render={renderTableWithUpdate(this.updateUserRole, this.removeUsers, availableRoles, combinedUsers)}/>
+            }
             <div>
               <dl className="roles-list">
                 <dt className="roles-list--dt">{gettext("Admin")} </dt>
