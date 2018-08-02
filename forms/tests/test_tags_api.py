@@ -49,7 +49,6 @@ class TagAPITest(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, [{"id": tag.id,
                                           "name": tag.name,
-                                          "slug": tag.slug,
                                           "investigation": tag.investigation.id}])
 
     def test_add_tag(self):
@@ -57,7 +56,7 @@ class TagAPITest(APITestCase):
 
         self.assertEqual(self.investigation.tag_set.count(), 0)
 
-        response = self.client.post(make_url(self.investigation), {"name": "Test Tag", "slug": "test-tag"})
+        response = self.client.post(make_url(self.investigation), {"name": "Test Tag"})
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(self.investigation.tag_set.count(), 1)
@@ -70,7 +69,7 @@ class TagAPITest(APITestCase):
         self.assertEqual(self.investigation.tag_set.count(), 0)
         self.assertEqual(other_investigation.tag_set.count(), 0)
 
-        response = self.client.post(make_url(other_investigation), {"name": "Test Tag", "slug": "test-tag"})
+        response = self.client.post(make_url(other_investigation), {"name": "Test Tag"})
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(self.investigation.tag_set.count(), 0)

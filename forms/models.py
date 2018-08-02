@@ -54,7 +54,7 @@ class Investigation(models.Model, UniqueSlugMixin):
         return ""
 
     def tags(self):
-        return list(Tag.objects.filter(investigation=self).all())
+        return Tag.objects.filter(investigation=self).all()
 
     class Meta:
         permissions = (
@@ -205,7 +205,6 @@ class Partner(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200, unique=True)
     investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
 
     def __str__(self):

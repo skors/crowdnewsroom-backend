@@ -39,7 +39,7 @@ def _get_filter_params(kwargs, get_params):
         filter_params["json__has_key"] = has_filter
 
     if tag_filter:
-        filter_params["tags__slug"] = tag_filter
+        filter_params["tags__id"] = tag_filter
 
     if email_filter:
         filter_params["json__email__icontains"] = email_filter
@@ -285,12 +285,12 @@ def form_response_batch_edit(request, *args, **kwargs):
 
     # update tags for all selected form responses
     try:
-        t_slug = request.POST.get("tag")
-        if t_slug == "clear_tags":
+        tag_id = request.POST.get("tag")
+        if tag_id == "clear_tags":
             for form_response in form_responses:
                 form_response.tags.clear()
         else:
-            tag = Tag.objects.filter(investigation=investigation).get(slug=t_slug)
+            tag = Tag.objects.filter(investigation=investigation).get(id=tag_id)
             for form_response in form_responses:
                 form_response.tags.add(tag)
     except ObjectDoesNotExist:

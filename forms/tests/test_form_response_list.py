@@ -41,12 +41,12 @@ class FormReponseListViewTest(TestCase):
 
     def test_tag_filters(self, *args):
         form = self.form_instance.form
-        tag = TagFactory.create(investigation=form.investigation, name="Avocado", slug="avocado")
+        tag = TagFactory.create(investigation=form.investigation, name="Avocado")
         form_response = FormResponseFactory.create(form_instance=self.form_instance)
         form_response.tags.set([tag])
 
         response = self.client.get(
-            "/forms/admin/investigations/{}/forms/{}/responses/inbox?tag=avocado".format(form.investigation.slug, form.slug))
+            "/forms/admin/investigations/{}/forms/{}/responses/inbox?tag={}".format(form.investigation.slug, form.slug, tag.id))
         self.assertListEqual(
             list(response.context_data["formresponse_list"].all()),
             [form_response]
