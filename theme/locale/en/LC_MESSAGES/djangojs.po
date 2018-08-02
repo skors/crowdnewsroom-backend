@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-27 13:50+0200\n"
+"POT-Creation-Date: 2018-08-02 07:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,37 +18,225 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: theme/src/scripts/bucketPicker.js:5
-#: theme/static/js/bundle-formResponseDetails-cb04d5ec14392ab7a48a.min.js:13
+#: theme/src/scripts/bucketPicker.jsx:5
 msgid "Inbox"
 msgstr ""
 
-#: theme/src/scripts/bucketPicker.js:6
-#: theme/static/js/bundle-formResponseDetails-cb04d5ec14392ab7a48a.min.js:13
+#: theme/src/scripts/bucketPicker.jsx:6
 msgid "Verified"
 msgstr ""
 
-#: theme/src/scripts/bucketPicker.js:7
-#: theme/static/js/bundle-formResponseDetails-cb04d5ec14392ab7a48a.min.js:13
+#: theme/src/scripts/bucketPicker.jsx:7
 msgid "Trash"
 msgstr ""
 
-#: theme/src/scripts/bucketPicker.js:67
-#: theme/static/js/bundle-formResponseDetails-cb04d5ec14392ab7a48a.min.js:13
+#: theme/src/scripts/bucketPicker.jsx:67
 msgid "Status updated"
 msgstr ""
 
-#: theme/src/scripts/bucketPicker.js:69
-#: theme/static/js/bundle-formResponseDetails-cb04d5ec14392ab7a48a.min.js:13
+#: theme/src/scripts/bucketPicker.jsx:69
 msgid "close this notification"
 msgstr ""
 
-#: theme/src/scripts/form-response-details.js:16
-#: theme/static/js/bundle-formResponseDetails-cb04d5ec14392ab7a48a.min.js:1
+#: theme/src/scripts/form-details.jsx:66
+#: theme/src/scripts/investigation-details.jsx:151
+msgid "Something went wrong. Please check the form fields for details."
+msgstr ""
+
+#: theme/src/scripts/form-details.jsx:73
+msgid "Successfully updated form."
+msgstr ""
+
+#: theme/src/scripts/form-details.jsx:105
+#: theme/src/scripts/investigation-details.jsx:209
+msgid "The slug can only contain lowercase letters and hyphens (-)"
+msgstr ""
+
+#: theme/src/scripts/form-details.jsx:109
+msgid "New Interviewer"
+msgstr ""
+
+#: theme/src/scripts/form-details.jsx:112
+msgid "Interviewer title"
+msgstr ""
+
+#: theme/src/scripts/form-details.jsx:120
+#: theme/src/scripts/investigation-details.jsx:226
+msgid "URL of the form"
+msgstr ""
+
+#: theme/src/scripts/form-details.jsx:128
+msgid "Choose and continue"
+msgstr ""
+
+#: theme/src/scripts/form-response-details.jsx:16
 msgid "Add or delete ownership"
 msgstr ""
 
-#: theme/src/scripts/form-response-details.js:24
-#: theme/static/js/bundle-formResponseDetails-cb04d5ec14392ab7a48a.min.js:1
+#: theme/src/scripts/form-response-details.jsx:24
 msgid "Add or delete tag"
+msgstr ""
+
+#: theme/src/scripts/investigation-details.jsx:44
+msgid "Pick color"
+msgstr ""
+
+#: theme/src/scripts/investigation-details.jsx:159
+msgid "Successfully updated investigation."
+msgstr ""
+
+#: theme/src/scripts/investigation-details.jsx:215
+msgid "Name of your Investigation"
+msgstr ""
+
+#: theme/src/scripts/investigation-details.jsx:218
+#: theme/src/scripts/investigation-tags.jsx:127
+msgid "Name"
+msgstr ""
+
+#: theme/src/scripts/investigation-details.jsx:235
+msgid "Description"
+msgstr ""
+
+#: theme/src/scripts/investigation-details.jsx:238
+msgid "Short Description"
+msgstr ""
+
+#: theme/src/scripts/investigation-details.jsx:244
+msgid "Data Privacy URL"
+msgstr ""
+
+#: theme/src/scripts/investigation-details.jsx:252
+msgid "Visual Design"
+msgstr ""
+
+#: theme/src/scripts/investigation-details.jsx:262
+msgid "Logo"
+msgstr ""
+
+#: theme/src/scripts/investigation-details.jsx:263
+msgid "Choose file"
+msgstr ""
+
+#: theme/src/scripts/investigation-details.jsx:278
+msgid "Brand Color"
+msgstr ""
+
+#: theme/src/scripts/investigation-details.jsx:283
+msgid "Submit"
+msgstr ""
+
+#: theme/src/scripts/investigation-management.jsx:35
+msgid "Details"
+msgstr ""
+
+#: theme/src/scripts/investigation-management.jsx:36
+msgid "Users"
+msgstr ""
+
+#: theme/src/scripts/investigation-management.jsx:37
+msgid "Tags"
+msgstr ""
+
+#: theme/src/scripts/investigation-tags.jsx:51
+msgid "save"
+msgstr ""
+
+#: theme/src/scripts/investigation-tags.jsx:58
+msgid "edit"
+msgstr ""
+
+#: theme/src/scripts/investigation-tags.jsx:65
+msgid "delete"
+msgstr ""
+
+#: theme/src/scripts/investigation-tags.jsx:131
+msgid "Add"
+msgstr ""
+
+#: theme/src/scripts/investigation-users.jsx:35
+#: theme/src/scripts/investigation-users.jsx:289
+msgid "Admin"
+msgstr ""
+
+#: theme/src/scripts/investigation-users.jsx:36
+#: theme/src/scripts/investigation-users.jsx:292
+msgid "Editor"
+msgstr ""
+
+#: theme/src/scripts/investigation-users.jsx:37
+#: theme/src/scripts/investigation-users.jsx:295
+msgid "Viewer"
+msgstr ""
+
+#: theme/src/scripts/investigation-users.jsx:158
+msgid "Invite"
+msgstr ""
+
+#: theme/src/scripts/investigation-users.jsx:162
+msgid "Enter the email of the collaborator you would like to invite."
+msgstr ""
+
+#: theme/src/scripts/investigation-users.jsx:264
+msgid "First name"
+msgstr ""
+
+#: theme/src/scripts/investigation-users.jsx:265
+msgid "Last Name"
+msgstr ""
+
+#: theme/src/scripts/investigation-users.jsx:266
+msgid "E-Mail"
+msgstr ""
+
+#: theme/src/scripts/investigation-users.jsx:269
+msgid ""
+"Invite members of your team to help contribute to your investigation by "
+"assigning them specific permissions."
+msgstr ""
+
+#: theme/src/scripts/investigation-users.jsx:270
+msgid ""
+"Each collaborator will be able to access your project through their own "
+"Crowdnewsroom account."
+msgstr ""
+
+#: theme/src/scripts/investigation-users.jsx:271
+msgid ""
+"As the creator, you remain ultimately responsible for your project and for "
+"your team's interactions with contributors."
+msgstr ""
+
+#: theme/src/scripts/investigation-users.jsx:272
+msgid ""
+"Pick collaborators that you trust and that will do a good job working with "
+"your community."
+msgstr ""
+
+#: theme/src/scripts/investigation-users.jsx:273
+msgid "Have questions about how this works? Visit our FAQ."
+msgstr ""
+
+#: theme/src/scripts/investigation-users.jsx:277
+msgid "Invite a new Collaborator"
+msgstr ""
+
+#: theme/src/scripts/investigation-users.jsx:282
+msgid "Manage the collaborators"
+msgstr ""
+
+#: theme/src/scripts/investigation-users.jsx:290
+msgid ""
+"An admin can manage the investigation settings page and the collaborators"
+msgstr ""
+
+#: theme/src/scripts/investigation-users.jsx:293
+msgid ""
+"The editor can see everything about the data collected via this investigation"
+msgstr ""
+
+#: theme/src/scripts/investigation-users.jsx:296
+msgid ""
+"A viewer can see the data collected via this investigation but is not able "
+"to modify; to sort it or to download it"
 msgstr ""

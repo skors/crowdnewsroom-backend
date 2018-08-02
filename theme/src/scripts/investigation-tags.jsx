@@ -48,21 +48,21 @@ class Tag extends Component {
 
         {this.state.isEdit ? (
           <button className="cnr--button-unstyled" onClick={this.save}>
-            save
+            {gettext("save")}
           </button>
         ) : (
           <button
             className="cnr--button-unstyled"
             onClick={() => this.setState({ isEdit: true })}
           >
-            edit
+            {gettext("edit")}
           </button>
         )}
 
         <button
           className="cnr--button-unstyled"
           onClick={() => this.deleteTag(this.props.tag.id)} >
-          delete
+            {gettext("delete")}
         </button>
       </div>
     );
@@ -124,11 +124,11 @@ class AddTag extends Component {
         <TextInput
           id="tagName"
           value={this.state.name}
-          labelText="Name"
+          labelText={gettext("Name")}
           onChange={this.updateName}
         />
         <div className="bx--form-item cnr--inline-add--button" >
-          <Button onClick={this.submit}>Add</Button>
+          <Button onClick={this.submit}>{gettext("Add")}</Button>
         </div>
       </Form>
     );
