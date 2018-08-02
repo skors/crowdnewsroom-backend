@@ -73,6 +73,7 @@
     "file-loader": "^1.1.11",
     "font-awesome": "^4.7.0",
     "js-cookie": "^2.2.0",
+    "jsoneditor-react": "^0.1.9",
     "moment": "^2.22.1",
     "noty": "^3.2.0-beta",
     "optimize-css-assets-webpack-plugin": "^4.0.3",

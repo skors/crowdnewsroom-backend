@@ -1,22 +1,22 @@
 .bx--text-area,
-.bx--text-input, 
+.bx--text-input,
 .bx--select-input,
 .bx--list-box__field
   border: $input-border
   box-shadow: none
 
-  &:focus 
+  &:focus
     border: $input-border-focus
     box-shadow: inherit
 
 .bx--form-item
   margin-bottom: 1rem
 
-.bx--select 
+.bx--select
   display: block
   width: 100%
 
-.bx--list-box 
+.bx--list-box
   box-shadow: none
 
 .bx--inline-notification__title
@@ -30,3 +30,9 @@
     border: 1px solid transparent
   a.bx--pagination__button:not([href])
     cursor: default
+
+
+.bx--fieldset > .bx--label
+  // mirror h3 styles
+  font-size: 18px
+  margin-bottom: 2.0em

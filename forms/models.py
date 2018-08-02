@@ -279,7 +279,7 @@ class FormInstance(models.Model):
     def flat_schema(self):
         properties = {}
         for step in self.form_json:
-            properties.update(step["schema"]["properties"])
+            properties.update(step.get("schema", dict()).get("properties", dict()))
         return {"type": "object", "properties": properties}
 
     @property
