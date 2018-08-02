@@ -109,7 +109,11 @@ function JSONField({ fieldName, label, onChange, value }) {
   return (
     <React.Fragment>
       <FormLabel htmlFor={fieldName}>{label}</FormLabel>
-      <JsonEditor id={fieldName} value={value} onChange={fakeEvent} />
+      <JsonEditor id={fieldName}
+                  value={value}
+                  onChange={fakeEvent}
+                  onError={console.error}
+                  allowedModes={["tree", "code", "text"]} />
     </React.Fragment>
   );
 }
@@ -119,15 +123,11 @@ class FormInstanceEditor extends Component {
     super(props);
     this.state = { ...props.formInstance };
     this.handleChange = this.handleChange.bind(this);
-    this.updateJSON = this.updateJSON.bind(this);
     this.save = this.save.bind(this);
   }
 
-  updateJSON(field, json) {
-    this.setState({ [field]: json });
-  }
-
   handleChange(event) {
+    console.log(event.target.id, event.target.value);
     this.setState({ [event.target.id]: event.target.value});
   }
 
@@ -153,8 +153,8 @@ class FormInstanceEditor extends Component {
             />
 
             <JSONField
-              fieldName="ui_schema"
-              value={this.state.ui_schema}
+              fieldName="ui_schema_json"
+              value={this.state.ui_schema_json}
               label={gettext("UI-Schema")}
               onChange={this.handleChange}
             />
