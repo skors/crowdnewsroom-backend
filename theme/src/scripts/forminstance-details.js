@@ -5,10 +5,20 @@ import {
   StructuredListHead,
   StructuredListRow,
   StructuredListCell,
-  StructuredListBody
+  StructuredListBody,
+  TextArea,
+  Button,
+  Form,
+  FormLabel,
+  FormGroup,
+  TextInput
 } from "carbon-components-react";
 import StructuredListSkeleton from "carbon-components-react/lib/components/StructuredList/StructuredList.Skeleton";
 import { authorizedFetch, authorizedPOST } from "./api";
+
+import { JsonEditor } from "jsoneditor-react";
+import "jsoneditor-react/es/editor.min.css";
+
 import Notifications from "./notifications";
 
 function Template({ template, selectCallback }) {
@@ -71,7 +81,6 @@ class FormInstance extends Component {
   }
 
   render() {
-    console.log(this.props.frontendURL);
     return (
       <div>
         <h2> Your Interviewer </h2>
@@ -79,6 +88,7 @@ class FormInstance extends Component {
           <figcaption>
             Here is a preview of your interviewer. If you want to edit it, you
             can switch to expert mode.
+            <Button onClick={this.props.toggleExpertMode}>Show expert mode </Button>
           </figcaption>
           <iframe src={this.props.frontendURL} width="100%" height="600" />
         </figure>
@@ -92,16 +102,115 @@ FormInstance.propTyes = {
   frontendURL: PropTypes.string.isRequired
 };
 
+function JSONField({ fieldName, label, onChange, value }) {
+  function fakeEvent(newValue) {
+    onChange({ target: { id: fieldName, value: newValue }});
+  }
+  return (
+    <React.Fragment>
+      <FormLabel htmlFor={fieldName}>{label}</FormLabel>
+      <JsonEditor id={fieldName} value={value} onChange={fakeEvent} />
+    </React.Fragment>
+  );
+}
+
+class FormInstanceEditor extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { ...props.formInstance };
+    this.handleChange = this.handleChange.bind(this);
+    this.updateJSON = this.updateJSON.bind(this);
+    this.save = this.save.bind(this);
+  }
+
+  updateJSON(field, json) {
+    this.setState({ [field]: json });
+  }
+
+  handleChange(event) {
+    this.setState({ [event.target.id]: event.target.value});
+  }
+
+  save() {
+    authorizedPOST(`/forms/forms/${this.state.form}/form_instances`, {
+      body: JSON.stringify(this.state)
+    }).then(() => {
+      Notifications.success("Successfully updated form");
+      this.props.toggleExpertMode();
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <Form onSubmit={this.save}>
+          <FormGroup legendText={gettext("Interviewer steps and settings")}>
+            <JSONField
+              fieldName="form_json"
+              value={this.state.form_json}
+              label={gettext("Form JSON")}
+              onChange={this.handleChange}
+            />
+
+            <JSONField
+              fieldName="ui_schema"
+              value={this.state.ui_schema}
+              label={gettext("UI-Schema")}
+              onChange={this.handleChange}
+            />
+
+            <JSONField
+              fieldName="priority_fields"
+              value={this.state.priority_fields}
+              label={gettext("Fields to be shown on top for editors")}
+              onChange={this.handleChange}
+            />
+          </FormGroup>
+
+          <FormGroup legendText={gettext("Email confirmation messages")}>
+            <TextArea
+              id="email_template"
+              labelText={gettext("Email Temaplte")}
+              onChange={this.handleChange}
+              value={this.state.email_template}
+            />
+
+            <TextArea
+              id="email_template_html"
+              labelText={gettext("HTML Email Temaplte")}
+              onChange={this.handleChange}
+              value={this.state.email_template_html}
+            />
+          </FormGroup>
+
+          <FormGroup legendText={gettext("URL to redirect after submission")}>
+            <TextInput
+              id="redirect_url_template"
+              labelText={gettext("Redirect URL Template")}
+              value={this.state.redirect_url_template}
+              onChange={this.handleChange}
+            />
+          </FormGroup>
+
+          <Button type="submit">{gettext("Save")}</Button>
+        </Form>
+      </div>
+    );
+  }
+}
+
 export default class FormInstanceDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
       formInstance: null,
-      form: null
+      form: null,
+      editMode: false,
     };
 
     this.selectTemplate = this.selectTemplate.bind(this);
     this.loadForm = this.loadForm.bind(this);
+    this.toggleEdit = this.toggleEdit.bind(this);
   }
 
   get urlParams() {
@@ -125,7 +234,7 @@ export default class FormInstanceDetails extends Component {
     return this.loadForm();
   }
 
-  async loadForm(){
+  async loadForm() {
     const form = await authorizedFetch(
       `/forms/forms/${this.urlParams.formSlug}`
     );
@@ -143,22 +252,31 @@ export default class FormInstanceDetails extends Component {
     }
   }
 
+  toggleEdit() {
+    this.setState(state => ({editMode: !state.editMode }));
+  }
+
   render() {
     if (this.state.formInstance === {}) {
       return <div>Loading</div>;
     }
 
-    return (
-      <div>
-        {this.state.formInstance ? (
-          <FormInstance
-            formInstance={this.state.formInstance}
-            frontendURL={this.state.form.frontend_url}
-          />
-        ) : (
-          <PickTemplate callback={this.selectTemplate} />
-        )}
-      </div>
-    );
+    if (this.state.formInstance && this.state.editMode){
+      return <FormInstanceEditor
+        toggleExpertMode={this.toggleEdit}
+        formInstance={this.state.formInstance}
+        frontendURL={this.state.form.frontend_url}
+      />
+    }
+
+    if (this.state.formInstance){
+      return <FormInstance
+        toggleExpertMode={this.toggleEdit}
+        formInstance={this.state.formInstance}
+        frontendURL={this.state.form.frontend_url}
+      />
+    }
+
+    return <PickTemplate callback={this.selectTemplate} />
   }
 }
