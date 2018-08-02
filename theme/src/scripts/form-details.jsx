@@ -63,14 +63,14 @@ export default class FormDetails extends Component {
   }
 
   handleErrors(exception) {
-    Notifications.error("Something went wrong. Please check the form fields for details.");
+    Notifications.error(gettext("Something went wrong. Please check the form fields for details."));
     exception.response.json().then(errors => {
       this.setState({errors});
     });
   }
 
   handleSuccess(form){
-    Notifications.success("Successfully updated form.");
+    Notifications.success(gettext("Successfully updated form."));
     this.setState({errors: {}})
   }
 
@@ -86,9 +86,8 @@ export default class FormDetails extends Component {
   updateForm(){
     authorizedPATCH(`/forms/forms/${this.urlParams.formSlug}`, {
       body: JSON.stringify(this.state.form)
-    }).then(form => {
-      Notifications.success("Successfully updated form");
-    }).catch(this.handleErrors);
+    }).then(this.handleSuccess)
+    .catch(this.handleErrors);
   }
 
   sendToServer() {
@@ -103,14 +102,14 @@ export default class FormDetails extends Component {
     const name_error = _.get(this.state.errors, ["name", "0"]);
     let slug_error = _.get(this.state.errors, ["slug", "0"]);
     if (this.slugInValid) {
-      slug_error = "The slug can only contain lowercase letters and hyphens (-)";
+      slug_error = gettext("The slug can only contain lowercase letters and hyphens (-)");
     }
     return (
       <Form>
-        <FormGroup legendText="New Interviewer">
+        <FormGroup legendText={gettext("New Interviewer")}>
           <TextInput
             id="title"
-            labelText="Interviewer title"
+            labelText={gettext("Interviewer title")}
             value={this.state.form.name}
             onChange={this.updateName}
             invalidText={name_error}
@@ -118,7 +117,7 @@ export default class FormDetails extends Component {
           />
           <TextInput
             id="slug"
-            labelText="URL of the form"
+            labelText={gettext("URL of the form")}
             disabled={this.isEdit}
             onChange={this.updateSlug}
             value={this.state.form.slug}
@@ -126,7 +125,7 @@ export default class FormDetails extends Component {
             invalid={slug_error}
           />
         </FormGroup>
-        <Button onClick={this.sendToServer}>Choose and continue</Button>
+        <Button onClick={this.sendToServer}>{gettext("Choose and continue")}</Button>
       </Form>
     )
   }

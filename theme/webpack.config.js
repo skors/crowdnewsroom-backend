@@ -11,6 +11,9 @@ module.exports = {
   mode: process.env.NODE_ENV,
   context: path.resolve(__dirname),
   devtool: devMode ? "eval-source-map" : false,
+  resolve: {
+    extensions: ['.wasm', '.mjs', '.js', '.json', '.jsx'],
+  },
   entry: {
     main: "./src/scripts/index",
     style: "./src/styles/main.sass",
@@ -28,7 +31,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
           loader: "babel-loader"

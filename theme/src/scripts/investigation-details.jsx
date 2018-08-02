@@ -15,13 +15,13 @@ import Notifications from "./notifications";
 import * as PropTypes from "prop-types";
 
 class ColorPicker extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.callBackWithEvent = this.callBackWithEvent.bind(this);
     this.togglePicker = this.togglePicker.bind(this);
     this.state = {
       pickerOpen: false
-    }
+    };
   }
 
   callBackWithEvent(color) {
@@ -31,8 +31,8 @@ class ColorPicker extends Component {
     this.props.onChange(event);
   }
 
-  togglePicker(){
-    this.setState(state => ({pickerOpen: !state.pickerOpen}))
+  togglePicker() {
+    this.setState(state => ({ pickerOpen: !state.pickerOpen }));
   }
 
   render() {
@@ -40,17 +40,21 @@ class ColorPicker extends Component {
     return (
       <div className="colorPicker">
         <div className="colorPicker--preview-wrapper">
-          <Button onClick={this.togglePicker} kind="secondary">Pick color</Button>
-          <div onClick={this.togglePicker}
-               className="colorPicker--preview"
-               style={{ backgroundColor: color }} />
+          <Button onClick={this.togglePicker} kind="secondary">
+            {gettext("Pick color")}
+          </Button>
+          <div
+            onClick={this.togglePicker}
+            className="colorPicker--preview"
+            style={{ backgroundColor: color }}
+          />
         </div>
-        {this.state.pickerOpen?
+        {this.state.pickerOpen ? (
           <div className="colorPicker--popover">
-            <div className="colorPicker--cover" onClick={ this.togglePicker }/>
-            <SketchPicker color={ color } onChange={ this.callBackWithEvent } />
+            <div className="colorPicker--cover" onClick={this.togglePicker} />
+            <SketchPicker color={color} onChange={this.callBackWithEvent} />
           </div>
-          : null}
+        ) : null}
       </div>
     );
   }
@@ -144,7 +148,7 @@ export default class InvestigationDetails extends Component {
 
   handleErrors(exception) {
     Notifications.error(
-      "Something went wrong. Please check the form fields for details."
+      gettext("Something went wrong. Please check the form fields for details.")
     );
     exception.response.json().then(errors => {
       this.setState({ errors });
@@ -152,7 +156,7 @@ export default class InvestigationDetails extends Component {
   }
 
   handleSuccess(investigaiton) {
-    Notifications.success("Successfully updated investigation.");
+    Notifications.success(gettext("Successfully updated investigation."));
     this.setState({ errors: {} });
   }
 
@@ -201,16 +205,17 @@ export default class InvestigationDetails extends Component {
     const name_error = _.get(this.state.errors, ["name", "0"]);
     let slug_error = _.get(this.state.errors, ["slug", "0"]);
     if (this.slugInValid) {
-      slug_error =
-        "The slug can only contain lowercase letters and hyphens (-)";
+      slug_error = gettext(
+        "The slug can only contain lowercase letters and hyphens (-)"
+      );
     }
 
     return (
       <Form className="cnr--two-column-form">
-        <FormGroup legendText="Name of your Investigation">
+        <FormGroup legendText={gettext("Name of your Investigation")}>
           <TextInput
             id="name"
-            labelText="Name"
+            labelText={gettext("Name")}
             value={this.state.investigation.name}
             onChange={this.updateName}
             invalidText={name_error}
@@ -218,7 +223,7 @@ export default class InvestigationDetails extends Component {
           />
           <TextInput
             id="slug"
-            labelText="URL of the form"
+            labelText={gettext("URL of the form")}
             disabled={this.isEdit}
             onChange={this.updateSlug}
             value={this.state.investigation.slug}
@@ -227,16 +232,16 @@ export default class InvestigationDetails extends Component {
           />
         </FormGroup>
 
-        <FormGroup legendText="Description">
+        <FormGroup legendText={gettext("Description")}>
           <TextArea
             id="short_description"
-            labelText="Short Description"
+            labelText={gettext("Short Description")}
             onChange={this.updateField}
             value={this.state.investigation.short_description}
           />
           <TextInput
             id="data_privacy_url"
-            labelText="Data Privacy URL"
+            labelText={gettext("Data Privacy URL")}
             invalidText={data_privacy_url_error}
             invalid={data_privacy_url_error}
             onChange={this.updateField}
@@ -244,7 +249,7 @@ export default class InvestigationDetails extends Component {
           />
         </FormGroup>
 
-        <FormGroup legendText="Visual Design">
+        <FormGroup legendText={gettext("Visual Design")}>
           <div className="cnr--two-column-form__fileupload">
             <div className="cnr--two-column-form__fileupload-imgwrapper">
               <img
@@ -254,8 +259,8 @@ export default class InvestigationDetails extends Component {
             </div>
 
             <FileUploader
-              labelTitle="Upload"
-              buttonLabel="Add file"
+              labelTitle={gettext("Logo")}
+              buttonLabel={gettext("Choose file")}
               filenameStatus="edit"
               accept={[".jpg", ".png", ".gif"]}
               name="file"
@@ -270,13 +275,12 @@ export default class InvestigationDetails extends Component {
               onChange={this.updateField}
             />
             <label className="bx--label" htmlFor="color">
-              {" "}
-              Brand Color{" "}
+              {gettext("Brand Color")}
             </label>
           </div>
         </FormGroup>
 
-        <Button onClick={this.sendToServer}>Submit</Button>
+        <Button onClick={this.sendToServer}>{gettext("Submit")}</Button>
       </Form>
     );
   }

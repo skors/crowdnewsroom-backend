@@ -72,7 +72,7 @@ function RoleDropdown({selectedRole, user, updateCallback, availableRoles}) {
 function ManageRoleCell({row, changeUserCallback, availableRoles}){
   const isInvitation = !row.role;
   if (isInvitation){
-    return <TableCell><i>{gettext("Invitation Pending")}</i></TableCell>;
+    return <TableCell><i>Invitation Pending</i></TableCell>;
   }
   return <TableCell>
     <RoleDropdown selectedRole={row.role}

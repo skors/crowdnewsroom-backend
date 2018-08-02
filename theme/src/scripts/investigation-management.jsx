@@ -32,9 +32,9 @@ const App = () => (
     <div>
       <nav data-tabs className="bx--tabs investigation-management__tabs" role="navigation">
           <ul className="bx--tabs__nav bx--tabs__nav--hidden" role="tablist">
-            <CarbonMenuLink to="/details" label="Details"/>
-            {hasSlug() &&  <CarbonMenuLink to="/users" label="Users"/> }
-            {hasSlug() &&  <CarbonMenuLink to="/tags" label="Tags"/> }
+            <CarbonMenuLink to="/details" label={gettext("Details")}/>
+            {hasSlug() &&  <CarbonMenuLink to="/users" label={gettext("Users")}/> }
+            {hasSlug() &&  <CarbonMenuLink to="/tags" label={gettext("Tags")}/> }
           </ul>
       </nav>
       <div>
