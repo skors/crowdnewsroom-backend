@@ -260,7 +260,7 @@ class FormInstance(models.Model):
     ui_schema_json = JSONField(default={})
     version = models.IntegerField(default=0)
     form = models.ForeignKey(Form, on_delete=models.CASCADE)
-    priority_fields = JSONField(default=[])
+    priority_fields = JSONField(default=[], blank=True)
     email_template = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"))
     email_template_html = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"));
     redirect_url_template = models.TextField(default="https://forms.crowdnewsroom.org")
@@ -463,8 +463,8 @@ class FormInstanceTemplate(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
     form_json = JSONField()
-    ui_schema_json = JSONField(default={})
-    priority_fields = JSONField(default=[])
+    ui_schema_json = JSONField(default={}, blank=True)
+    priority_fields = JSONField(default=[], blank=True)
     email_template = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"))
     email_template_html = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"));
     redirect_url_template = models.TextField(default="https://forms.crowdnewsroom.org")

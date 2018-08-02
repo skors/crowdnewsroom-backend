@@ -175,6 +175,8 @@ WEBPACK_LOADER = {
     }
 }
 
+FRONTEND_BASE_URL = os.environ.get("CNR_FRONTEND_BASE_URL", "https://forms.crowdnewsroom.org")
+
 try:
     from .local_settings import *  # noqa
 except ImportError:

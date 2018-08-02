@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.utils.functional import cached_property
+from django.views.generic.base import ContextMixin
 from guardian.decorators import permission_required
 from guardian.mixins import PermissionRequiredMixin
 from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseForbidden
@@ -51,7 +52,7 @@ def _get_filter_params(kwargs, get_params):
     return filter_params
 
 
-class BreadCrumbMixin(object):
+class BreadCrumbMixin(ContextMixin):
     def get_breadcrumbs(self):
         return []
 
@@ -96,9 +97,10 @@ class FormListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
     def get_queryset(self):
         return Form.get_all_for_investigation(self.kwargs.get("investigation_slug"))
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['investigation'] = self.investigation
+        context['user_can_manage_investigation'] = self.request.user.has_perm("manage_investigation", self.investigation)
         return context
 
 

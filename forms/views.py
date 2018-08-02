@@ -14,6 +14,7 @@ from rest_framework.permissions import IsAuthenticated, DjangoObjectPermissions
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 
+from crowdnewsroom import settings
 from .fields import Base64ImageField
 from .models import FormResponse, FormInstance, Investigation, Tag, User, UserGroup, Invitation, INVESTIGATION_ROLES, \
     FormInstanceTemplate, Form
@@ -485,10 +486,21 @@ class FormInstanceListCreate(generics.ListCreateAPIView):
 
 
 class FormSerializer(ModelSerializer):
+    frontend_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Form
         fields = "__all__"
-        read_only_fields = ("investigation", )
+        read_only_fields = ("investigation", "frontend_url")
+
+    def get_frontend_url(self, form):
+        params = {
+            "base_url": settings.FRONTEND_BASE_URL,
+            "investigation_slug": form.investigation.slug,
+            "form_slug": form.slug
+        }
+
+        return "{base_url}/{investigation_slug}/{form_slug}".format(**params)
 
     def create(self, validated_data, *args, **kwargs):
         investigation_slug = self.context['view'].kwargs.get("investigation_slug")
