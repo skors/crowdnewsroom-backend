@@ -190,8 +190,8 @@ class Utils(TestCase):
                                                         }
                                                     }])
 
-        first_tag = TagFactory.create(name="First Tag", slug="first-tag")
-        second_tag = TagFactory.create(name="Second Tag, with, commas", slug="second-tag")
+        first_tag = TagFactory.create(name="First Tag")
+        second_tag = TagFactory.create(name="Second Tag, with, commas")
 
         response_1 = FormResponseFactory.create(form_instance=form_instance,
                                                 submission_date=datetime(2018, 1, 1, tzinfo=pytz.utc),

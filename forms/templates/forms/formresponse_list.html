@@ -98,7 +98,13 @@
                   <select id="tag_filter" name="tag" class="bx--select-input" onchange="this.form.submit()">
                       <option class="bx--select-option" value="">{% trans "Tag" %}</option>
                       {% for tag in investigation.tags %}
-                      <option class="bx--select-option" value="{{tag.slug}}" {% if tag_param == tag.slug %} selected {% endif %}>{{tag.name}}</option>
+                          {%  with string_tag_id=tag.id|slugify %}
+                              <option class="bx--select-option"
+                                      value="{{tag.id}}"
+                                      {% if tag_param == string_tag_id %} selected {% endif %}>
+                                  {{tag.name}}
+                              </option>
+                          {% endwith %}
                       {% endfor %}
                   </select>
                   <svg class="bx--select__arrow" width="10" height="5" viewBox="0 0 10 5" fill-rule="evenodd">
@@ -123,7 +129,7 @@
                     <select id="apply_tag" name="tag" class="bx--select-input">
                         <option value="" class="bx--select-option">---</option>
                         {% for tag in investigation.tags %}
-                        <option value="{{tag.slug}}" class="bx--select-option">{{tag.name}}</option>
+                        <option value="{{tag.id}}" class="bx--select-option">{{tag.name}}</option>
                         {% endfor %}
                         <option value="clear_tags" class="bx--select-option">{% trans "Clear tags" %}</option>
                     </select>
