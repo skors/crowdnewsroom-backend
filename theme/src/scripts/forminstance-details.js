@@ -11,7 +11,7 @@ import {
   Form,
   FormLabel,
   FormGroup,
-  TextInput
+  TextInput, SkeletonText
 } from "carbon-components-react";
 import StructuredListSkeleton from "carbon-components-react/lib/components/StructuredList/StructuredList.Skeleton";
 import { authorizedFetch, authorizedPOST } from "./api";
@@ -84,14 +84,20 @@ class FormInstance extends Component {
     return (
       <div>
         <h2> Your Interviewer </h2>
-        <figure>
-          <figcaption>
-            Here is a preview of your interviewer. If you want to edit it, you
-            can switch to expert mode.
-            <Button onClick={this.props.toggleExpertMode}>Show expert mode </Button>
-          </figcaption>
-          <iframe src={this.props.frontendURL} width="100%" height="600" />
-        </figure>
+        <iframe src={this.props.frontendURL} width="100%" height="600" />
+
+        {gettext("You can check above how your form is looking and behaving now.")}
+        {gettext("If you would like to tweak it, you can either contact CORRECTIV to make changes for you or you can enable expert mode.")}
+
+        <div style={{display: "flex", justifyContent: "space-around", margin: "3em auto"}}>
+        <a href="mailto:crowdnewsroom@correctiv.org?subject=Customization%20for%20Crowdnewsroom%20interviewer" className="bx--btn bx--btn--primary">
+          {gettext("Contact CORRECTIV for customization")}
+        </a>
+
+        <Button onClick={this.props.toggleExpertMode} kind="secondary">
+          {gettext("Enable Expert mode")}
+         </Button>
+        </div>
       </div>
     );
   }
@@ -118,6 +124,14 @@ function JSONField({ fieldName, label, onChange, value }) {
   );
 }
 
+JSONField.propTypes = {
+  fieldName: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  value: PropTypes.oneOf([PropTypes.array, PropTypes.object])
+};
+
+
 class FormInstanceEditor extends Component {
   constructor(props) {
     super(props);
@@ -127,7 +141,6 @@ class FormInstanceEditor extends Component {
   }
 
   handleChange(event) {
-    console.log(event.target.id, event.target.value);
     this.setState({ [event.target.id]: event.target.value});
   }
 
@@ -206,6 +219,7 @@ export default class FormInstanceDetails extends Component {
       formInstance: null,
       form: null,
       editMode: false,
+      loading: true,
     };
 
     this.selectTemplate = this.selectTemplate.bind(this);
@@ -245,10 +259,10 @@ export default class FormInstanceDetails extends Component {
       `/forms/forms/${form.id}/form_instances?limit=1`
     );
     if (response.results.length) {
-      this.setState({ formInstance: response.results[0] });
+      this.setState({ formInstance: response.results[0], loading: false });
       // load most recent instance
     } else {
-      this.setState({ formInstance: null });
+      this.setState({ formInstance: null, loading: false });
     }
   }
 
@@ -257,8 +271,12 @@ export default class FormInstanceDetails extends Component {
   }
 
   render() {
-    if (this.state.formInstance === {}) {
-      return <div>Loading</div>;
+    if (this.state.loading) {
+      return <div>
+        <SkeletonText paragraph />
+        <br/>
+        <SkeletonText width="250px" lineCount={8} paragraph />
+      </div>
     }
 
     if (this.state.formInstance && this.state.editMode){
