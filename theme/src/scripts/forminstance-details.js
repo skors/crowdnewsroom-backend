@@ -101,6 +101,7 @@ export default class FormInstanceDetails extends Component {
     };
 
     this.selectTemplate = this.selectTemplate.bind(this);
+    this.loadForm = this.loadForm.bind(this);
   }
 
   get urlParams() {
@@ -116,11 +117,15 @@ export default class FormInstanceDetails extends Component {
     authorizedPOST(`/forms/forms/${this.state.form.id}/form_instances`, {
       body: JSON.stringify(template)
     })
-      .then(console.log)
+      .then(this.loadForm)
       .catch(console.error);
   }
 
   async componentDidMount() {
+    return this.loadForm();
+  }
+
+  async loadForm(){
     const form = await authorizedFetch(
       `/forms/forms/${this.urlParams.formSlug}`
     );
