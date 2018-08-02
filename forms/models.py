@@ -221,9 +221,12 @@ class Form(models.Model, UniqueSlugMixin):
         ('A', _('Archived'))
     )
     name = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200, unique=True)
+    slug = models.SlugField(max_length=200)
     status = models.CharField(max_length=1, choices=STATUSES, default='D')
     investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('slug', 'investigation')
 
     def __str__(self):
         return self.name

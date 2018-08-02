@@ -42,7 +42,7 @@ urlpatterns = [
     path('templates', FormInstanceTemplateList.as_view(), name="template_list"),
     path('templates/<int:pk>', FormInstanceTemplateDetails.as_view(), name="template"),
     path('tags/<int:pk>', TagEditDelete.as_view(), name="tag_details"),
-    path('forms/<slug:form_slug>', FormDetails.as_view(), name="form_details"),
+    path('forms/<int:pk>', FormDetails.as_view(), name="form_details"),
     path('forms/<int:form_id>/form_instances', FormInstanceListCreate.as_view(), name="form_forminstances"),
 
     path('admin/investigations', InvestigationListView.as_view(), name="investigation_list"),

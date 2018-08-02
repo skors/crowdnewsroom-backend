@@ -61,7 +61,7 @@ class FormAPITestCase(APITestCase):
     def test_get_requires_login(self):
         form = FormFactory.create()
 
-        response = self.client.get(reverse("form_details", kwargs={"form_slug": form.slug}))
+        response = self.client.get(reverse("form_details", kwargs={"pk": form.id}))
         self.assertEqual(response.status_code, 403)
 
     def test_can_get_form(self):
@@ -72,7 +72,7 @@ class FormAPITestCase(APITestCase):
 
         self.client.force_login(admin)
 
-        response = self.client.get(reverse("form_details", kwargs={"form_slug": form.slug}))
+        response = self.client.get(reverse("form_details", kwargs={"pk": form.id}))
         self.assertEqual(response.status_code, 200)
 
     def test_get_wrong_investigation(self):
@@ -83,7 +83,7 @@ class FormAPITestCase(APITestCase):
 
         self.client.force_login(admin)
 
-        response = self.client.get(reverse("form_details", kwargs={"form_slug": form.slug}))
+        response = self.client.get(reverse("form_details", kwargs={"pk": form.id}))
         self.assertEqual(response.status_code, 403)
 
     def test_admin_can_edit(self):
@@ -94,7 +94,7 @@ class FormAPITestCase(APITestCase):
 
         self.client.force_login(admin)
 
-        response = self.client.patch(reverse("form_details", kwargs={"form_slug": form.slug}),
+        response = self.client.patch(reverse("form_details", kwargs={"pk": form.id}),
                                      data={"name": "My new Name"})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["name"], "My new Name")

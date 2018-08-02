@@ -85,7 +85,7 @@ export default class FormDetails extends Component {
   }
 
   updateForm(){
-    authorizedPATCH(`/forms/forms/${this.urlParams.formSlug}`, {
+    authorizedPATCH(`/forms/forms/${this.state.form.id}`, {
       body: JSON.stringify(this.state.form)
     }).then(this.handleSuccess)
     .catch(this.handleErrors);

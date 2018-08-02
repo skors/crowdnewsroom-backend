@@ -519,6 +519,4 @@ class FormCreate(generics.CreateAPIView):
 class FormDetails(generics.RetrieveUpdateAPIView):
     serializer_class = FormSerializer
     queryset = Form
-    lookup_field = "slug"
-    lookup_url_kwarg = "form_slug"
     permission_classes = (IsAuthenticated, CanEditInvestigation)
