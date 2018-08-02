@@ -161,9 +161,9 @@ class InviteUser extends Component {
             <Button onClick={this.submit}>{gettext("Invite")}</Button>
           </div>
         </div>
-        <div>
+        <p>
           {gettext("Enter the email of the collaborator you would like to invite.")}
-        </div>
+        </p>
     </Form>
   }
 }
@@ -266,13 +266,13 @@ export default class InvestigationUsers extends Component {
                        {key: "last_name", header: gettext("Last Name")},
                        {key: "email", header: gettext("E-Mail")}];
         return <div className="investigation-users">
-          <div className="investigation-users--section">
+          <p className="investigation-users--section">
             {gettext("Invite members of your team to help contribute to your investigation by assigning them specific permissions.")}
             {gettext("Each collaborator will be able to access your project through their own Crowdnewsroom account.")}
             {gettext("As the creator, you remain ultimately responsible for your project and for your team's interactions with contributors.")}
             {gettext("Pick collaborators that you trust and that will do a good job working with your community.")}
             {gettext("Have questions about how this works? Visit our FAQ.")}
-          </div>
+          </p>
 
           <div className="investigation-users--section">
             <h2>{gettext("Invite a new Collaborator")}</h2>
@@ -289,7 +289,7 @@ export default class InvestigationUsers extends Component {
                 headers={headers}
                 render={renderTableWithUpdate(this.updateUserRole, this.removeUsers, availableRoles, combinedUsers)}/>
             }
-            <div>
+            <p>
               <dl className="roles-list">
                 <dt className="roles-list--dt">{gettext("Admin")} </dt>
                 <dd className="roles-list--dd">{gettext("An admin can manage the investigation settings page and the collaborators")}</dd>
@@ -299,9 +299,8 @@ export default class InvestigationUsers extends Component {
 
                 <dt className="roles-list--dt">{gettext("Viewer")}</dt>
                 <dd className="roles-list--dd">{gettext("A viewer can see the data collected via this investigation but is not able to modify; to sort it or to download it")}</dd>
-
               </dl>
-            </div>
+            </p>
           </div>
         </div>;
     }
