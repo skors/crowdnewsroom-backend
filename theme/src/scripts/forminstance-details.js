@@ -84,10 +84,15 @@ class FormInstance extends Component {
     return (
       <div>
         <h2> Your Interviewer </h2>
+        <p>
+        {gettext("You can check below how your form is looking and behaving now.")}
+        </p>
+
         <iframe src={this.props.frontendURL} width="100%" height="600" />
 
-        {gettext("You can check above how your form is looking and behaving now.")}
+        <p>
         {gettext("If you would like to tweak it, you can either contact CORRECTIV to make changes for you or you can enable expert mode.")}
+        </p>
 
         <div style={{display: "flex", justifyContent: "space-around", margin: "3em auto"}}>
         <a href="mailto:crowdnewsroom@correctiv.org?subject=Customization%20for%20Crowdnewsroom%20interviewer" className="bx--btn bx--btn--primary">
