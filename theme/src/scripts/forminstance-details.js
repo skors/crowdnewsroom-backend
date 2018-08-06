@@ -17,7 +17,6 @@ import StructuredListSkeleton from "carbon-components-react/lib/components/Struc
 import { authorizedFetch, authorizedPOST } from "./api";
 
 import { JsonEditor } from "jsoneditor-react";
-import "jsoneditor-react/es/editor.min.css";
 
 import Notifications from "./notifications";
 
