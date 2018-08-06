@@ -522,3 +522,35 @@ class FormDetails(generics.RetrieveUpdateAPIView):
     lookup_field = "slug"
     lookup_url_kwarg = "form_slug"
     permission_classes = (IsAuthenticated, CanEditInvestigation)
+
+
+class ResponseListPermission(DjangoObjectPermissions):
+    def has_permission(self, request, view):
+        form_slug = view.kwargs.get("form_slug")
+        form = get_object_or_404(Form, slug=form_slug)
+        investigation = form.investigation
+        return request.user.has_perm("manage_investigation", investigation)
+
+
+class FormResponseListSerializer(ModelSerializer):
+    json = serializers.SerializerMethodField()
+
+    class Meta:
+        model = FormResponse
+        fields = "__all__"
+
+    def get_json(self, form_response):
+        return {field["json_name"]: field["value"] for field in form_response.rendered_fields()}
+
+
+class FormResponseList(generics.ListAPIView):
+    serializer_class = FormResponseListSerializer
+    permission_classes = (IsAuthenticated, ResponseListPermission)
+
+    def get_queryset(self):
+        form_slug = self.kwargs.get("form_slug")
+        queryset = FormResponse.objects.filter(form_instance__form__slug=form_slug)
+        status = self.request.query_params.get('status', None)
+        if status is not None:
+            queryset = queryset.filter(status=status)
+        return queryset
