@@ -338,11 +338,13 @@ class InvitationList(generics.ListCreateAPIView):
     def create(self, request, investigation_slug):
         investigation = get_object_or_404(Investigation, slug=investigation_slug)
         email = request.data.get("email")
+        new_user = False
         try:
             user = User.objects.get(email=email)
         except ObjectDoesNotExist:
             try:
                 user = create_and_invite_user(email, request)
+                new_user = True
             except ValidationError as errors:
                 return Response(errors.error_dict, status.HTTP_400_BAD_REQUEST)
 
@@ -353,6 +355,11 @@ class InvitationList(generics.ListCreateAPIView):
             invitation = Invitation.objects.create(user=user, investigation=investigation)
         except IntegrityError:
             return Response({"message": "invitation already exists"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # if the user is new, they already got an e-mail which prompts them
+        # to create an account. No need to send them another one here.
+        if not new_user:
+            invitation.send_user_email()
 
         serializer = self.get_serializer()
         serialized = serializer.to_representation(invitation)

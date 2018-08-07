@@ -67,7 +67,8 @@ class InvitationAPITestCase(APITestCase):
                                     data={"email": "journalist@example.org"})
         self.assertEqual(response.status_code, 403)
 
-    def test_admin_can_invite_existing_users(self):
+    @patch("forms.models.Invitation.send_user_email")
+    def test_admin_can_invite_existing_users(self, mock_send_email):
         user = UserFactory.create()
         admin = UserFactory.create()
         investigation = InvestigationFactory.create()
@@ -81,6 +82,7 @@ class InvitationAPITestCase(APITestCase):
                                     data={"email": user.email})
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Invitation.objects.count(), 1)
+        self.assertTrue(mock_send_email.called)
 
     @patch("forms.views.create_and_invite_user")
     def test_admin_can_invite_new_users(self, mock_invite_user):
