@@ -459,7 +459,7 @@ class Invitation(models.Model):
         try:
             send_mail(subject=subject,
                       message=message,
-                      from_email="noreploy@crowdnewsroom.org",
+                      from_email="noreply@crowdnewsroom.org",
                       recipient_list=[self.user.email])
         except:
             pass
