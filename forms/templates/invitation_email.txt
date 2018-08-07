@@ -1,0 +1,15 @@
+{% load i18n %}
+
+{% trans "Dear CNR User," %}
+
+{% blocktrans with name=investigation.name %}
+you have been invited to join the {{ name }} investigation.
+{% endblocktrans %}
+
+{% blocktrans %}
+Log into the the crowndewsroom at https://admin.crowdnewsroom.org to join the investigation.
+{% endblocktrans %}
+
+{% trans "Have a nice day." %}
+
+{% trans "The Crowndewsroom team" %}

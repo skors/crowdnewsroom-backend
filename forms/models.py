@@ -8,6 +8,7 @@ from django.core.mail import send_mail
 from django.db.models import Count
 from django.db.models.functions import Coalesce
 from django.template import Engine, Context
+from django.template.loader import get_template
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe
@@ -450,6 +451,19 @@ class Invitation(models.Model):
 
     class Meta:
         unique_together = ('user', 'investigation')
+
+    def send_user_email(self):
+        template = get_template("invitation_email.txt")
+        message = template.render({"investigation": self.investigation})
+        subject = _("You have been invited to join the {} investigation".format(self.investigation.name))
+        try:
+            send_mail(subject=subject,
+                      message=message,
+                      from_email="noreply@crowdnewsroom.org",
+                      recipient_list=[self.user.email])
+        except:
+            pass
+
 
 
 @receiver(models.signals.post_save, sender=Invitation)

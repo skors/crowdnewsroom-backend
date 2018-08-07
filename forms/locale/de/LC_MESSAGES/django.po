@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-02 09:36+0200\n"
-"PO-Revision-Date: 2018-07-31 17:32+0200\n"
+"POT-Creation-Date: 2018-08-07 12:24+0200\n"
+"PO-Revision-Date: 2018-08-07 13:48+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: forms/admin.py:16
 msgid "Personal info"
@@ -30,31 +30,31 @@ msgstr "Zugriffsrechte"
 msgid "Important dates"
 msgstr "Wichtige Termine"
 
-#: forms/admin_views.py:67 forms/admin_views.py:89 forms/admin_views.py:118
-#: forms/admin_views.py:218
+#: forms/admin_views.py:68 forms/admin_views.py:90 forms/admin_views.py:120
+#: forms/admin_views.py:220
 msgid "Investigations"
 msgstr "Recherchen"
 
-#: forms/admin_views.py:144
+#: forms/admin_views.py:146
 msgid "No one contributed to your investigation yet. Time to advertise!"
 msgstr ""
 "Es gibt noch keine Antworten für diese Recherche. Zeit sie zu bewerben!"
 
-#: forms/admin_views.py:150
+#: forms/admin_views.py:152
 msgid ""
 "There are no results using your current filters. Maybe try something else?"
 msgstr ""
 "Mit den aktuellen Filtereinstellungen gibt es keine Antworten. Sie können "
 "einen anderen Filter probieren."
 
-#: forms/admin_views.py:153
+#: forms/admin_views.py:155
 msgid ""
 "There are no results in this bucket yet. Start moving some from the inbox."
 msgstr ""
 "In der aktuellen Ansicht gibt es keine Antworten. Starten Sie, indem Sie "
 "Antworten aus dem Eingang bewegen."
 
-#: forms/admin_views.py:156
+#: forms/admin_views.py:158
 msgid "Looks like you verified or deleted all contributions. Good work!"
 msgstr ""
 "Sie haben alle Antworten gelöscht oder also verifiziert markiert. Gute "
@@ -64,47 +64,47 @@ msgstr ""
 msgid "Add a comment"
 msgstr "Kommentar hinzufügen"
 
-#: forms/models.py:31 forms/models.py:217
+#: forms/models.py:32 forms/models.py:217
 msgid "Draft"
 msgstr "Entwurf"
 
-#: forms/models.py:32 forms/models.py:219
+#: forms/models.py:33 forms/models.py:219
 msgid "Published"
 msgstr "Veröffentlicht"
 
-#: forms/models.py:33 forms/models.py:221
+#: forms/models.py:34 forms/models.py:221
 msgid "Archived"
 msgstr "Archiviert"
 
-#: forms/models.py:61
+#: forms/models.py:62
 msgid "View investigation"
 msgstr "Recherche ansehen"
 
-#: forms/models.py:62
+#: forms/models.py:63
 msgid "Manage investigation"
 msgstr "Recherche bearbeiten"
 
-#: forms/models.py:63
+#: forms/models.py:64
 msgid "Delete investigation and manage owners"
 msgstr "Recherche Löschen und Besitzer bearbeiten"
 
-#: forms/models.py:111
+#: forms/models.py:112
 msgid "Owner"
 msgstr "Manager"
 
-#: forms/models.py:112
+#: forms/models.py:113
 msgid "Admin"
 msgstr "Administrator"
 
-#: forms/models.py:113
+#: forms/models.py:114
 msgid "Editor"
 msgstr "Redakteur"
 
-#: forms/models.py:114
+#: forms/models.py:115
 msgid "Viewer"
 msgstr "Leser"
 
-#: forms/models.py:188
+#: forms/models.py:189
 msgid "email address"
 msgstr "E-Mail-Adresse"
 
@@ -116,8 +116,8 @@ msgstr "Ungelistet"
 msgid "Closed"
 msgstr "Beendet"
 
-#: forms/models.py:265 forms/models.py:266 forms/models.py:469
-#: forms/models.py:470
+#: forms/models.py:265 forms/models.py:266 forms/models.py:482
+#: forms/models.py:483
 msgid "Thank you for participating in a crowdnewsroom investigation!"
 msgstr ""
 "Vielen Dank, dass Sie an dieser Crowdnewsroom-Recherche teilgenommen haben!"
@@ -127,7 +127,7 @@ msgid "Submitted"
 msgstr "Eingang"
 
 #: forms/models.py:294 forms/templates/forms/formresponse_list.html:27
-#: forms/templates/forms/formresponse_list.html:159
+#: forms/templates/forms/formresponse_list.html:165
 msgid "Verified"
 msgstr "Verifiziert"
 
@@ -155,13 +155,27 @@ msgstr "<Datei>"
 msgid "Thank you for your submission!"
 msgstr "Vielen Dank für Ihre Teilnahme!"
 
-#: forms/templates/forms/form_list.html:7
+#: forms/models.py:458
+msgid "You have been invited to join the {} investigation"
+msgstr "Sie wurden zu der {} Recherche eingeladen"
+
+#: forms/templates/forms/form_list.html:5
 msgid "Forms for investigation"
 msgstr "Formulare für diese Recherche"
 
-#: forms/templates/forms/form_list.html:13
+#: forms/templates/forms/form_list.html:11
 msgid "Add a new interviewer"
 msgstr "Eine neue Recherche hinzufügen"
+
+#: forms/templates/forms/form_list.html:27
+#: forms/templates/forms/investigation_list.html:34
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: forms/templates/forms/form_list.html:30
+#: forms/templates/forms/investigation_list.html:37
+msgid "View"
+msgstr "Ansehen"
 
 #: forms/templates/forms/formresponse_detail.html:7
 #: forms/templates/forms/formresponse_detail.html:8
@@ -193,7 +207,7 @@ msgid "Answer"
 msgstr "Antwort"
 
 #: forms/templates/forms/formresponse_detail.html:79
-#: forms/templates/forms/formresponse_list.html:189
+#: forms/templates/forms/formresponse_list.html:195
 msgid "Comments"
 msgstr "Kommentare"
 
@@ -218,7 +232,7 @@ msgid "add comment"
 msgstr "Kommentar hinzufügen"
 
 #: forms/templates/forms/formresponse_list.html:8
-#: forms/templates/forms/formresponse_list.html:176
+#: forms/templates/forms/formresponse_list.html:182
 msgid "Responses"
 msgstr "Antworten"
 
@@ -238,12 +252,12 @@ msgid "Switch bucket"
 msgstr "Status ändern"
 
 #: forms/templates/forms/formresponse_list.html:22
-#: forms/templates/forms/formresponse_list.html:156
+#: forms/templates/forms/formresponse_list.html:162
 msgid "Inbox"
 msgstr "Eingang"
 
 #: forms/templates/forms/formresponse_list.html:32
-#: forms/templates/forms/formresponse_list.html:162
+#: forms/templates/forms/formresponse_list.html:168
 msgid "Trash"
 msgstr "Papierkorb"
 
@@ -274,76 +288,76 @@ msgstr "Manager"
 msgid "Tag"
 msgstr "Markierung"
 
-#: forms/templates/forms/formresponse_list.html:121
+#: forms/templates/forms/formresponse_list.html:127
 msgid "Apply tag"
 msgstr "Markierung hinzufügen"
 
-#: forms/templates/forms/formresponse_list.html:128
+#: forms/templates/forms/formresponse_list.html:134
 msgid "Clear tags"
 msgstr "Alle Markierungen entfernen"
 
-#: forms/templates/forms/formresponse_list.html:136
+#: forms/templates/forms/formresponse_list.html:142
 msgid "Apply assignee"
 msgstr "Manager hinzufügen"
 
-#: forms/templates/forms/formresponse_list.html:143
+#: forms/templates/forms/formresponse_list.html:149
 msgid "Clear assignees"
 msgstr "Alle Manager entfernen"
 
-#: forms/templates/forms/formresponse_list.html:151
+#: forms/templates/forms/formresponse_list.html:157
 msgid "Move to"
 msgstr "Verschieben nach"
 
-#: forms/templates/forms/formresponse_list.html:171
+#: forms/templates/forms/formresponse_list.html:177
 msgid "Apply to COUNT submission(s)"
 msgstr "Auf COUNT Antwort(en) anwenden"
 
-#: forms/templates/forms/formresponse_list.html:187
+#: forms/templates/forms/formresponse_list.html:193
 msgid "Email"
 msgstr "E-Mail"
 
-#: forms/templates/forms/formresponse_list.html:188
+#: forms/templates/forms/formresponse_list.html:194
 msgid "Submission Date"
 msgstr "Eingangsdatum"
 
-#: forms/templates/forms/formresponse_list.html:190
+#: forms/templates/forms/formresponse_list.html:196
 msgid "Ownership"
 msgstr "Manager"
 
-#: forms/templates/forms/formresponse_list.html:208
+#: forms/templates/forms/formresponse_list.html:214
 msgid "No Email Provided"
 msgstr "Keine E-Mail angegeben"
 
-#: forms/templates/forms/formresponse_list.html:239
-#: forms/templates/forms/formresponse_list.html:244
+#: forms/templates/forms/formresponse_list.html:245
+#: forms/templates/forms/formresponse_list.html:250
 msgid "of"
 msgstr "von"
 
-#: forms/templates/forms/formresponse_list.html:240
+#: forms/templates/forms/formresponse_list.html:246
 msgid "items"
 msgstr "Einträgen"
 
-#: forms/templates/forms/formresponse_list.html:245
+#: forms/templates/forms/formresponse_list.html:251
 msgid "pages"
 msgstr "Seiten"
 
-#: forms/templates/forms/formresponse_list.html:248
+#: forms/templates/forms/formresponse_list.html:254
 msgid "Backward button"
 msgstr "Zurück Knopf"
 
-#: forms/templates/forms/formresponse_list.html:258
+#: forms/templates/forms/formresponse_list.html:264
 msgid "Page number input"
 msgstr "Seitenzahl EIngabefeld"
 
-#: forms/templates/forms/formresponse_list.html:260
+#: forms/templates/forms/formresponse_list.html:266
 msgid "Number of items per page"
 msgstr "Anzahl von Elementen pro Seite"
 
-#: forms/templates/forms/formresponse_list.html:274
+#: forms/templates/forms/formresponse_list.html:280
 msgid "Forward button"
 msgstr "Weiter Knopf"
 
-#: forms/templates/forms/formresponse_list.html:288
+#: forms/templates/forms/formresponse_list.html:294
 msgid "Download data as csv"
 msgstr "Als CSV herunterladen"
 
@@ -368,15 +382,7 @@ msgstr "Ihre Recherchen"
 msgid "Create a new investigation"
 msgstr "Eine neue Recherche erstellen"
 
-#: forms/templates/forms/investigation_list.html:35
-msgid "Edit"
-msgstr "Bearbeiten"
-
-#: forms/templates/forms/investigation_list.html:38
-msgid "View"
-msgstr "Ansehen"
-
-#: forms/templates/forms/investigation_list.html:45
+#: forms/templates/forms/investigation_list.html:44
 #, python-format
 msgid ""
 "\n"
@@ -395,7 +401,7 @@ msgstr[1] ""
 "                                %(counter)s Antworten insgesamt\n"
 "                            "
 
-#: forms/templates/forms/investigation_list.html:52
+#: forms/templates/forms/investigation_list.html:51
 #, python-format
 msgid ""
 "\n"
@@ -416,7 +422,7 @@ msgstr[1] ""
 "Stunden\n"
 "                                "
 
-#: forms/templates/forms/investigation_list.html:59
+#: forms/templates/forms/investigation_list.html:58
 #, python-format
 msgid ""
 "\n"
@@ -452,6 +458,37 @@ msgstr "Sprache"
 #: forms/templates/forms/user_settings.html:24
 msgid "set language"
 msgstr "Sprache setzen"
+
+#: forms/templates/invitation_email.txt:3
+msgid "Dear CNR User,"
+msgstr "Lieber CNR-Nutzer,"
+
+#: forms/templates/invitation_email.txt:5
+#, python-format
+msgid ""
+"\n"
+"you have been invited to join the %(name)s investigation.\n"
+msgstr ""
+"\n"
+"Sie wurden zu der %(name)s Recherche eingeladen.\n"
+
+#: forms/templates/invitation_email.txt:9
+msgid ""
+"\n"
+"Log into the the crowndewsroom at https://admin.crowdnewsroom.org to join "
+"the investigation.\n"
+msgstr ""
+"\n"
+"Melden Sie sich im Crowdnewsroom unter https://admin.crowdnewsroom.org an, "
+"um die Recherche beizutreten.\n"
+
+#: forms/templates/invitation_email.txt:13
+msgid "Have a nice day."
+msgstr "Wir wünschen Ihnen einen schönen Tag."
+
+#: forms/templates/invitation_email.txt:15
+msgid "The Crowndewsroom team"
+msgstr "Das Team des Crowdnewsroom"
 
 #: forms/templates/registration/login.html:4
 #: forms/templates/registration/login.html:5
