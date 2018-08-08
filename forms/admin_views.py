@@ -100,7 +100,8 @@ class FormListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['investigation'] = self.investigation
-        context['user_can_manage_investigation'] = self.request.user.has_perm("manage_investigation", self.investigation)
+        context['user_can_manage_investigation'] = self.request.user.has_perm("manage_investigation",
+                                                                              self.investigation)
         return context
 
 
@@ -438,16 +439,49 @@ class UserSettingsView(LoginRequiredMixin, BreadCrumbMixin, TemplateView):
     template_name = "forms/user_settings.html"
 
 
-class InvestigationView(InvestigationAuthMixin, TemplateView):
+class InvestigationView(InvestigationAuthMixin, TemplateView, BreadCrumbMixin):
     template_name = "forms/investigation_details.html"
     permission_required = "manage_investigation"
 
+    def get_breadcrumbs(self):
+        investigation = get_object_or_404(Investigation, slug=self.kwargs.get("investigation_slug"))
 
-class InvestigationCreateView(TemplateView):
+        return [
+            (_("Investigations"), reverse("investigation_list")),
+            (investigation.name,
+             reverse("form_list",
+                     kwargs={"investigation_slug": investigation.slug})),
+
+        ]
+
+
+class InvestigationCreateView(TemplateView, BreadCrumbMixin):
     template_name = "forms/investigation_details.html"
 
+    def get_breadcrumbs(self):
+        return [
+            (_("Investigations"), reverse("investigation_list")),
+            (_("New Investigation"), "#"),
+        ]
 
-class InterviewerView(InvestigationAuthMixin, TemplateView):
+
+class InterviewerView(InvestigationAuthMixin, TemplateView, BreadCrumbMixin):
     template_name = "forms/interviewer_new.html"
     permission_required = "manage_investigation"
 
+    def get_breadcrumbs(self):
+        investigation = get_object_or_404(Investigation, slug=self.kwargs.get("investigation_slug"))
+
+        form_name = _("New Form")
+        form_slug = self.kwargs.get("form_slug")
+        if form_slug:
+            form = get_object_or_404(Form, slug=form_slug)
+            form_name = form.name
+
+        return [
+            (_("Investigations"), reverse("investigation_list")),
+            (investigation.name,
+             reverse("form_list",
+                     kwargs={"investigation_slug": investigation.slug})),
+            (form_name, "#")
+        ]
