@@ -4,27 +4,39 @@ import { HashRouter, Route } from "react-router-dom";
 import InvestigationDetails from "./investigation-details";
 import InvestigationUsers from "./investigation-users";
 import InvestigationTags from "./investigation-tags";
-import {Redirect, Switch} from "react-router";
-import {CarbonMenuLink} from "./utils";
+import { Redirect, Switch } from "react-router";
+import { CarbonMenuLink } from "./utils";
 
-function getInvestigationSlug(){
+function getInvestigationSlug() {
   const urlParts = window.location.pathname.split("/");
   return urlParts[urlParts.length - 1];
 }
 
-function hasSlug(){
+function hasSlug() {
   return !!getInvestigationSlug();
 }
 
 const App = () => (
   <HashRouter>
     <div>
-      <nav data-tabs className="bx--tabs investigation-management__tabs" role="navigation">
-          <ul className="bx--tabs__nav bx--tabs__nav--hidden" role="tablist">
-            <CarbonMenuLink to="/details" label={gettext("Details")}/>
-            {hasSlug() &&  <CarbonMenuLink to="/users" label={gettext("Users")}/> }
-            {hasSlug() &&  <CarbonMenuLink to="/tags" label={gettext("Tags")}/> }
-          </ul>
+      <nav
+        data-tabs
+        className="bx--tabs investigation-management__tabs"
+        role="navigation"
+      >
+        <ul className="bx--tabs__nav bx--tabs__nav--hidden" role="tablist">
+          <CarbonMenuLink to="/details" label={gettext("Details")} />
+          <CarbonMenuLink
+            to="/users"
+            label={gettext("Users")}
+            disabled={!hasSlug()}
+          />
+          <CarbonMenuLink
+            to="/tags"
+            label={gettext("Tags")}
+            disabled={!hasSlug()}
+          />
+        </ul>
       </nav>
       <div>
         <Switch>

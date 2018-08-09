@@ -71,7 +71,8 @@
                     {% else %}
                         <button class="cnr--button-unstyled"
                                 onClick="leaveInvestigation('{{investigation.slug}}', '{{ role }}', {{ request.user.id}})">
-                            Leave investigation</button>
+                            {% trans "Leave investigation" %}
+                        </button>
                     {% endif %}
                 </div>
                 </div>

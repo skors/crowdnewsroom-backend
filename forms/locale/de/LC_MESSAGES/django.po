@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-09 14:02+0200\n"
-"PO-Revision-Date: 2018-08-09 14:07+0200\n"
+"POT-Creation-Date: 2018-08-09 15:43+0200\n"
+"PO-Revision-Date: 2018-08-09 15:45+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -174,7 +174,7 @@ msgstr "Formulare für diese Recherche"
 
 #: forms/templates/forms/form_list.html:11
 msgid "Add a new interviewer"
-msgstr "Eine neue Recherche hinzufügen"
+msgstr "Einen neuen Fragebogen hinzufügen"
 
 #: forms/templates/forms/form_list.html:27
 #: forms/templates/forms/investigation_list.html:34
@@ -451,6 +451,10 @@ msgstr[1] ""
 "                                %(counter)s Antworten, die noch verifiziert "
 "werden müssen\n"
 "                                "
+
+#: forms/templates/forms/investigation_list.html:74
+msgid "Leave investigation"
+msgstr "Recherche verlassen"
 
 #: forms/templates/forms/investigation_users.html:6
 msgid "User Management"
