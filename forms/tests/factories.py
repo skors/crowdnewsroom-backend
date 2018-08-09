@@ -53,7 +53,6 @@ class TagFactory(factory.django.DjangoModelFactory):
         model = models.Tag
 
     name = factory.Sequence(lambda n: 'Tag %s' % n)
-    slug = factory.LazyAttribute(lambda a: slugify(a.name))
     investigation = factory.SubFactory(InvestigationFactory)
 
 
@@ -65,3 +64,11 @@ class CommentFactory(factory.django.DjangoModelFactory):
     author = factory.SubFactory(UserFactory)
     date = timezone.now()
     form_response = factory.SubFactory(FormResponseFactory)
+
+
+class FormInstanceTemplateFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.FormInstanceTemplate
+
+    name = factory.Sequence(lambda n: 'Form Template %s' % n)
+    form_json = []

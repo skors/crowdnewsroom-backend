@@ -4,11 +4,17 @@ $font-family-sans-serif: 'Source Sans Pro', sans-serif
 @import 'cnr-carbon-main'
 @import '../../node_modules/@fortawesome/fontawesome-free-webfonts/css/fontawesome.css'
 @import '../../node_modules/@fortawesome/fontawesome-free-webfonts/css/fa-solid.css'
+@import '../../node_modules/jsoneditor-react/es/editor.min.css'
 @import 'investigation_list'
 @import 'formresponse_details'
 @import 'formresponse_list'
 @import 'forms_list'
 @import 'investigation-users'
+@import 'investigation-details'
+@import 'investigation-management'
+@import 'forminstance-details'
+@import '~noty/src/noty.scss'
+@import '~noty/src/themes/mint.scss'
 
 
 @font-face
@@ -75,6 +81,35 @@ a:active
 .cnr--datatable-overflowable
   .bx--data-table-v2-container
     overflow-x: visible
+
+
+.cnr--two-column-form
+
+  .bx--form-item
+    flex-direction: row
+    align-items: center
+
+    .bx--label
+      flex: 0 0 25%
+
+  &__fileupload
+    .bx--file, .bx--file-container
+      width: auto
+      margin-top: 1em
+
+    .bx--file-container
+      padding-left: 1em
+
+
+  &__fileupload-imgwrapper
+    display: flex
+
+    &:before
+      display: block
+      content: ''
+      flex: 0 0 25%
+
+
 
 
 
@@ -176,3 +211,16 @@ body
 
   40%, 60%
     transform: translate3d(4px, 0, 0)
+
+.cnr--inline-add
+  display: flex
+
+  &--button
+    flex-direction: row
+    align-items: flex-end
+    padding-left: 1em
+
+.cnr--centered
+  text-align: center
+  margin-bottom: 2em
+

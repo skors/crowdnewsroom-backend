@@ -24,7 +24,7 @@ const mutatingFetch = (url, settings) => {
   return authorizedFetch(url, Object.assign(baseSettings, settings));
 };
 
-const authorizedPUT = (url, settings) => {
+const authorizedPATCH = (url, settings) => {
   return mutatingFetch(url, Object.assign({ method: "PATCH" }, settings));
 };
 
@@ -46,4 +46,5 @@ const authorizedDELETE = (url, settings) => {
   return fetch(url, Object.assign(baseSettings, settings));
 };
 
-export { authorizedFetch, authorizedPUT, authorizedPOST, authorizedDELETE };
+export { authorizedFetch, authorizedPATCH, authorizedPOST, authorizedDELETE };
+

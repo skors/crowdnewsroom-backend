@@ -125,12 +125,11 @@ class FormReponseBatchEditTest(TestCase):
         responses = self.responses[0]
         form = responses[0].form_instance.form
 
-        TagFactory.create(name='Pasta', slug='pasta',
-                          investigation=self.investigation)
+        tag = TagFactory.create(name='Pasta', investigation=self.investigation)
 
         payload = {
             "selected_responses": [responses[3].id, responses[4].id],
-            "tag": "pasta"
+            "tag": tag.id
         }
 
         response = self.client.post(make_url(form), data=payload)
@@ -141,12 +140,11 @@ class FormReponseBatchEditTest(TestCase):
         form = responses[0].form_instance.form
         investigation = responses[0].form_instance.form.investigation
 
-        TagFactory.create(name='Pasta', slug='pasta',
-                          investigation=investigation)
+        tag = TagFactory.create(name='Pasta', investigation=investigation)
 
         payload = {
             "selected_responses": [responses[3].id, responses[4].id],
-            "tag": "pasta"
+            "tag": tag.id
         }
 
         self.client.post(make_url(form), data=payload)
@@ -222,13 +220,11 @@ class FormReponseBatchEditTest(TestCase):
     def test_assign_tags_from_other_investigation_fails(self):
         responses = self.responses[0]
         investigation = InvestigationFactory.create()
-        TagFactory.create(name='Other-investigation-tag',
-                          slug='other-investigation-tag',
-                          investigation=investigation)
+        other_tag = TagFactory.create(investigation=investigation)
         form = responses[0].form_instance.form
         payload = {
             "selected_responses": [responses[2].id],
-            "tag": "other-investigation-tag"
+            "tag": other_tag.id
         }
 
         self.client.post(make_url(form), data=payload)

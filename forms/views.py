@@ -9,36 +9,61 @@ from django.utils import timezone
 from rest_framework import generics, permissions, serializers, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated, DjangoObjectPermissions
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 
-from .models import FormResponse, FormInstance, Investigation, Tag, User, UserGroup, Invitation, INVESTIGATION_ROLES
+from crowdnewsroom import settings
+from .fields import Base64ImageField
+from .models import FormResponse, FormInstance, Investigation, Tag, User, UserGroup, Invitation, INVESTIGATION_ROLES, \
+    FormInstanceTemplate, Form
 
 
 class InvestigationSerializer(ModelSerializer):
+    logo = Base64ImageField(required=False)
+
     class Meta:
         model = Investigation
         fields = "__all__"
 
 
-class InvestigationDetail(generics.RetrieveAPIView):
+class InvestigationPermissions(DjangoObjectPermissions):
+    perms_map = {
+        'GET': [],
+        'OPTIONS': [],
+        'HEAD': [],
+        'POST': [],
+        'PUT': ['manage_investigation'],
+        'PATCH': ['manage_investigation'],
+        'DELETE': ['master_investigation'],
+    }
+
+    def has_permission(self, request, view):
+        # We never want to check model-based permissions, only
+        # object-based permissions. This is why we override
+        # this method and rely on `has_object_permission` alone
+        return True
+
+
+class InvestigationDetail(generics.RetrieveUpdateDestroyAPIView):
     # TODO: This should filter to make sure to only return
     # Investigations that are published and not in draft or unlisted state
-    queryset = Investigation
+    queryset = Investigation.objects.all()
     serializer_class = InvestigationSerializer
     lookup_url_kwarg = "investigation_slug"
     lookup_field = "slug"
+    permission_classes = (InvestigationPermissions, )
 
 
-class FormSerializer(ModelSerializer):
+class FormInstanceSerializer(ModelSerializer):
     class Meta:
         model = FormInstance
         fields = "__all__"
 
 
 class FormInstanceDetail(generics.RetrieveAPIView):
-    serializer_class = FormSerializer
+    serializer_class = FormInstanceSerializer
     lookup_url_kwarg = "form_slug"
 
     def get_object(self, *args, **kwargs):
@@ -89,8 +114,13 @@ class FormResponseMetaSerializer(ModelSerializer):
 
 
 def get_investigation(instance):
+    """ returns this objects related investigation (used for authentication)"""
     if isinstance(instance, FormResponse):
         return instance.form_instance.form.investigation
+    if isinstance(instance, Tag):
+        return instance.investigation
+    if isinstance(instance, Form):
+        return instance.investigation
 
 
 class CanEditInvestigation(permissions.BasePermission):
@@ -115,22 +145,42 @@ class FormResponseDetail(generics.RetrieveUpdateAPIView):
             serializer.save()
 
 
-class InvestigationListAPIView(generics.ListAPIView):
-    def list(self, request, *args, **kwargs):
-        investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
-        if not request.user.has_perm("view_investigation", investigation):
-            raise PermissionDenied(detail="not allowed!")
-        return super().list(request, *args, **kwargs)
-
-
 class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
         fields = "__all__"
+        read_only_fields = ("investigation",)
+
+    def create(self, validated_data, *args, **kwargs):
+        view = self.context.get("view")
+        investigation_slug = view.kwargs.get("investigation_slug")
+        investigation = get_object_or_404(Investigation, slug=investigation_slug)
+
+        tag = Tag(**validated_data)
+        tag.investigation = investigation
+        tag.save()
+        return tag
 
 
-class TagList(InvestigationListAPIView):
+class InvestigationObjectPermissions(DjangoObjectPermissions):
+    permission = "manage_investigation"
+
+    def has_permission(self, request, view):
+        investigation = Investigation.objects.get(slug=request.parser_context["kwargs"].get("investigation_slug"))
+        return request.user.has_perm(self.permission, investigation)
+
+
+class InvestigationObjectViewPermissions(InvestigationObjectPermissions):
+    permission = "view_investigation"
+
+
+class InvestigationObjectManagePermissions(InvestigationObjectPermissions):
+    permission = "manage_investigation"
+
+
+class TagList(generics.ListCreateAPIView):
     serializer_class = TagSerializer
+    permission_classes = (InvestigationObjectViewPermissions,)
 
     def get_queryset(self):
         investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
@@ -143,8 +193,9 @@ class AssigneeSerializer(ModelSerializer):
         fields = ("first_name", "last_name", "email", "id")
 
 
-class AssigneeList(InvestigationListAPIView):
+class AssigneeList(generics.ListAPIView):
     serializer_class = AssigneeSerializer
+    permission_classes = (InvestigationObjectViewPermissions,)
 
     def get_queryset(self):
         investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
@@ -254,7 +305,7 @@ class InvitationSerializer(ModelSerializer):
         fields = ("email", "id", "accepted")
 
 
-class InvestigationPermissions(DjangoObjectPermissions):
+class InvestigationInvitationPermissions(DjangoObjectPermissions):
     def has_permission(self, request, view):
         investigation = Investigation.objects.get(slug=view.kwargs.get("investigation_slug"))
         if not request.user.has_perm("manage_investigation", investigation):
@@ -278,7 +329,7 @@ def create_and_invite_user(email, request):
 
 class InvitationList(generics.ListCreateAPIView):
     serializer_class = InvitationSerializer
-    permission_classes = (InvestigationPermissions, )
+    permission_classes = (InvestigationInvitationPermissions, )
 
     def get_queryset(self):
         investigation = get_object_or_404(Investigation, slug=self.kwargs.get("investigation_slug"))
@@ -287,11 +338,13 @@ class InvitationList(generics.ListCreateAPIView):
     def create(self, request, investigation_slug):
         investigation = get_object_or_404(Investigation, slug=investigation_slug)
         email = request.data.get("email")
+        new_user = False
         try:
             user = User.objects.get(email=email)
         except ObjectDoesNotExist:
             try:
                 user = create_and_invite_user(email, request)
+                new_user = True
             except ValidationError as errors:
                 return Response(errors.error_dict, status.HTTP_400_BAD_REQUEST)
 
@@ -302,6 +355,11 @@ class InvitationList(generics.ListCreateAPIView):
             invitation = Invitation.objects.create(user=user, investigation=investigation)
         except IntegrityError:
             return Response({"message": "invitation already exists"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # if the user is new, they already got an e-mail which prompts them
+        # to create an account. No need to send them another one here.
+        if not new_user:
+            invitation.send_user_email()
 
         serializer = self.get_serializer()
         serialized = serializer.to_representation(invitation)
@@ -347,3 +405,159 @@ class UserInvitationList(generics.ListAPIView):
 
     def get_queryset(self):
         return Invitation.objects.filter(user=self.request.user).all()
+
+
+class InvestigationCreate(generics.CreateAPIView):
+    queryset = Investigation
+    serializer_class = InvestigationSerializer
+
+    permission_classes = (IsAuthenticated, )
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        new_investigation = Investigation.objects.get(id=response.data.get('id'))
+        new_investigation.add_user(request.user, "O")
+        return response
+
+
+class FormInstanceListTemplateSerializer(ModelSerializer):
+    class Meta:
+        model = FormInstanceTemplate
+        fields = ("id", "name", "description")
+
+
+class FormInstanceTemplateList(generics.ListAPIView):
+    queryset = FormInstanceTemplate.objects.all()
+    serializer_class = FormInstanceListTemplateSerializer
+    permission_classes = (IsAuthenticated, )
+
+
+class FormInstanceDetailsTemplateSerializer(ModelSerializer):
+    class Meta:
+        model = FormInstanceTemplate
+        fields = "__all__"
+
+
+class FormInstanceTemplateDetails(generics.RetrieveAPIView):
+    queryset = FormInstanceTemplate.objects.all()
+    serializer_class = FormInstanceDetailsTemplateSerializer
+    permission_classes = (IsAuthenticated, )
+
+
+class TagEditDelete(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Tag
+    serializer_class = TagSerializer
+    permission_classes = (IsAuthenticated, CanEditInvestigation)
+
+
+class FormInstanceSerializer(ModelSerializer):
+    class Meta:
+        model = FormInstance
+        fields = "__all__"
+        read_only_fields = ("form", "version")
+
+    def create(self, validated_data, *args, **kwargs):
+        view = self.context.get("view")
+
+        form = get_object_or_404(Form, id=view.kwargs.get("form_id"))
+
+        latest_form_instance = FormInstance.get_latest_for_form(form.slug)
+        next_version = 1 if not latest_form_instance else latest_form_instance.version + 1
+
+        form_instance = FormInstance(**validated_data)
+        form_instance.form = form
+        form_instance.version = next_version
+        form_instance.save()
+
+        return form_instance
+
+
+class FormInstancePermissions(DjangoObjectPermissions):
+    def has_permission(self, request, view):
+        form_id = view.kwargs.get("form_id")
+        form = get_object_or_404(Form, id=form_id)
+        investigation = form.investigation
+        return request.user.has_perm("manage_investigation", investigation)
+
+
+class FormInstanceListCreate(generics.ListCreateAPIView):
+    serializer_class = FormInstanceSerializer
+    permission_classes = (IsAuthenticated, FormInstancePermissions)
+    pagination_class = LimitOffsetPagination
+
+    def get_queryset(self):
+        return FormInstance.objects\
+            .filter(form_id=self.kwargs.get("form_id"))\
+            .order_by("-version") \
+            .all()
+
+
+class FormSerializer(ModelSerializer):
+    frontend_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Form
+        fields = "__all__"
+        read_only_fields = ("investigation", "frontend_url")
+
+    def get_frontend_url(self, form):
+        params = {
+            "base_url": settings.FRONTEND_BASE_URL,
+            "investigation_slug": form.investigation.slug,
+            "form_slug": form.slug
+        }
+
+        return "{base_url}/{investigation_slug}/{form_slug}".format(**params)
+
+    def create(self, validated_data, *args, **kwargs):
+        investigation_slug = self.context['view'].kwargs.get("investigation_slug")
+        investigation = get_object_or_404(Investigation, slug=investigation_slug)
+        form = Form(**validated_data)
+        form.investigation = investigation
+        form.save()
+        return form
+
+
+class FormCreate(generics.CreateAPIView):
+    serializer_class = FormSerializer
+    permission_classes = (IsAuthenticated, InvestigationObjectManagePermissions)
+
+
+class FormDetails(generics.RetrieveUpdateAPIView):
+    serializer_class = FormSerializer
+    queryset = Form
+    lookup_field = "slug"
+    lookup_url_kwarg = "form_slug"
+    permission_classes = (IsAuthenticated, CanEditInvestigation)
+
+
+class ResponseListPermission(DjangoObjectPermissions):
+    def has_permission(self, request, view):
+        form_slug = view.kwargs.get("form_slug")
+        form = get_object_or_404(Form, slug=form_slug)
+        investigation = form.investigation
+        return request.user.has_perm("manage_investigation", investigation)
+
+
+class FormResponseListSerializer(ModelSerializer):
+    json = serializers.SerializerMethodField()
+
+    class Meta:
+        model = FormResponse
+        fields = "__all__"
+
+    def get_json(self, form_response):
+        return {field["json_name"]: field["value"] for field in form_response.rendered_fields()}
+
+
+class FormResponseList(generics.ListAPIView):
+    serializer_class = FormResponseListSerializer
+    permission_classes = (IsAuthenticated, ResponseListPermission)
+
+    def get_queryset(self):
+        form_slug = self.kwargs.get("form_slug")
+        queryset = FormResponse.objects.filter(form_instance__form__slug=form_slug)
+        status = self.request.query_params.get('status', None)
+        if status is not None:
+            queryset = queryset.filter(status=status)
+        return queryset

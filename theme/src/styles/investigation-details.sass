@@ -1,0 +1,45 @@
+.investigation-details
+  &__filepreview
+    max-width: 400px
+    max-height: 200px
+
+.investigation-color
+  display: flex
+  flex-direction: row
+
+  &__preview
+    display: inline-block
+    height: 2.5rem
+    align-self: flex-end
+    padding-left: 1em
+
+  &__half
+    width: 50%
+
+.colorPicker
+  order: 2
+
+  & ~ .bx--label
+    order: 1
+
+  &--popover
+    position: absolute
+    z-index: 2
+
+  &--cover
+    position: fixed
+    top: 0px
+    right: 0px
+    bottom: 0px
+    left: 0px
+
+  &--preview-wrapper
+    display: flex
+
+  &--preview
+    width: 40px
+    border: 2px solid $brand-01
+    border-left: none
+
+  .bx--btn--secondary
+    border-right: none

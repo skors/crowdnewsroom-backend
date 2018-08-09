@@ -1,16 +1,14 @@
 import React, {Component} from "react";
-import ReactDOM from "react-dom";
 import {
   DataTable,
   DropdownV2,
   TextInput,
   Form,
-  FormGroup,
   Button,
   DataTableSkeleton
 } from "carbon-components-react";
 import {authorizedDELETE, authorizedFetch, authorizedPOST} from "./api";
-import {assign, snakeCase, find, endsWith} from "lodash";
+import {assign, snakeCase, find, endsWith, keyBy} from "lodash";
 
 
 const {
@@ -32,21 +30,28 @@ const {
 
 const getAvailableRoles = (user) => {
   const roles = [
-    {id: "A", text: "Admin"},
-    {id: "E", text: "Editor"},
-    {id: "V", text: "Viewer"},
+    {id: "A", text: gettext("Admin")},
+    {id: "E", text: gettext("Editor")},
+    {id: "V", text: gettext("Viewer")},
   ];
   const ownerRole = {id: "O", text: "Owner"};
-  if (user.role === "O"){
+  // there can be a case where no user is passed in here because they
+  // are not found in the list. This should only be the case when
+  // they are superusers. If they are superusers they have the
+  // same permissions as investigation onwners
+  const userIsSuperuser = !user;
+  if (userIsSuperuser || user.role === "O"){
     roles.unshift(ownerRole)
   }
   return roles;
-}
+};
 
 function RoleDropdown({selectedRole, user, updateCallback, availableRoles}) {
   const initialRole = availableRoles.find(role => role.id === selectedRole);
 
-  if (endsWith(selectedRole, "_readonly") || !initialRole){
+  // we might not have found an initial role because the user that is logged
+  // in is and admin but they are seeing an owner whose role the cannot change
+  if (user.is_requester || !initialRole){
     const roleKey = selectedRole.substr(0,1);
     const names = {
       "A": "Admin",
@@ -58,7 +63,7 @@ function RoleDropdown({selectedRole, user, updateCallback, availableRoles}) {
   if (initialRole) {
     return <DropdownV2
       label={"role"}
-      onChange={(event) => updateCallback(user, event.selectedItem.id)}
+      onChange={(event) => updateCallback(user.id, event.selectedItem.id)}
       itemToString={item => item.text}
       initialSelectedItem={initialRole}
       items={availableRoles}
@@ -67,33 +72,23 @@ function RoleDropdown({selectedRole, user, updateCallback, availableRoles}) {
   return <div>Wat?</div>
 }
 
-function Row({row, updateCallback, getSelectionProps, availableRoles}){
-  return <TableRow>
-    <TableSelectRow {...getSelectionProps({ row })} />
-    {row.cells.map(cell => <Cell cell={cell}
-                                 row={row}
-                                 changeUserCallback={updateCallback}
-                                 availableRoles={availableRoles}/> )}
-  </TableRow>
-}
-
-function Cell({cell, row, changeUserCallback, availableRoles}){
-  if (cell.info.header === "role") {
-    if (cell.value) {
-      return <TableCell className={`user-${snakeCase(row.id)}`}>
-        <RoleDropdown selectedRole={cell.value}
-                      user={row.id}
-                      updateCallback={changeUserCallback}
-                      availableRoles={availableRoles} />
-      </TableCell>
-    }
-    return <TableCell className={`user-${snakeCase(row.id)}`}><i>Invitation Pending</i></TableCell>;
+function ManageRoleCell({row, changeUserCallback, availableRoles}){
+  const isInvitation = !row.role;
+  if (isInvitation){
+    return <TableCell><i>Invitation Pending</i></TableCell>;
   }
-  return <TableCell key={cell.id}>{cell.value}</TableCell>
+  return <TableCell>
+    <RoleDropdown selectedRole={row.role}
+                user={row}
+                updateCallback={changeUserCallback}
+                availableRoles={availableRoles} />
+  </TableCell>
 }
 
-const renderTableWithUpdate = (updateCallback, removeUsers, availableRoles) => {
-  return ({ rows, headers, getHeaderProps, getBatchActionProps, getSelectionProps, selectedRows, onInputChange }) => (
+const renderTableWithUpdate = (updateCallback, removeUsers, availableRoles, originalRows) => {
+  const keyedRows = keyBy(originalRows, "email");
+
+  return ({ rows, headers, getHeaderProps, getBatchActionProps, getSelectionProps, selectedRows, onInputChange, getRowProps }) => (
     <TableContainer>
       <TableToolbar>
         <TableBatchActions {...getBatchActionProps()}>
@@ -114,15 +109,18 @@ const renderTableWithUpdate = (updateCallback, removeUsers, availableRoles) => {
                 {header.header}
               </TableHeader>
             ))}
+            <TableHeader>
+              Rolle
+            </TableHeader>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => <Row data-id={row.id}
-                                key={row.id}
-                                row={row}
-                                updateCallback={updateCallback}
-                                availableRoles={availableRoles}
-                                getSelectionProps={getSelectionProps}/>)}
+          {rows.map(row => <TableRow key={row.id} {...getRowProps({row, id:row.id})}>
+              <TableSelectRow {...getSelectionProps({ row })} />
+              {row.cells.map(cell => <TableCell key={cell.id}>{cell.value}</TableCell>)}
+              <ManageRoleCell row={keyedRows[row.id]} availableRoles={availableRoles} changeUserCallback={updateCallback}/>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </TableContainer>);
@@ -148,23 +146,24 @@ class InviteUser extends Component {
 
   render() {
     return <Form onSubmit={this.submit}>
-      <FormGroup>
-        <div className="invite-users">
+        <div className="cnr--inline-add">
           <TextInput
+            id="invite-user"
             invalidText={this.props.error}
             invalid={this.props.error !== null}
-            labelText="Email"
+            labelText="E-Mail"
             value={this.state.email}
+            hideLabel={true }
+            placeholder="email@example.org"
             onChange={this.updateEmail}
           />
-          <div className="bx--form-item invite-users--button" >
-            <Button onClick={this.submit}>Einladen</Button>
+          <div className="bx--form-item cnr--inline-add--button" >
+            <Button onClick={this.submit}>{gettext("Invite")}</Button>
           </div>
         </div>
-        <div>
-          Enter the email of the collaborator you would like to invite. This persons will receive an email and will be able to create an account.
-        </div>
-      </FormGroup>
+        <p>
+          {gettext("Enter the email of the collaborator you would like to invite.")}
+        </p>
     </Form>
   }
 }
@@ -177,15 +176,16 @@ function removeInvitation(invitation) {
   return authorizedDELETE(`/forms/invitations/${invitation.id}`)
 }
 
-class App extends Component {
+export default class InvestigationUsers extends Component {
     constructor(props){
         super(props);
-        const [match, slug] = window.location.pathname.match(/investigations\/([a-z-]+)\/users/);
+        const [match, slug] = window.location.pathname.match(/investigations\/([a-z-]+)/);
         this.state = {
             users: [],
             invitations: [],
             emailError: null,
             currentUser: null,
+            loading: true,
             slug
         };
         this.updateUserRole = this.updateUserRole.bind(this);
@@ -196,8 +196,9 @@ class App extends Component {
     }
 
     componentDidMount(){
-      this.loadUsers();
-      this.loadInvitations();
+      const userPromise = this.loadUsers();
+      const invitationPromise = this.loadInvitations();
+      Promise.all([userPromise, invitationPromise]).then(() => {this.setState({loading: false})})
     }
 
     inviteUser(email){
@@ -207,13 +208,12 @@ class App extends Component {
             this.setState({emailError: json.email[0]})
           }
           else {
-            const td = document.querySelector(`.user-${snakeCase(email)}`);
-            const tr = td.parentElement;
+            const tr = document.getElementById(email);
             tr.classList.add("shake");
             setTimeout(() => tr.classList.remove("shake"), 800)
           }
         });
-      }
+      };
 
       authorizedPOST(`/forms/investigations/${this.state.slug}/invitations`, {body: JSON.stringify({email})})
         .then(this.setState({emailError: null}))
@@ -222,20 +222,19 @@ class App extends Component {
     }
 
     loadUsers(){
-      authorizedFetch(`/forms/investigations/${this.state.slug}/users`).then(json => {
+      return authorizedFetch(`/forms/investigations/${this.state.slug}/users`).then(json => {
         const currentUser = json.users.find(user => user.is_requester);
         this.setState({users: json.users, currentUser});
       })
     }
 
     loadInvitations(){
-      authorizedFetch(`/forms/investigations/${this.state.slug}/invitations`).then(invitations => {
+      return authorizedFetch(`/forms/investigations/${this.state.slug}/invitations`).then(invitations => {
         this.setState({invitations: invitations.filter(invitation => invitation.accepted === null)});
       })
     }
 
-    updateUserRole(email, role){
-      const userID = find(this.state.users, {email}).id;
+    updateUserRole(userID, role){
       const payload = {id: userID};
       authorizedPOST(`/forms/investigations/${this.state.slug}/groups/${role}/users`, {body: JSON.stringify(payload)})
         .then(this.loadUsers)
@@ -257,57 +256,52 @@ class App extends Component {
     render() {
       const combinedUsers = this.state.users.concat(this.state.invitations);
 
-      if (!combinedUsers.length || !this.state.currentUser){
-        return <DataTableSkeleton/>
-      }
-
       const rows = combinedUsers.map(user => {
-        const userCopy = assign({}, user, {id: user.email})
-        if (userCopy.email === this.state.currentUser.email){
-          userCopy.role = `${userCopy.role}_readonly`;
-        }
-        return userCopy;
+        return assign({}, user, {id: user.email})
       });
 
       const availableRoles = getAvailableRoles(this.state.currentUser);
 
-      const headers = [{key: "first_name", header: "Vorname"},
-                       {key: "last_name", header: "Nachname"},
-                       {key: "email", header: "E-Mail"},
-                       {key: "role", header: "Rolle"}];
+      const headers = [{key: "first_name", header: gettext("First name")},
+                       {key: "last_name", header: gettext("Last Name")},
+                       {key: "email", header: gettext("E-Mail")}];
         return <div className="investigation-users">
-          <div className="investigation-users--section">
-            Invite members of your team to help contribute to your investigation by assigning them specific permissions. Each collaborator will be able to access your project through their own Crowdnewsroom account. As the creator, you remain ultimately responsible for your project and for your team's interactions with contributors. Pick collaborators that you trust and that will do a good job working with your community. Have questions about how this works? Visit our FAQ.
-          </div>
+          <p className="investigation-users--section">
+            {gettext("Invite members of your team to help contribute to your investigation by assigning them specific permissions.")}
+            {gettext("Each collaborator will be able to access your project through their own Crowdnewsroom account.")}
+            {gettext("As the creator, you remain ultimately responsible for your project and for your team's interactions with contributors.")}
+            {gettext("Pick collaborators that you trust and that will do a good job working with your community.")}
+            {gettext("Have questions about how this works? Visit our FAQ.")}
+          </p>
 
           <div className="investigation-users--section">
-            <h2>Invite a new Collaborator</h2>
+            <h2>{gettext("Invite a new Collaborator")}</h2>
             <InviteUser inviteCallback={this.inviteUser} error={this.state.emailError}/>
           </div>
 
           <div className="cnr--datatable-overflowable investigation-users--section">
-            <h2>Manage the collaborators</h2>
-            <DataTable
+            <h2>{gettext("Manage the collaborators")}</h2>
+            {this.state.loading ?
+              <DataTableSkeleton/>
+              :
+              <DataTable
                 rows={rows}
                 headers={headers}
-                render={renderTableWithUpdate(this.updateUserRole, this.removeUsers, availableRoles)}/>
-            <div>
+                render={renderTableWithUpdate(this.updateUserRole, this.removeUsers, availableRoles, combinedUsers)}/>
+            }
+            <p>
               <dl className="roles-list">
-                <dt className="roles-list--dt">Admin</dt>
-                <dd className="roles-list--dd">An admin can manage the investigation settings page & the collaborators </dd>
+                <dt className="roles-list--dt">{gettext("Admin")} </dt>
+                <dd className="roles-list--dd">{gettext("An admin can manage the investigation settings page and the collaborators")}</dd>
 
-                <dt className="roles-list--dt">Editor</dt>
-                <dd className="roles-list--dd">The editor can see everything about the data collected via this investigation</dd>
+                <dt className="roles-list--dt">{gettext("Editor")}</dt>
+                <dd className="roles-list--dd">{gettext("The editor can see everything about the data collected via this investigation")}</dd>
 
-                <dt className="roles-list--dt">Viewer</dt>
-                <dd className="roles-list--dd">A viewer can see the data collected via this investigation but is not able to modify; to sort it or to download it</dd>
-
+                <dt className="roles-list--dt">{gettext("Viewer")}</dt>
+                <dd className="roles-list--dd">{gettext("A viewer can see the data collected via this investigation but is not able to modify; to sort it or to download it")}</dd>
               </dl>
-            </div>
+            </p>
           </div>
         </div>;
     }
 }
-
-const rootElement = document.getElementById("user-management");
-ReactDOM.render(<App />, rootElement);

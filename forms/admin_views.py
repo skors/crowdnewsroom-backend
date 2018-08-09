@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.utils.functional import cached_property
+from django.views.generic.base import ContextMixin
 from guardian.decorators import permission_required
 from guardian.mixins import PermissionRequiredMixin
 from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseForbidden
@@ -39,7 +40,7 @@ def _get_filter_params(kwargs, get_params):
         filter_params["json__has_key"] = has_filter
 
     if tag_filter:
-        filter_params["tags__slug"] = tag_filter
+        filter_params["tags__id"] = tag_filter
 
     if email_filter:
         filter_params["json__email__icontains"] = email_filter
@@ -51,7 +52,7 @@ def _get_filter_params(kwargs, get_params):
     return filter_params
 
 
-class BreadCrumbMixin(object):
+class BreadCrumbMixin(ContextMixin):
     def get_breadcrumbs(self):
         return []
 
@@ -76,7 +77,7 @@ class InvestigationAuthMixin(PermissionRequiredMixin, LoginRequiredMixin):
     return_403 = True
 
     def get_permission_object(self):
-        return Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
+        return get_object_or_404(Investigation, slug=self.kwargs.get("investigation_slug"))
 
 
 class FormListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
@@ -96,9 +97,11 @@ class FormListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
     def get_queryset(self):
         return Form.get_all_for_investigation(self.kwargs.get("investigation_slug"))
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['investigation'] = self.investigation
+        context['user_can_manage_investigation'] = self.request.user.has_perm("manage_investigation",
+                                                                              self.investigation)
         return context
 
 
@@ -285,12 +288,12 @@ def form_response_batch_edit(request, *args, **kwargs):
 
     # update tags for all selected form responses
     try:
-        t_slug = request.POST.get("tag")
-        if t_slug == "clear_tags":
+        tag_id = request.POST.get("tag")
+        if tag_id == "clear_tags":
             for form_response in form_responses:
                 form_response.tags.clear()
         else:
-            tag = Tag.objects.filter(investigation=investigation).get(slug=t_slug)
+            tag = Tag.objects.filter(investigation=investigation).get(id=tag_id)
             for form_response in form_responses:
                 form_response.tags.add(tag)
     except ObjectDoesNotExist:
@@ -436,6 +439,49 @@ class UserSettingsView(LoginRequiredMixin, BreadCrumbMixin, TemplateView):
     template_name = "forms/user_settings.html"
 
 
-class InvestigationUsersView(InvestigationAuthMixin, TemplateView):
-    template_name = "forms/investigation_users.html"
+class InvestigationView(InvestigationAuthMixin, TemplateView, BreadCrumbMixin):
+    template_name = "forms/investigation_details.html"
     permission_required = "manage_investigation"
+
+    def get_breadcrumbs(self):
+        investigation = get_object_or_404(Investigation, slug=self.kwargs.get("investigation_slug"))
+
+        return [
+            (_("Investigations"), reverse("investigation_list")),
+            (investigation.name,
+             reverse("form_list",
+                     kwargs={"investigation_slug": investigation.slug})),
+
+        ]
+
+
+class InvestigationCreateView(TemplateView, BreadCrumbMixin):
+    template_name = "forms/investigation_details.html"
+
+    def get_breadcrumbs(self):
+        return [
+            (_("Investigations"), reverse("investigation_list")),
+            (_("New Investigation"), "#"),
+        ]
+
+
+class InterviewerView(InvestigationAuthMixin, TemplateView, BreadCrumbMixin):
+    template_name = "forms/interviewer_new.html"
+    permission_required = "manage_investigation"
+
+    def get_breadcrumbs(self):
+        investigation = get_object_or_404(Investigation, slug=self.kwargs.get("investigation_slug"))
+
+        form_name = _("New Form")
+        form_slug = self.kwargs.get("form_slug")
+        if form_slug:
+            form = get_object_or_404(Form, slug=form_slug)
+            form_name = form.name
+
+        return [
+            (_("Investigations"), reverse("investigation_list")),
+            (investigation.name,
+             reverse("form_list",
+                     kwargs={"investigation_slug": investigation.slug})),
+            (form_name, "#")
+        ]

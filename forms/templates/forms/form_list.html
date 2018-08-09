@@ -1,18 +1,40 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% load guardian_tags %}
-{% load static %}
 
 {% block title %}Investigations{% endblock %}
 {% block headertitle %}{% trans "Forms for investigation" %}{% endblock %}
 
 {% block main %}
 <div class="forms-list main-content-padded">
-    <ul>
-    {% for form in form_list %}
-        <li><a href="{% url "form_responses" investigation.slug form.slug 'inbox' %}">{{ form }}</a></li>
-    {% endfor %}
-    </ul>
+    <div class="cnr--centered">
+        <a class="bx--btn bx--btn--secondary" href="{% url 'admin_interviewer_new' investigation.slug %}">
+            {% trans "Add a new interviewer" %}
+        </a>
+    </div>
+    <div class="bx--structured-list">
+        <div class="bx--structured-list-tbody">
+
+            {% for form in form_list %}
+                <div class="bx--structured-list-row">
+                    <div class="bx--structured-list-td">
+                        <div class="cnr--list-header">
+                            <h3 class="cnr--list-header__title">
+                                <a href="{% url 'form_responses' investigation.slug form.slug 'inbox' %}">{{ form }}</a>
+                            </h3>
+                            <div class="cnr--list-header__actions">
+                                {% if user_can_manage_investigation %}
+                                <a class="bx--btn bx--btn--secondary"
+                                   href="{% url 'admin_interviewer_edit' investigation.slug form.slug %}">{% trans "Edit" %}</a>
+                                {% endif %}
+                                <a class="bx--btn bx--btn--primary"
+                                   href="{% url 'form_responses' investigation.slug form.slug 'inbox' %}">{% trans "View" %}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 
 {% endblock %}

@@ -8,6 +8,7 @@ from django.core.mail import send_mail
 from django.db.models import Count
 from django.db.models.functions import Coalesce
 from django.template import Engine, Context
+from django.template.loader import get_template
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe
@@ -36,15 +37,16 @@ class Investigation(models.Model, UniqueSlugMixin):
     slug = models.SlugField(max_length=200, unique=True)
     cover_image = models.FileField(blank=True, null=True, default=None)
     logo = models.FileField(blank=True, null=True, default=None)
-    short_description = models.TextField()
-    category = models.TextField()  # What is this?
-    research_questions = models.TextField()
+    short_description = models.TextField(blank=True)
+    category = models.TextField(blank=True)  # What is this?
+    research_questions = models.TextField(blank=True)
     status = models.CharField(max_length=1, choices=STATUSES, default='D')
     # The following fields might be separate?
-    text = models.TextField()  # or is this the same as short_description?
-    methodology = models.TextField()
-    faq = models.TextField()
-    data_privacy_url = models.URLField(null=True)
+    text = models.TextField(blank=True)  # or is this the same as short_description?
+    methodology = models.TextField(blank=True)
+    faq = models.TextField(blank=True)
+    data_privacy_url = models.URLField(null=True, blank=True)
+    color = models.CharField(max_length=100, blank=True)
 
     @property
     def cover_image_url(self):
@@ -53,7 +55,7 @@ class Investigation(models.Model, UniqueSlugMixin):
         return ""
 
     def tags(self):
-        return list(Tag.objects.filter(investigation=self).all())
+        return Tag.objects.filter(investigation=self).all()
 
     class Meta:
         permissions = (
@@ -204,7 +206,6 @@ class Partner(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200, unique=True)
     investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -260,7 +261,7 @@ class FormInstance(models.Model):
     ui_schema_json = JSONField(default={})
     version = models.IntegerField(default=0)
     form = models.ForeignKey(Form, on_delete=models.CASCADE)
-    priority_fields = JSONField(default=[])
+    priority_fields = JSONField(default=[], blank=True)
     email_template = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"))
     email_template_html = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"));
     redirect_url_template = models.TextField(default="https://forms.crowdnewsroom.org")
@@ -279,7 +280,7 @@ class FormInstance(models.Model):
     def flat_schema(self):
         properties = {}
         for step in self.form_json:
-            properties.update(step["schema"]["properties"])
+            properties.update(step.get("schema", dict()).get("properties", dict()))
         return {"type": "object", "properties": properties}
 
     @property
@@ -451,6 +452,19 @@ class Invitation(models.Model):
     class Meta:
         unique_together = ('user', 'investigation')
 
+    def send_user_email(self):
+        template = get_template("invitation_email.txt")
+        message = template.render({"investigation": self.investigation})
+        subject = _("You have been invited to join the {} investigation".format(self.investigation.name))
+        try:
+            send_mail(subject=subject,
+                      message=message,
+                      from_email="noreply@crowdnewsroom.org",
+                      recipient_list=[self.user.email])
+        except:
+            pass
+
+
 
 @receiver(models.signals.post_save, sender=Invitation)
 def add_user_to_investigation(sender, instance, created, *args, **kwargs):
@@ -458,3 +472,13 @@ def add_user_to_investigation(sender, instance, created, *args, **kwargs):
     if invitation.accepted:
         invitation.investigation.add_user(invitation.user, "V")
 
+
+class FormInstanceTemplate(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.TextField()
+    form_json = JSONField()
+    ui_schema_json = JSONField(default={}, blank=True)
+    priority_fields = JSONField(default=[], blank=True)
+    email_template = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"))
+    email_template_html = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"));
+    redirect_url_template = models.TextField(default="https://forms.crowdnewsroom.org")

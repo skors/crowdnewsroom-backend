@@ -11,13 +11,17 @@ module.exports = {
   mode: process.env.NODE_ENV,
   context: path.resolve(__dirname),
   devtool: devMode ? "eval-source-map" : false,
+  resolve: {
+    extensions: ['.wasm', '.mjs', '.js', '.json', '.jsx'],
+  },
   entry: {
     main: "./src/scripts/index",
     style: "./src/styles/main.sass",
     formResponseDetails: "./src/scripts/form-response-details",
     formResponseList: "./src/scripts/form-response-list",
-    investigationUsers: "./src/scripts/investigation-users",
     invitationList: "./src/scripts/invitation-list",
+    investigationManagement: "./src/scripts/investigation-management",
+    formManagement: "./src/scripts/form-management",
   },
   output: {
     publicPath: devMode ? "http://127.0.0.1:1339/" : "/static/js/",
@@ -27,7 +31,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
           loader: "babel-loader"
@@ -40,6 +44,13 @@ module.exports = {
           "css-loader",
           "postcss-loader",
           "sass-loader"
+        ]
+      },
+      {
+        test: /\.css$/i,
+        use: [
+          devMode ? "style-loader" : MiniCssExtractPlugin.loader,
+          "css-loader",
         ]
       },
       {

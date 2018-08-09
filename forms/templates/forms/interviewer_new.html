@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load render_bundle from webpack_loader %}
+
+{% block title %}{% trans "Manage Interviewers" %}{% endblock %}
+{% block headertitle %}{% trans "Add and configure your interviewer" %}{% endblock %}
+
+{% block main %}
+<div class="forms-list main-content-padded">
+    <div id="form-management"></div>
+</div>
+
+{% render_bundle "formManagement" %}
+{% endblock %}
