@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-09 15:43+0200\n"
+"POT-Creation-Date: 2018-08-09 15:57+0200\n"
 "PO-Revision-Date: 2018-08-09 15:45+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -543,6 +543,12 @@ msgstr "Vielen Dank für Ihre Teilnahme!"
 #, python-format
 msgid "The %(site_name)s team"
 msgstr "Das %(site_name)s Team"
+
+#: forms/templates/registration/set_initial_password_subject.txt:1
+#, fuzzy
+#| msgid "You have been invited to join the {} investigation"
+msgid "You have been invited to join the Crowdnewsroom"
+msgstr "Sie wurden in den Crowdnewsroom eingeladen"
 
 #~ msgid "Edit"
 #~ msgstr "Bearbeiten"

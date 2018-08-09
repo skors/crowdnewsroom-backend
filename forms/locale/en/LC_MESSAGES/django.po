@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-09 15:43+0200\n"
+"POT-Creation-Date: 2018-08-09 15:57+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -504,4 +504,8 @@ msgstr ""
 #: forms/templates/registration/set_initial_password_email.html:12
 #, python-format
 msgid "The %(site_name)s team"
+msgstr ""
+
+#: forms/templates/registration/set_initial_password_subject.txt:1
+msgid "You have been invited to join the Crowdnewsroom"
 msgstr ""
