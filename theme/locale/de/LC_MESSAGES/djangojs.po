@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-02 07:36+0000\n"
+"POT-Creation-Date: 2018-08-09 12:02+0000\n"
 "PO-Revision-Date: 2018-08-02 09:37+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -49,26 +49,26 @@ msgstr ""
 msgid "Successfully updated form."
 msgstr "Formular erfolgreich aktualisiert."
 
-#: theme/src/scripts/form-details.jsx:105
+#: theme/src/scripts/form-details.jsx:106
 #: theme/src/scripts/investigation-details.jsx:209
 msgid "The slug can only contain lowercase letters and hyphens (-)"
 msgstr ""
 "Der URL-Name darf nur aus Kleinbuchstaben und Bindestrichen (-) bestehen."
 
-#: theme/src/scripts/form-details.jsx:109
+#: theme/src/scripts/form-details.jsx:110
 msgid "New Interviewer"
 msgstr "Neuer Fragebogen"
 
-#: theme/src/scripts/form-details.jsx:112
+#: theme/src/scripts/form-details.jsx:113
 msgid "Interviewer title"
 msgstr "Name des Fragebogens"
 
-#: theme/src/scripts/form-details.jsx:120
+#: theme/src/scripts/form-details.jsx:121
 #: theme/src/scripts/investigation-details.jsx:226
 msgid "URL of the form"
 msgstr "Formular-URL"
 
-#: theme/src/scripts/form-details.jsx:128
+#: theme/src/scripts/form-details.jsx:129
 msgid "Choose and continue"
 msgstr "Wählen und weiter"
 
@@ -129,15 +129,15 @@ msgstr "Farbe"
 msgid "Submit"
 msgstr "Absenden"
 
-#: theme/src/scripts/investigation-management.jsx:35
+#: theme/src/scripts/investigation-management.jsx:24
 msgid "Details"
 msgstr "Details"
 
-#: theme/src/scripts/investigation-management.jsx:36
+#: theme/src/scripts/investigation-management.jsx:25
 msgid "Users"
 msgstr "Nutzer"
 
-#: theme/src/scripts/investigation-management.jsx:37
+#: theme/src/scripts/investigation-management.jsx:26
 msgid "Tags"
 msgstr "Markierungen"
 
@@ -157,44 +157,44 @@ msgstr "löschen"
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: theme/src/scripts/investigation-users.jsx:35
-#: theme/src/scripts/investigation-users.jsx:289
+#: theme/src/scripts/investigation-users.jsx:33
+#: theme/src/scripts/investigation-users.jsx:294
 msgid "Admin"
 msgstr "Administrator"
 
-#: theme/src/scripts/investigation-users.jsx:36
-#: theme/src/scripts/investigation-users.jsx:292
+#: theme/src/scripts/investigation-users.jsx:34
+#: theme/src/scripts/investigation-users.jsx:297
 msgid "Editor"
 msgstr "Redakteur"
 
-#: theme/src/scripts/investigation-users.jsx:37
-#: theme/src/scripts/investigation-users.jsx:295
+#: theme/src/scripts/investigation-users.jsx:35
+#: theme/src/scripts/investigation-users.jsx:300
 msgid "Viewer"
 msgstr "Betrachter"
 
-#: theme/src/scripts/investigation-users.jsx:158
+#: theme/src/scripts/investigation-users.jsx:161
 msgid "Invite"
 msgstr "Einladen"
 
-#: theme/src/scripts/investigation-users.jsx:162
+#: theme/src/scripts/investigation-users.jsx:165
 msgid "Enter the email of the collaborator you would like to invite."
 msgstr ""
 "Geben Sie die E-Mail-Adresse des Team-Mitglieds ein, das Sie einladen "
 "möchten."
 
-#: theme/src/scripts/investigation-users.jsx:264
+#: theme/src/scripts/investigation-users.jsx:265
 msgid "First name"
 msgstr "Vorname"
 
-#: theme/src/scripts/investigation-users.jsx:265
+#: theme/src/scripts/investigation-users.jsx:266
 msgid "Last Name"
 msgstr "Nachname"
 
-#: theme/src/scripts/investigation-users.jsx:266
+#: theme/src/scripts/investigation-users.jsx:267
 msgid "E-Mail"
 msgstr "E-Mail"
 
-#: theme/src/scripts/investigation-users.jsx:269
+#: theme/src/scripts/investigation-users.jsx:270
 msgid ""
 "Invite members of your team to help contribute to your investigation by "
 "assigning them specific permissions."
@@ -202,7 +202,7 @@ msgstr ""
 "Laden Sie Team-Mitglieder zu Ihrer Recherche ein. Sie können jedem Nutzer "
 "spezifische Rechte zuweisen."
 
-#: theme/src/scripts/investigation-users.jsx:270
+#: theme/src/scripts/investigation-users.jsx:271
 msgid ""
 "Each collaborator will be able to access your project through their own "
 "Crowdnewsroom account."
@@ -210,7 +210,7 @@ msgstr ""
 "Jedes Team-Mitglied wird mit seinem Account auf ihre Recherche zugreifen "
 "können."
 
-#: theme/src/scripts/investigation-users.jsx:271
+#: theme/src/scripts/investigation-users.jsx:272
 msgid ""
 "As the creator, you remain ultimately responsible for your project and for "
 "your team's interactions with contributors."
@@ -218,7 +218,7 @@ msgstr ""
 "Als Besitzer bleiben Sie ultimativ für Ihre Recherche und die Interaktion "
 "Ihres Teams mit den Teilnehmenden verantwortlich."
 
-#: theme/src/scripts/investigation-users.jsx:272
+#: theme/src/scripts/investigation-users.jsx:273
 msgid ""
 "Pick collaborators that you trust and that will do a good job working with "
 "your community."
@@ -226,30 +226,30 @@ msgstr ""
 "Wählen Sie Mitglieder aus, denen Sie vertrauen und die gut mit Ihrer "
 "Community arbeiten werden."
 
-#: theme/src/scripts/investigation-users.jsx:273
+#: theme/src/scripts/investigation-users.jsx:274
 msgid "Have questions about how this works? Visit our FAQ."
 msgstr "Haben Sie weitere Fragen? Besuchen sie unser FAQ."
 
-#: theme/src/scripts/investigation-users.jsx:277
+#: theme/src/scripts/investigation-users.jsx:278
 msgid "Invite a new Collaborator"
 msgstr "Team-Mitglieder einladen"
 
-#: theme/src/scripts/investigation-users.jsx:282
+#: theme/src/scripts/investigation-users.jsx:283
 msgid "Manage the collaborators"
 msgstr "Team-Mitglieder bearbeiten"
 
-#: theme/src/scripts/investigation-users.jsx:290
+#: theme/src/scripts/investigation-users.jsx:295
 msgid ""
 "An admin can manage the investigation settings page and the collaborators"
 msgstr "Ein Admin kann eine Recherche und die Team-Mitglieder bearbeiten"
 
-#: theme/src/scripts/investigation-users.jsx:293
+#: theme/src/scripts/investigation-users.jsx:298
 msgid ""
 "The editor can see everything about the data collected via this investigation"
 msgstr ""
 "Ein Redakteur kann die in der Recherche gesammelten Informationen sehen"
 
-#: theme/src/scripts/investigation-users.jsx:296
+#: theme/src/scripts/investigation-users.jsx:301
 msgid ""
 "A viewer can see the data collected via this investigation but is not able "
 "to modify; to sort it or to download it"

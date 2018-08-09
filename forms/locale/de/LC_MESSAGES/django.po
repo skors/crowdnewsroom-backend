@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-07 12:24+0200\n"
-"PO-Revision-Date: 2018-08-07 13:48+0200\n"
+"POT-Creation-Date: 2018-08-09 14:02+0200\n"
+"PO-Revision-Date: 2018-08-09 14:07+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: forms/admin.py:16
 msgid "Personal info"
@@ -30,35 +30,44 @@ msgstr "Zugriffsrechte"
 msgid "Important dates"
 msgstr "Wichtige Termine"
 
-#: forms/admin_views.py:68 forms/admin_views.py:90 forms/admin_views.py:120
-#: forms/admin_views.py:220
+#: forms/admin_views.py:68 forms/admin_views.py:90 forms/admin_views.py:121
+#: forms/admin_views.py:221 forms/admin_views.py:450 forms/admin_views.py:463
+#: forms/admin_views.py:482
 msgid "Investigations"
 msgstr "Recherchen"
 
-#: forms/admin_views.py:146
+#: forms/admin_views.py:147
 msgid "No one contributed to your investigation yet. Time to advertise!"
 msgstr ""
 "Es gibt noch keine Antworten für diese Recherche. Zeit sie zu bewerben!"
 
-#: forms/admin_views.py:152
+#: forms/admin_views.py:153
 msgid ""
 "There are no results using your current filters. Maybe try something else?"
 msgstr ""
 "Mit den aktuellen Filtereinstellungen gibt es keine Antworten. Sie können "
 "einen anderen Filter probieren."
 
-#: forms/admin_views.py:155
+#: forms/admin_views.py:156
 msgid ""
 "There are no results in this bucket yet. Start moving some from the inbox."
 msgstr ""
 "In der aktuellen Ansicht gibt es keine Antworten. Starten Sie, indem Sie "
 "Antworten aus dem Eingang bewegen."
 
-#: forms/admin_views.py:158
+#: forms/admin_views.py:159
 msgid "Looks like you verified or deleted all contributions. Good work!"
 msgstr ""
 "Sie haben alle Antworten gelöscht oder also verifiziert markiert. Gute "
 "Arbeit!"
+
+#: forms/admin_views.py:464
+msgid "New Investigation"
+msgstr "Neue Recherche"
+
+#: forms/admin_views.py:475
+msgid "New Form"
+msgstr "Neuer Fragebogen"
 
 #: forms/forms.py:13
 msgid "Add a comment"
@@ -169,13 +178,14 @@ msgstr "Eine neue Recherche hinzufügen"
 
 #: forms/templates/forms/form_list.html:27
 #: forms/templates/forms/investigation_list.html:34
-msgid "Edit"
-msgstr "Bearbeiten"
+msgid "Settings"
+msgstr "Einstellungen"
 
 #: forms/templates/forms/form_list.html:30
-#: forms/templates/forms/investigation_list.html:37
-msgid "View"
-msgstr "Ansehen"
+#: forms/templates/forms/formresponse_list.html:8
+#: forms/templates/forms/formresponse_list.html:182
+msgid "Responses"
+msgstr "Antworten"
 
 #: forms/templates/forms/formresponse_detail.html:7
 #: forms/templates/forms/formresponse_detail.html:8
@@ -230,11 +240,6 @@ msgstr "Kommentar bearbeiten"
 #: forms/templates/forms/formresponse_detail.html:138
 msgid "add comment"
 msgstr "Kommentar hinzufügen"
-
-#: forms/templates/forms/formresponse_list.html:8
-#: forms/templates/forms/formresponse_list.html:182
-msgid "Responses"
-msgstr "Antworten"
 
 #: forms/templates/forms/formresponse_list.html:10
 #, python-format
@@ -381,6 +386,10 @@ msgstr "Ihre Recherchen"
 #: forms/templates/forms/investigation_list.html:16
 msgid "Create a new investigation"
 msgstr "Eine neue Recherche erstellen"
+
+#: forms/templates/forms/investigation_list.html:37
+msgid "Interviewers"
+msgstr "Fragebögen"
 
 #: forms/templates/forms/investigation_list.html:44
 #, python-format
@@ -530,6 +539,12 @@ msgstr "Vielen Dank für Ihre Teilnahme!"
 #, python-format
 msgid "The %(site_name)s team"
 msgstr "Das %(site_name)s Team"
+
+#~ msgid "Edit"
+#~ msgstr "Bearbeiten"
+
+#~ msgid "View"
+#~ msgstr "Ansehen"
 
 #~ msgid "Auditor"
 #~ msgstr "Auditor"
