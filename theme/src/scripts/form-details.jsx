@@ -21,7 +21,7 @@ export default class FormDetails extends Component {
   }
 
   get slugInValid() {
-    return this.state.form.slug && !this.state.form.slug.match(/^[a-z-]+$/)
+    return this.state.form.slug && !this.state.form.slug.match(/^[a-z0-9-]+$/)
   }
 
   get urlParams(){
