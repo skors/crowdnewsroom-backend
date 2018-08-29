@@ -323,6 +323,7 @@ def create_and_invite_user(email, request):
     user.save()
     form.save(request=request,
               from_email="no-reply@crowdnewsroom.org",
+              subject_template_name="registration/set_initial_password_subject.txt",
               email_template_name="registration/set_initial_password_email.html")
     return user
 

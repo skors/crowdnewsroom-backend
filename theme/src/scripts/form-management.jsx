@@ -22,8 +22,10 @@ const App = () => (
     <div>
       <nav data-tabs className="bx--tabs investigation-management__tabs" role="navigation">
         <ul className="bx--tabs__nav bx--tabs__nav--hidden" role="tablist">
-          <CarbonMenuLink to="/form" label="Basics"/>
-          {hasSlug() ? <CarbonMenuLink to="/form_instance" label="Configure interviewer"/> : null}
+          <CarbonMenuLink to="/form" label={gettext("Basics")}/>
+          <CarbonMenuLink to="/form_instance"
+                          disabled={!hasSlug()}
+                          label={gettext("Interviewer")}/>
         </ul>
       </nav>
       <div>

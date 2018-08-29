@@ -280,7 +280,7 @@ export default class InvestigationDetails extends Component {
           </div>
         </FormGroup>
 
-        <Button onClick={this.sendToServer}>{gettext("Submit")}</Button>
+        <Button onClick={this.sendToServer}>{gettext("Save")}</Button>
       </Form>
     );
   }

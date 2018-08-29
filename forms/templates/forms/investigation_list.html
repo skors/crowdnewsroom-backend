@@ -11,12 +11,6 @@
 {% block main %}
 <div class="investigations main-content-padded">
 
-    <div class="cnr--centered">
-        <a class="bx--btn bx--btn--secondary" href="{% url 'admin_investigation_new' %}">
-            {% trans "Create a new investigation" %}
-        </a>
-    </div>
-
     <div class="bx--structured-list">
         <div class="bx--structured-list-tbody">
 
@@ -31,10 +25,10 @@
                     <div class="cnr--list-header__actions">
                         {% if "manage_investigation" in investigation_perms %}
                         <a class="bx--btn bx--btn--secondary"
-                           href="{% url 'admin_investigation' investigation.slug %}">{% trans "Edit" %}</a>
+                           href="{% url 'admin_investigation' investigation.slug %}">{% trans "Settings" %}</a>
                         {% endif %}
                         <a class="bx--btn bx--btn--primary"
-                            href="{% url 'form_list' investigation.slug %}">{% trans "View" %}</a>
+                            href="{% url 'form_list' investigation.slug %}">{% trans "Interviewers" %}</a>
                     </div>
                 </div>
                 <div class="investigation-meta">
@@ -71,7 +65,8 @@
                     {% else %}
                         <button class="cnr--button-unstyled"
                                 onClick="leaveInvestigation('{{investigation.slug}}', '{{ role }}', {{ request.user.id}})">
-                            Leave investigation</button>
+                            {% trans "Leave investigation" %}
+                        </button>
                     {% endif %}
                 </div>
                 </div>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-02 07:36+0000\n"
+"POT-Creation-Date: 2018-08-09 13:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,26 +47,34 @@ msgstr ""
 msgid "Successfully updated form."
 msgstr ""
 
-#: theme/src/scripts/form-details.jsx:105
+#: theme/src/scripts/form-details.jsx:106
 #: theme/src/scripts/investigation-details.jsx:209
 msgid "The slug can only contain lowercase letters and hyphens (-)"
 msgstr ""
 
-#: theme/src/scripts/form-details.jsx:109
+#: theme/src/scripts/form-details.jsx:110
 msgid "New Interviewer"
 msgstr ""
 
-#: theme/src/scripts/form-details.jsx:112
+#: theme/src/scripts/form-details.jsx:113
 msgid "Interviewer title"
 msgstr ""
 
-#: theme/src/scripts/form-details.jsx:120
+#: theme/src/scripts/form-details.jsx:121
 #: theme/src/scripts/investigation-details.jsx:226
 msgid "URL of the form"
 msgstr ""
 
-#: theme/src/scripts/form-details.jsx:128
+#: theme/src/scripts/form-details.jsx:129
 msgid "Choose and continue"
+msgstr ""
+
+#: theme/src/scripts/form-management.jsx:25
+msgid "Basics"
+msgstr ""
+
+#: theme/src/scripts/form-management.jsx:26
+msgid "Interviewer"
 msgstr ""
 
 #: theme/src/scripts/form-response-details.jsx:16
@@ -75,6 +83,69 @@ msgstr ""
 
 #: theme/src/scripts/form-response-details.jsx:24
 msgid "Add or delete tag"
+msgstr ""
+
+#: theme/src/scripts/forminstance-details.jsx:87
+msgid "You can check below how your form is looking and behaving now."
+msgstr ""
+
+#: theme/src/scripts/forminstance-details.jsx:93
+msgid ""
+"If you would like to tweak it, you can either contact CORRECTIV to make "
+"changes for you or you can enable expert mode."
+msgstr ""
+
+#: theme/src/scripts/forminstance-details.jsx:98
+msgid "Contact CORRECTIV for customization"
+msgstr ""
+
+#: theme/src/scripts/forminstance-details.jsx:102
+msgid "Edit in expert mode"
+msgstr ""
+
+#: theme/src/scripts/forminstance-details.jsx:164
+msgid "Interviewer steps and settings"
+msgstr ""
+
+#: theme/src/scripts/forminstance-details.jsx:168
+msgid "Form JSON"
+msgstr ""
+
+#: theme/src/scripts/forminstance-details.jsx:175
+msgid "UI-Schema"
+msgstr ""
+
+#: theme/src/scripts/forminstance-details.jsx:182
+msgid "Fields to be shown on top for editors"
+msgstr ""
+
+#: theme/src/scripts/forminstance-details.jsx:187
+msgid "Email confirmation messages"
+msgstr ""
+
+#: theme/src/scripts/forminstance-details.jsx:190
+msgid "Email Template"
+msgstr ""
+
+#: theme/src/scripts/forminstance-details.jsx:197
+msgid "HTML Email Template"
+msgstr ""
+
+#: theme/src/scripts/forminstance-details.jsx:203
+msgid "URL to redirect after submission"
+msgstr ""
+
+#: theme/src/scripts/forminstance-details.jsx:206
+msgid "Redirect URL Template"
+msgstr ""
+
+#: theme/src/scripts/forminstance-details.jsx:212
+msgid "Cancel"
+msgstr ""
+
+#: theme/src/scripts/forminstance-details.jsx:213
+#: theme/src/scripts/investigation-details.jsx:283
+msgid "Save"
 msgstr ""
 
 #: theme/src/scripts/investigation-details.jsx:44
@@ -122,19 +193,15 @@ msgstr ""
 msgid "Brand Color"
 msgstr ""
 
-#: theme/src/scripts/investigation-details.jsx:283
-msgid "Submit"
-msgstr ""
-
-#: theme/src/scripts/investigation-management.jsx:35
+#: theme/src/scripts/investigation-management.jsx:28
 msgid "Details"
 msgstr ""
 
-#: theme/src/scripts/investigation-management.jsx:36
+#: theme/src/scripts/investigation-management.jsx:31
 msgid "Users"
 msgstr ""
 
-#: theme/src/scripts/investigation-management.jsx:37
+#: theme/src/scripts/investigation-management.jsx:36
 msgid "Tags"
 msgstr ""
 
@@ -154,88 +221,88 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: theme/src/scripts/investigation-users.jsx:35
-#: theme/src/scripts/investigation-users.jsx:289
+#: theme/src/scripts/investigation-users.jsx:33
+#: theme/src/scripts/investigation-users.jsx:294
 msgid "Admin"
 msgstr ""
 
-#: theme/src/scripts/investigation-users.jsx:36
-#: theme/src/scripts/investigation-users.jsx:292
+#: theme/src/scripts/investigation-users.jsx:34
+#: theme/src/scripts/investigation-users.jsx:297
 msgid "Editor"
 msgstr ""
 
-#: theme/src/scripts/investigation-users.jsx:37
-#: theme/src/scripts/investigation-users.jsx:295
+#: theme/src/scripts/investigation-users.jsx:35
+#: theme/src/scripts/investigation-users.jsx:300
 msgid "Viewer"
 msgstr ""
 
-#: theme/src/scripts/investigation-users.jsx:158
+#: theme/src/scripts/investigation-users.jsx:161
 msgid "Invite"
 msgstr ""
 
-#: theme/src/scripts/investigation-users.jsx:162
+#: theme/src/scripts/investigation-users.jsx:165
 msgid "Enter the email of the collaborator you would like to invite."
 msgstr ""
 
-#: theme/src/scripts/investigation-users.jsx:264
+#: theme/src/scripts/investigation-users.jsx:265
 msgid "First name"
 msgstr ""
 
-#: theme/src/scripts/investigation-users.jsx:265
+#: theme/src/scripts/investigation-users.jsx:266
 msgid "Last Name"
 msgstr ""
 
-#: theme/src/scripts/investigation-users.jsx:266
+#: theme/src/scripts/investigation-users.jsx:267
 msgid "E-Mail"
 msgstr ""
 
-#: theme/src/scripts/investigation-users.jsx:269
+#: theme/src/scripts/investigation-users.jsx:270
 msgid ""
 "Invite members of your team to help contribute to your investigation by "
 "assigning them specific permissions."
 msgstr ""
 
-#: theme/src/scripts/investigation-users.jsx:270
+#: theme/src/scripts/investigation-users.jsx:271
 msgid ""
 "Each collaborator will be able to access your project through their own "
 "Crowdnewsroom account."
 msgstr ""
 
-#: theme/src/scripts/investigation-users.jsx:271
+#: theme/src/scripts/investigation-users.jsx:272
 msgid ""
 "As the creator, you remain ultimately responsible for your project and for "
 "your team's interactions with contributors."
 msgstr ""
 
-#: theme/src/scripts/investigation-users.jsx:272
+#: theme/src/scripts/investigation-users.jsx:273
 msgid ""
 "Pick collaborators that you trust and that will do a good job working with "
 "your community."
 msgstr ""
 
-#: theme/src/scripts/investigation-users.jsx:273
+#: theme/src/scripts/investigation-users.jsx:274
 msgid "Have questions about how this works? Visit our FAQ."
 msgstr ""
 
-#: theme/src/scripts/investigation-users.jsx:277
+#: theme/src/scripts/investigation-users.jsx:278
 msgid "Invite a new Collaborator"
 msgstr ""
 
-#: theme/src/scripts/investigation-users.jsx:282
+#: theme/src/scripts/investigation-users.jsx:283
 msgid "Manage the collaborators"
 msgstr ""
 
-#: theme/src/scripts/investigation-users.jsx:290
+#: theme/src/scripts/investigation-users.jsx:295
 msgid ""
 "An admin can manage the investigation settings page and the collaborators"
 msgstr ""
 
-#: theme/src/scripts/investigation-users.jsx:293
+#: theme/src/scripts/investigation-users.jsx:298
 msgid ""
 "The editor can see everything about the data collected via this investigation"
 msgstr ""
 
-#: theme/src/scripts/investigation-users.jsx:296
+#: theme/src/scripts/investigation-users.jsx:301
 msgid ""
 "A viewer can see the data collected via this investigation but is not able "
 "to modify; to sort it or to download it"

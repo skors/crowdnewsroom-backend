@@ -99,7 +99,7 @@ class FormInstance extends Component {
         </a>
 
         <Button onClick={this.props.toggleExpertMode} kind="secondary">
-          {gettext("Enable Expert mode")}
+          {gettext("Edit in expert mode")}
          </Button>
         </div>
       </div>
@@ -209,6 +209,7 @@ class FormInstanceEditor extends Component {
             />
           </FormGroup>
 
+          <Button kind="secondary" onClick={this.props.toggleExpertMode}>{gettext("Cancel")}</Button>
           <Button type="submit">{gettext("Save")}</Button>
         </Form>
       </div>

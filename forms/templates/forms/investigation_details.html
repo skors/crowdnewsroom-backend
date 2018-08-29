@@ -10,5 +10,19 @@
     <div id="investigation-details"></div>
 </div>
 
+<style>
+    .cnr--header{
+        position: sticky;
+        top: 0;
+        z-index: 9001;
+    }
+
+    .investigation-management__tabs {
+        position: sticky;
+        z-index: 9001;
+        top: 130px;
+    }
+</style>
+
 {% render_bundle "investigationManagement" %}
 {% endblock %}
