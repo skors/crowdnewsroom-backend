@@ -21,7 +21,7 @@ export default class FormDetails extends Component {
   }
 
   get slugInValid() {
-    return this.state.form.slug && !this.state.form.slug.match(/^[a-z-]+$/)
+    return this.state.form.slug && !this.state.form.slug.match(/^[a-z0-9-]+$/)
   }
 
   get urlParams(){
@@ -81,7 +81,7 @@ export default class FormDetails extends Component {
       const newPathname = `${window.location.pathname}/${form.slug}`;
       const newHash = "#/form_instance";
       window.location.assign(`${location.origin}${newPathname}${newHash}`);
-    }).catch(this.handleErrors);
+    }, this.handleErrors);
   }
 
   updateForm(){
@@ -103,7 +103,7 @@ export default class FormDetails extends Component {
     const name_error = _.get(this.state.errors, ["name", "0"]);
     let slug_error = _.get(this.state.errors, ["slug", "0"]);
     if (this.slugInValid) {
-      slug_error = gettext("The slug can only contain lowercase letters and hyphens (-)");
+      slug_error = gettext("The slug can only contain lowercase letters, numbers and hyphens (-) and should start with a letter");
     }
     return (
       <Form>

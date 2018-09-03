@@ -98,3 +98,25 @@ class FormAPITestCase(APITestCase):
                                      data={"name": "My new Name"})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["name"], "My new Name")
+
+    def test_slug_cannot_contain_special_characters(self):
+        user = UserFactory.create()
+        investigation = InvestigationFactory.create()
+        investigation.add_user(user, INVESTIGATION_ROLES.ADMIN)
+
+        self.client.force_login(user)
+
+        response = self.client.post(reverse("interviewers", kwargs={"investigation_slug": investigation.slug}),
+                                    data={"name": "test", "slug": "%$test"})
+        self.assertEqual(response.status_code, 400)
+
+    def test_slug_cannot_begin_with_number(self):
+        user = UserFactory.create()
+        investigation = InvestigationFactory.create()
+        investigation.add_user(user, INVESTIGATION_ROLES.ADMIN)
+
+        self.client.force_login(user)
+
+        response = self.client.post(reverse("interviewers", kwargs={"investigation_slug": investigation.slug}),
+                                    data={"name": "test", "slug": "123test"})
+        self.assertEqual(response.status_code, 400)
