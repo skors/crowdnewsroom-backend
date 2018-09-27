@@ -99,7 +99,7 @@ export default class InvestigationDetails extends Component {
   get slugInValid() {
     return (
       this.state.investigation.slug &&
-      !this.state.investigation.slug.match(/^[a-z-]+$/)
+      !this.state.investigation.slug.match(/^[a-z]+[a-z0-9-]+$/)
     );
   }
 
@@ -206,7 +206,7 @@ export default class InvestigationDetails extends Component {
     let slug_error = _.get(this.state.errors, ["slug", "0"]);
     if (this.slugInValid) {
       slug_error = gettext(
-        "The slug can only contain lowercase letters and hyphens (-)"
+        "The slug can only contain lowercase letters, numbers and hyphens (-) and should start with a letter"
       );
     }
 

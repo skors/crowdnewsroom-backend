@@ -5,6 +5,7 @@ from collections import namedtuple
 from datetime import timedelta
 
 from django.core.mail import send_mail
+import django.core.validators as validators
 from django.db.models import Count
 from django.db.models.functions import Coalesce
 from django.template import Engine, Context
@@ -13,7 +14,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 
-from .mixins import UniqueSlugMixin
+from .mixins import UniqueSlugMixin, validate_slug_stricter
 
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import Group, AbstractUser, BaseUserManager
@@ -34,7 +35,8 @@ class Investigation(models.Model, UniqueSlugMixin):
         ('A', _('Archived'))
     )
     name = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200, unique=True)
+    slug = models.SlugField(max_length=200, unique=True,
+        validators=[validators.validate_slug, validate_slug_stricter])
     cover_image = models.FileField(blank=True, null=True, default=None)
     logo = models.FileField(blank=True, null=True, default=None)
     short_description = models.TextField(blank=True)
@@ -98,6 +100,7 @@ class Investigation(models.Model, UniqueSlugMixin):
 
     def get_users(self, role):
         return UserGroup.objects.get(investigation=self, role=role).group.user_set
+
 
 
 @receiver(models.signals.post_save, sender=Investigation)
@@ -221,7 +224,8 @@ class Form(models.Model, UniqueSlugMixin):
         ('A', _('Archived'))
     )
     name = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200, unique=True)
+    slug = models.SlugField(max_length=200, unique=True,
+        validators=[validators.validate_slug, validate_slug_stricter])
     status = models.CharField(max_length=1, choices=STATUSES, default='D')
     investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
 

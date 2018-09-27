@@ -100,3 +100,16 @@ class InvestigationAPITest(APITestCase):
         response = self.client.post(reverse("investigations"), {"name": "test", "slug": self.investigation.slug})
         self.assertEqual(response.status_code, 400)
 
+    def test_slug_cannot_contain_special_characters(self):
+        user = UserFactory.create()
+        self.client.force_login(user)
+
+        response = self.client.post(reverse("investigations"), {"name": "test", "slug": "%$test"})
+        self.assertEqual(response.status_code, 400)
+
+    def test_slug_cannot_begin_with_number(self):
+        user = UserFactory.create()
+        self.client.force_login(user)
+
+        response = self.client.post(reverse("investigations"), {"name": "test", "slug": "123test"})
+        self.assertEqual(response.status_code, 400)
