@@ -432,7 +432,7 @@ def send_email(sender, instance, created, *args, **kwargs):
             try:
                 send_mail(subject=_("Thank you for your submission!"),
                           message=message,
-                          from_email="noreply@crowdnewsroom.org",
+                          from_email="Crowdnewsroom <noreply@crowdnewsroom.org>",
                           recipient_list=[email],
                           html_message=html_message)
             except smtplib.SMTPException:
