@@ -10,3 +10,4 @@ theme/node_modules/
 coverage.xml
 theme/static/*
 theme/webpack-stats.json
+sent_emails/*
