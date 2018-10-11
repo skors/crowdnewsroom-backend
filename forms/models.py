@@ -432,7 +432,7 @@ def send_email(sender, instance, created, *args, **kwargs):
             try:
                 send_mail(subject=_("Thank you for your submission!"),
                           message=message,
-                          from_email="Crowdnewsroom <noreply@crowdnewsroom.org>",
+                          from_email=DEFAULT_FROM_EMAIL,
                           recipient_list=[email],
                           html_message=html_message)
             except smtplib.SMTPException:
@@ -463,7 +463,7 @@ class Invitation(models.Model):
         try:
             send_mail(subject=subject,
                       message=message,
-                      from_email="noreply@crowdnewsroom.org",
+                      from_email=DEFAULT_FROM_EMAIL,
                       recipient_list=[self.user.email])
         except:
             pass
