@@ -349,7 +349,7 @@ class FormResponse(models.Model):
                     row["type"] = "link"
                     row["value"] = reverse("response_file",
                                            kwargs={"investigation_slug": self.form_instance.form.investigation.slug,
-                                                   "form_slug": self.form_instance.form.slug,
+                                                   "form_slug": self.form_instance.get_latest_for_form.form.slug,
                                                    "response_id": self.id,
                                                    "file_field": name
                                                    })
@@ -363,7 +363,7 @@ class FormResponse(models.Model):
                     row["type"] = "link"
                     row["value"] = reverse("response_file_array",
                                            kwargs={"investigation_slug": self.form_instance.form.investigation.slug,
-                                                   "form_slug": self.form_instance.form.slug,
+                                                   "form_slug": self.form_instance.get_latest_for_form.form.slug,
                                                    "response_id": self.id,
                                                    "file_field": name,
                                                    "file_index": index
