@@ -152,6 +152,7 @@ class FormInstanceEditor extends Component {
     authorizedPOST(`/forms/forms/${this.state.form}/form_instances`, {
       body: JSON.stringify(this.state)
     }).then(() => {
+      window.location.reload();
       Notifications.success("Successfully updated form");
       this.props.toggleExpertMode();
     });
