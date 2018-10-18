@@ -102,6 +102,8 @@ class FormListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
         context['investigation'] = self.investigation
         context['user_can_manage_investigation'] = self.request.user.has_perm("manage_investigation",
                                                                               self.investigation)
+        context['user_can_admin_investigation'] = self.request.user.has_perm("admin_investigation",
+                                                                              self.investigation)
         return context
 
 
@@ -404,7 +406,7 @@ def form_response_file_view(request, *args, **kwargs):
 
 
 @login_required(login_url="/admin/login")
-@permission_required('manage_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
+@permission_required('admin_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
 def form_response_json_edit_view(request, *args, **kwargs):
     form_slug = kwargs.get("form_slug")
     investigation_slug = kwargs.get("investigation_slug")
@@ -469,7 +471,7 @@ class InvestigationCreateView(TemplateView, BreadCrumbMixin):
 
 class InterviewerView(InvestigationAuthMixin, TemplateView, BreadCrumbMixin):
     template_name = "forms/interviewer_new.html"
-    permission_required = "manage_investigation"
+    permission_required = "admin_investigation"
 
     def get_breadcrumbs(self):
         investigation = get_object_or_404(Investigation, slug=self.kwargs.get("investigation_slug"))

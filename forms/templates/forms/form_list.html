@@ -6,11 +6,13 @@
 
 {% block main %}
 <div class="forms-list main-content-padded">
+    {% if "admin_investigation" in investigation_perms %}
     <div class="cnr--centered">
         <a class="bx--btn bx--btn--secondary" href="{% url 'admin_interviewer_new' investigation.slug %}">
             {% trans "Add a new interviewer" %}
         </a>
     </div>
+    {% endif %}
     <div class="bx--structured-list">
         <div class="bx--structured-list-tbody">
 
@@ -22,7 +24,7 @@
                                 <a href="{% url 'form_responses' investigation.slug form.slug 'inbox' %}">{{ form }}</a>
                             </h3>
                             <div class="cnr--list-header__actions">
-                                {% if user_can_manage_investigation %}
+                                {% if user_can_admin_investigation %}
                                 <a class="bx--btn bx--btn--secondary"
                                    href="{% url 'admin_interviewer_edit' investigation.slug form.slug %}">{% trans "Settings" %}</a>
                                 {% endif %}

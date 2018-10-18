@@ -50,7 +50,7 @@
                 <div class="cnr--inline-edit">
                   {% if entry.type == "text" %}
                     <span class="cnr--inline-edit__value">{{ entry.value }}</span>
-                    {% if entry.data_type == "string" and "manage_investigation" in investigation_perms %}
+                    {% if entry.data_type == "string" and "admin_investigation" in investigation_perms %}
                       <form class="cnr--inline-edit__form" action="{{formresponse.id}}/edit" method="POST">
                         {% csrf_token %}
                         <input type="text"

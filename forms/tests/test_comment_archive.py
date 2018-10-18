@@ -39,7 +39,7 @@ class FormReponseAssigneesTest(TestCase):
         self.comment = CommentFactory.create(author=self.user1)
 
         admin_user_group = UserGroup.objects.filter(investigation=self.comment.form_response.form_instance.form.investigation,
-                                                    role=INVESTIGATION_ROLES.ADMIN).first()
+                                                    role=INVESTIGATION_ROLES.EDITOR).first()
         admin_user_group.group.user_set.add(self.user1)
         admin_user_group.group.user_set.add(self.user2)
 
