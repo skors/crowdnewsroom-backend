@@ -126,7 +126,7 @@ def get_investigation(instance):
 class CanEditInvestigation(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         investigation = get_investigation(obj)
-        return request.user.has_perm("manage_investigation", investigation)
+        return request.user.has_perm("admin_investigation", investigation)
 
 
 class FormResponseDetail(generics.RetrieveUpdateAPIView):
@@ -175,7 +175,7 @@ class InvestigationObjectViewPermissions(InvestigationObjectPermissions):
 
 
 class InvestigationObjectManagePermissions(InvestigationObjectPermissions):
-    permission = "manage_investigation"
+    permission = "admin_investigation"
 
 
 class TagList(generics.ListCreateAPIView):
@@ -254,7 +254,7 @@ class UserGroupUserList(generics.ListCreateAPIView):
         super().check_permissions(request)
 
         investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
-        if not request.user.has_perm("manage_investigation", investigation):
+        if not request.user.has_perm("admin_investigation", investigation):
             raise PermissionDenied(detail="not allowed!")
 
         role = self.kwargs.get("role")
@@ -281,7 +281,7 @@ class UserGroupMembershipDelete(generics.DestroyAPIView):
             return True
 
         investigation = Investigation.objects.get(slug=self.kwargs.get("investigation_slug"))
-        if not request.user.has_perm("manage_investigation", investigation):
+        if not request.user.has_perm("admin_investigation", investigation):
             raise PermissionDenied(detail="not allowed!")
 
         role = self.kwargs.get("role")
@@ -308,7 +308,7 @@ class InvitationSerializer(ModelSerializer):
 class InvestigationInvitationPermissions(DjangoObjectPermissions):
     def has_permission(self, request, view):
         investigation = Investigation.objects.get(slug=view.kwargs.get("investigation_slug"))
-        if not request.user.has_perm("manage_investigation", investigation):
+        if not request.user.has_perm("admin_investigation", investigation):
             return False
         return True
 
@@ -322,7 +322,7 @@ def create_and_invite_user(email, request):
     user.set_password(uuid.uuid4())
     user.save()
     form.save(request=request,
-              from_email=DEFAULT_FROM_EMAIL,
+              from_email='noreply@crowdnewsroom.org',
               subject_template_name="registration/set_initial_password_subject.txt",
               email_template_name="registration/set_initial_password_email.html")
     return user
@@ -380,7 +380,7 @@ class InvitationPermissions(DjangoObjectPermissions):
             return invitation.user == request.user
         elif request.method == "DELETE":
             investigation = invitation.investigation
-            return request.user.has_perm("manage_investigation", investigation)
+            return request.user.has_perm("admin_investigation", investigation)
         # "This should never happen"
         return False
 
@@ -478,7 +478,7 @@ class FormInstancePermissions(DjangoObjectPermissions):
         form_id = view.kwargs.get("form_id")
         form = get_object_or_404(Form, id=form_id)
         investigation = form.investigation
-        return request.user.has_perm("manage_investigation", investigation)
+        return request.user.has_perm("admin_investigation", investigation)
 
 
 class FormInstanceListCreate(generics.ListCreateAPIView):

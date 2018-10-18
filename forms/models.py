@@ -63,6 +63,7 @@ class Investigation(models.Model, UniqueSlugMixin):
         permissions = (
             ('view_investigation', _('View investigation')),
             ('manage_investigation', _('Manage investigation')),
+            ('admin_investigation', _('Admin investigation')),
             ('master_investigation', _('Delete investigation and manage owners')),
         )
 
@@ -88,6 +89,11 @@ class Investigation(models.Model, UniqueSlugMixin):
     def manager_users(self):
         user_perms = get_users_with_perms(self, with_superusers=True, attach_perms=True)
         return [user for (user, perms) in user_perms.items() if "manage_investigation" in perms]
+
+    @property
+    def admin_users(self):
+        user_perms = get_users_with_perms(self, with_superusers=True, attach_perms=True)
+        return [user for (user, perms) in user_perms.items() if "admin_investigation" in perms]
 
     @property
     def all_users(self):
@@ -129,8 +135,10 @@ class UserGroup(models.Model):
 
     def assign_permissions(self):
         assign_perm("view_investigation", self.group, self.investigation)
-        if self.role in [INVESTIGATION_ROLES.OWNER, INVESTIGATION_ROLES.ADMIN]:
+        if self.role in [INVESTIGATION_ROLES.EDITOR, INVESTIGATION_ROLES.OWNER, INVESTIGATION_ROLES.ADMIN]:
             assign_perm("manage_investigation", self.group, self.investigation)
+        if self.role in [INVESTIGATION_ROLES.OWNER, INVESTIGATION_ROLES.ADMIN]:
+            assign_perm("admin_investigation", self.group, self.investigation)
         if self.role == INVESTIGATION_ROLES.OWNER:
             assign_perm("master_investigation", self.group, self.investigation)
 
