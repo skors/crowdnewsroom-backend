@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load guardian_tags %}
 
 {% block title %}Investigations{% endblock %}
 {% block headertitle %}{% trans "Forms for investigation" %}{% endblock %}
 
 {% block main %}
+{% get_obj_perms request.user for investigation as "investigation_perms" %}
 <div class="forms-list main-content-padded">
     {% if "admin_investigation" in investigation_perms %}
     <div class="cnr--centered">

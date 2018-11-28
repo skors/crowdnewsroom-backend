@@ -4,6 +4,7 @@ from collections import namedtuple
 from datetime import timedelta
 
 import django.core.validators as validators
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser, BaseUserManager, Group
 from django.contrib.postgres.fields import JSONField
 from django.core.mail import send_mail
@@ -103,7 +104,11 @@ class Investigation(models.Model, UniqueSlugMixin):
         return [user for (user, perms) in user_perms.items() if "view_investigation" in perms]
 
     def add_user(self, user, role):
-        user_group = UserGroup.objects.get(investigation=self, role=role)
+        try:
+            user_group = UserGroup.objects.get(investigation=self, role=role)
+        except UserGroup.DoesNotExist:
+            UserGroup.create_all_for(self)
+            user_group = UserGroup.objects.get(investigation=self, role=role)
         user_group.group.user_set.add(user)
 
     def get_users(self, role):
@@ -367,7 +372,7 @@ class FormResponse(models.Model):
                     row["type"] = "link"
                     row["value"] = reverse("response_file",
                                            kwargs={"investigation_slug": self.form_instance.form.investigation.slug,
-                                                   "form_slug": self.form_instance.get_latest_for_form.form.slug,
+                                                   "form_slug": self.form_instance.form.slug,
                                                    "response_id": self.id,
                                                    "file_field": name
                                                    })
@@ -381,7 +386,7 @@ class FormResponse(models.Model):
                     row["type"] = "link"
                     row["value"] = reverse("response_file_array",
                                            kwargs={"investigation_slug": self.form_instance.form.investigation.slug,
-                                                   "form_slug": self.form_instance.get_latest_for_form.form.slug,
+                                                   "form_slug": self.form_instance.form.slug,
                                                    "response_id": self.id,
                                                    "file_field": name,
                                                    "file_index": index
@@ -452,7 +457,7 @@ def send_email(sender, instance, created, *args, **kwargs):
             try:
                 send_mail(subject=_("Thank you for your submission!"),
                           message=message,
-                          from_email=DEFAULT_FROM_EMAIL,
+                          from_email=settings.DEFAULT_FROM_EMAIL,
                           recipient_list=[email],
                           html_message=html_message)
             except smtplib.SMTPException:
@@ -485,7 +490,7 @@ class Invitation(models.Model):
         try:
             send_mail(subject=subject,
                       message=message,
-                      from_email=DEFAULT_FROM_EMAIL,
+                      from_email=settings.DEFAULT_FROM_EMAIL,
                       recipient_list=[self.user.email])
         except BaseException:
             pass

@@ -332,7 +332,7 @@ def create_and_invite_user(email, request):
     user.set_password(uuid.uuid4())
     user.save()
     form.save(request=request,
-              from_email=DEFAULT_FROM_EMAIL,
+              from_email=settings.DEFAULT_FROM_EMAIL,
               subject_template_name="registration/set_initial_password_subject.txt",
               email_template_name="registration/set_initial_password_email.html")
     return user
