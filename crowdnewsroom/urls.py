@@ -13,14 +13,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.contrib import admin
+from django.http import HttpResponseRedirect
+from django.urls import include, path, re_path
 from django.views import static
 from django.views.i18n import JavaScriptCatalog
 from rest_framework.authtoken import views as djangorest_views
-from django.http import HttpResponseRedirect
-from django.urls import path, include, re_path
-
-from crowdnewsroom import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,4 +35,4 @@ if settings.DEBUG:
     urlpatterns += [
         path('media/<path:path>', static.serve,
              {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
-]
+    ]

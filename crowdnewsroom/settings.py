@@ -14,7 +14,6 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import dj_database_url
-
 from django.utils.translation import gettext_lazy as _
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -101,7 +100,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend', # default
+    'django.contrib.auth.backends.ModelBackend',  # default
     'guardian.backends.ObjectPermissionBackend',
 )
 
@@ -177,7 +176,8 @@ WEBPACK_LOADER = {
     }
 }
 
-FRONTEND_BASE_URL = os.environ.get("CNR_FRONTEND_BASE_URL", "https://forms.crowdnewsroom.org")
+FRONTEND_BASE_URL = os.environ.get(
+    "CNR_FRONTEND_BASE_URL", "https://forms.crowdnewsroom.org")
 
 try:
     from .local_settings import *  # noqa

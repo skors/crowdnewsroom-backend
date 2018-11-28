@@ -1,8 +1,8 @@
 from django.forms import ModelForm, Textarea
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 
 from forms.models import Comment
-from django.utils.translation import ugettext_lazy as _
 
 
 class CommentForm(ModelForm):
