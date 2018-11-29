@@ -277,10 +277,10 @@ class Form(models.Model, UniqueSlugMixin):
 
 class FormInstance(models.Model):
     form_json = JSONField()
-    ui_schema_json = JSONField(default={})
+    ui_schema_json = JSONField(default=dict)
     version = models.IntegerField(default=0)
     form = models.ForeignKey(Form, on_delete=models.CASCADE)
-    priority_fields = JSONField(default=[], blank=True)
+    priority_fields = JSONField(default=list, blank=True)
     email_template = models.TextField(
         default=_("Thank you for participating in a crowdnewsroom investigation!"))
     email_template_html = models.TextField(
@@ -500,8 +500,8 @@ class FormInstanceTemplate(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
     form_json = JSONField()
-    ui_schema_json = JSONField(default={}, blank=True)
-    priority_fields = JSONField(default=[], blank=True)
+    ui_schema_json = JSONField(default=dict, blank=True)
+    priority_fields = JSONField(default=list, blank=True)
     email_template = models.TextField(
         default=_("Thank you for participating in a crowdnewsroom investigation!"))
     email_template_html = models.TextField(
