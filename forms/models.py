@@ -501,6 +501,7 @@ def add_user_to_investigation(sender, instance, created, *args, **kwargs):
     invitation = instance
     if invitation.accepted:
         invitation.investigation.add_user(invitation.user, "V")
+        invitation.delete()
 
 
 class FormInstanceTemplate(models.Model):
