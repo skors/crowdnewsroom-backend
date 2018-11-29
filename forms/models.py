@@ -153,12 +153,10 @@ class UserGroup(models.Model):
     def create_all_for(cls, investigation):
         for (key, name) in cls.ROLES:
             group_name = "{} - {}s".format(investigation.name, name)
-            group = Group(name=group_name)
-            group.save()
+            group, _ = Group.objects.get_or_create(name=group_name)
 
-            user_group = UserGroup(
+            user_group, _ = UserGroup.objects.get_or_create(
                 role=key, investigation=investigation, group=group)
-            user_group.save()
 
             user_group.assign_permissions()
 
