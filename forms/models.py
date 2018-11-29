@@ -1,5 +1,4 @@
 import math
-import smtplib
 from collections import namedtuple
 from datetime import timedelta
 
@@ -454,15 +453,11 @@ def send_email(sender, instance, created, *args, **kwargs):
         confirm_summary = form_response.json.get("confirm_summary")
         if email and confirm_summary:
             message, html_message = generate_emails(form_response)
-            try:
-                send_mail(subject=_("Thank you for your submission!"),
-                          message=message,
-                          from_email=settings.DEFAULT_FROM_EMAIL,
-                          recipient_list=[email],
-                          html_message=html_message)
-            except smtplib.SMTPException:
-                # TODO: Notify bugsnag here? Or do something else..
-                pass
+            send_mail(subject=_("Thank you for your submission!"),
+                      message=message,
+                      from_email=settings.DEFAULT_FROM_EMAIL,
+                      recipient_list=[email],
+                      html_message=html_message)
 
 
 class Comment(models.Model):
@@ -487,13 +482,10 @@ class Invitation(models.Model):
         message = template.render({"investigation": self.investigation})
         subject = _("You have been invited to join the {} investigation".format(
             self.investigation.name))
-        try:
-            send_mail(subject=subject,
-                      message=message,
-                      from_email=settings.DEFAULT_FROM_EMAIL,
-                      recipient_list=[self.user.email])
-        except BaseException:
-            pass
+        send_mail(subject=subject,
+                  message=message,
+                  from_email=settings.DEFAULT_FROM_EMAIL,
+                  recipient_list=[self.user.email])
 
 
 @receiver(models.signals.post_save, sender=Invitation)
