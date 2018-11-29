@@ -1,40 +1,42 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import {Button, Form, TextInput} from "carbon-components-react";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { Button, Form, TextInput } from 'carbon-components-react'
 import {
   authorizedDELETE,
   authorizedFetch,
   authorizedPATCH,
   authorizedPOST
-} from "./api";
-import { kebabCase } from "lodash";
+} from './api'
+import { kebabCase } from 'lodash'
 
 class Tag extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       isEdit: false,
       name: props.tag.name
-    };
+    }
 
-    this.save = this.save.bind(this);
-    this.updateName = this.updateName.bind(this);
-    this.deleteTag = this.deleteTag.bind(this);
+    this.save = this.save.bind(this)
+    this.updateName = this.updateName.bind(this)
+    this.deleteTag = this.deleteTag.bind(this)
   }
 
   deleteTag(tagId) {
-    authorizedDELETE(`/forms/tags/${tagId}`).then(() => this.props.updateCallback());
+    authorizedDELETE(`/forms/tags/${tagId}`).then(() =>
+      this.props.updateCallback()
+    )
   }
 
   updateName(event) {
-    this.setState({ name: event.target.value });
+    this.setState({ name: event.target.value })
   }
 
   save() {
-    this.setState({ isEdit: false });
+    this.setState({ isEdit: false })
     authorizedPATCH(`/forms/tags/${this.props.tag.id}`, {
       body: JSON.stringify({ name: this.state.name })
-    }).then(() => this.props.updateCallback());
+    }).then(() => this.props.updateCallback())
   }
 
   render() {
@@ -48,74 +50,70 @@ class Tag extends Component {
 
         {this.state.isEdit ? (
           <button className="cnr--button-unstyled" onClick={this.save}>
-            {gettext("save")}
+            {gettext('save')}
           </button>
         ) : (
           <button
             className="cnr--button-unstyled"
             onClick={() => this.setState({ isEdit: true })}
           >
-            {gettext("edit")}
+            {gettext('edit')}
           </button>
         )}
 
         <button
           className="cnr--button-unstyled"
-          onClick={() => this.deleteTag(this.props.tag.id)} >
-            {gettext("delete")}
+          onClick={() => this.deleteTag(this.props.tag.id)}
+        >
+          {gettext('delete')}
         </button>
       </div>
-    );
+    )
   }
 }
 
 Tag.propTypes = {
-  tag: PropTypes.object.isRequired,
-};
+  tag: PropTypes.object.isRequired
+}
 
 function TagList({ tags, updateCallback }) {
   return (
     <ul className="bx--list--unordered">
       {tags.map(tag => (
         <li key={tag.id} className="bx--list__item">
-          <Tag
-            tag={tag}
-            updateCallback={updateCallback}
-          />
+          <Tag tag={tag} updateCallback={updateCallback} />
         </li>
       ))}
     </ul>
-  );
+  )
 }
 
 TagList.propTypes = {
   tags: PropTypes.arrayOf(PropTypes.object).isRequired,
-  updateCallback: PropTypes.func.isRequired,
-};
-
-
+  updateCallback: PropTypes.func.isRequired
+}
 
 class AddTag extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      name: "",
-      slug: ""
-    };
+      name: '',
+      slug: ''
+    }
 
-    this.updateName = this.updateName.bind(this);
-    this.submit = this.submit.bind(this);
+    this.updateName = this.updateName.bind(this)
+    this.submit = this.submit.bind(this)
   }
 
   updateName(event) {
-    const name = event.target.value;
-    const slug = kebabCase(name);
-    this.setState({ name, slug });
+    const name = event.target.value
+    const slug = kebabCase(name)
+    this.setState({ name, slug })
   }
 
   submit() {
-    this.props.callback(this.state);
-    this.setState({name: "", slug: ""})
+    this.props.callback(this.state)
+    this.setState({ name: '', slug: '' })
   }
 
   render() {
@@ -124,52 +122,52 @@ class AddTag extends Component {
         <TextInput
           id="tagName"
           value={this.state.name}
-          labelText={gettext("Name")}
+          labelText={gettext('Name')}
           onChange={this.updateName}
         />
-        <div className="bx--form-item cnr--inline-add--button" >
-          <Button onClick={this.submit}>{gettext("Add")}</Button>
+        <div className="bx--form-item cnr--inline-add--button">
+          <Button onClick={this.submit}>{gettext('Add')}</Button>
         </div>
       </Form>
-    );
+    )
   }
 }
 
 AddTag.propTypes = {
-  callback: PropTypes.func.isRequired,
-};
+  callback: PropTypes.func.isRequired
+}
 
 export default class TagManagement extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     const [match, slug] = window.location.pathname.match(
       /investigations\/([a-z-]+)/
-    );
+    )
     this.state = {
       tags: [],
       slug: slug
-    };
+    }
 
-    this.addTag = this.addTag.bind(this);
-    this.loadTags = this.loadTags.bind(this);
+    this.addTag = this.addTag.bind(this)
+    this.loadTags = this.loadTags.bind(this)
   }
 
   componentDidMount() {
-    this.loadTags();
+    this.loadTags()
   }
 
   addTag(tag) {
     authorizedPOST(`/forms/investigations/${this.state.slug}/tags`, {
       body: JSON.stringify(tag)
-    }).then(() => this.loadTags());
+    }).then(() => this.loadTags())
   }
 
   loadTags() {
     authorizedFetch(`/forms/investigations/${this.state.slug}/tags`).then(
       tags => {
-        this.setState({ tags });
+        this.setState({ tags })
       }
-    );
+    )
   }
 
   render() {
@@ -178,6 +176,6 @@ export default class TagManagement extends Component {
         <AddTag callback={this.addTag} />
         <TagList tags={this.state.tags} updateCallback={this.loadTags} />
       </div>
-    );
+    )
   }
 }

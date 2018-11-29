@@ -1,32 +1,32 @@
-const path = require("path");
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const BundleTracker = require("webpack-bundle-tracker");
-const webpack = require("webpack");
+const path = require('path');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const BundleTracker = require('webpack-bundle-tracker');
+const webpack = require('webpack');
 
-const devMode = process.env.NODE_ENV !== "production";
+const devMode = process.env.NODE_ENV !== 'production';
 
 module.exports = {
   mode: process.env.NODE_ENV,
   context: path.resolve(__dirname),
-  devtool: devMode ? "eval-source-map" : false,
+  devtool: devMode ? 'eval-source-map' : false,
   resolve: {
     extensions: ['.wasm', '.mjs', '.js', '.json', '.jsx'],
   },
   entry: {
-    main: "./src/scripts/index",
-    style: "./src/styles/main.sass",
-    formResponseDetails: "./src/scripts/form-response-details",
-    formResponseList: "./src/scripts/form-response-list",
-    invitationList: "./src/scripts/invitation-list",
-    investigationManagement: "./src/scripts/investigation-management",
-    formManagement: "./src/scripts/form-management",
+    main: './src/scripts/index',
+    style: './src/styles/main.sass',
+    formResponseDetails: './src/scripts/form-response-details',
+    formResponseList: './src/scripts/form-response-list',
+    invitationList: './src/scripts/invitation-list',
+    investigationManagement: './src/scripts/investigation-management',
+    formManagement: './src/scripts/form-management',
   },
   output: {
-    publicPath: devMode ? "http://127.0.0.1:1339/" : "/static/js/",
-    path: path.join(__dirname, "static", "js"),
-    filename: "bundle-[name]-[hash].min.js"
+    publicPath: devMode ? 'http://127.0.0.1:1339/' : '/static/js/',
+    path: path.join(__dirname, 'static', 'js'),
+    filename: 'bundle-[name]-[hash].min.js',
   },
   module: {
     rules: [
@@ -34,59 +34,59 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader"
-        }
+          loader: 'babel-loader',
+        },
       },
       {
         test: /\.s[a|c]ss$/i,
         use: [
-          devMode ? "style-loader" : MiniCssExtractPlugin.loader,
-          "css-loader",
-          "postcss-loader",
-          "sass-loader"
-        ]
+          devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+          'css-loader',
+          'postcss-loader',
+          'sass-loader',
+        ],
       },
       {
         test: /\.css$/i,
         use: [
-          devMode ? "style-loader" : MiniCssExtractPlugin.loader,
-          "css-loader",
-        ]
+          devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+          'css-loader',
+        ],
       },
       {
         test: /\.(png|jpg|gif|svg)/,
         use: {
-          loader: "url-loader",
+          loader: 'url-loader',
           options: {
-            limit: 8192
-          }
-        }
+            limit: 8192,
+          },
+        },
       },
       {
         test: /\.(woff|woff2|ttf|eot)/,
         use: {
-          loader: "file-loader"
-        }
-      }
-    ]
+          loader: 'file-loader',
+        },
+      },
+    ],
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: "../css/bundle-[hash].css"
+      filename: '../css/bundle-[hash].css',
     }),
     new BundleTracker({
-      filename: "./webpack-stats.json"
+      filename: './webpack-stats.json',
     }),
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
   ],
   optimization: {
     minimizer: [
       new UglifyJsPlugin({
         cache: true,
-        parallel: true
+        parallel: true,
       }),
-      new OptimizeCSSAssetsPlugin({})
-    ]
+      new OptimizeCSSAssetsPlugin({}),
+    ],
   },
   devServer: devMode
     ? {
@@ -94,7 +94,7 @@ module.exports = {
         port: 1339,
         inline: true,
         progress: true,
-        headers: { "Access-Control-Allow-Origin": "http://localhost:8000" } // django runserver
+        headers: {'Access-Control-Allow-Origin': 'http://localhost:8000'}, // django runserver
       }
-    : {}
+    : {},
 };
