@@ -290,10 +290,12 @@
               </div>
             </div>
     {% endif %}
+    {% if "manage_investigation" in investigation_perms %}
     <a href="{{ csv_url }}" class="bx--btn bx--btn--primary cnr--link-button">
       {% trans "Download data as csv" %}
         <i class="fa fa-download bx--btn__icon"></i>
       </a>
+      {% endif %}
   </div>
 </div>
 
