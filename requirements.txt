@@ -6,7 +6,7 @@ django-cors-headers==2.1.0
 django-guardian==1.4.9
 django-json-widget==0.1.1
 django-webpack-loader==0.6.0
-djangorestframework==3.7.7
+djangorestframework==3.9.0
 factory-boy==2.10.0
 jsonschema==2.6.0
 Pillow==5.2.0
