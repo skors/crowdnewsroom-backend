@@ -8,6 +8,4 @@ theme/node_modules/
 .envrc_local
 .coverage
 coverage.xml
-theme/static/*
-theme/webpack-stats.json
 sent_emails/*
