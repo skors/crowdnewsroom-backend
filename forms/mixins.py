@@ -1,6 +1,5 @@
-from slugify import slugify_de  # TODO
-
 from django.core.validators import RegexValidator
+from slugify import slugify_de  # TODO
 
 
 def slugify(value):

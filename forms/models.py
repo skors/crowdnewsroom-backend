@@ -1,28 +1,25 @@
-import smtplib
 import math
-
 from collections import namedtuple
 from datetime import timedelta
 
-from django.core.mail import send_mail
 import django.core.validators as validators
+from django.conf import settings
+from django.contrib.auth.models import AbstractUser, BaseUserManager, Group
+from django.contrib.postgres.fields import JSONField
+from django.core.mail import send_mail
+from django.db import models
 from django.db.models import Count
-from django.db.models.functions import Coalesce
-from django.template import Engine, Context
+from django.db.models.functions import Coalesce, TruncDate
+from django.dispatch import receiver
+from django.template import Context, Engine
 from django.template.loader import get_template
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy as _
+from guardian.shortcuts import assign_perm, get_users_with_perms
 
 from .mixins import UniqueSlugMixin, validate_slug_stricter
-
-from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import Group, AbstractUser, BaseUserManager
-from django.db import models
-from django.contrib.postgres.fields import JSONField
-from django.dispatch import receiver
-from guardian.shortcuts import assign_perm, get_users_with_perms
-from django.db.models.functions import TruncDate
 
 Roles = namedtuple('Roles', ['ADMIN', 'OWNER', 'EDITOR', 'VIEWER'])
 INVESTIGATION_ROLES = Roles(ADMIN="A", OWNER="O", EDITOR="E", VIEWER="V")
@@ -36,7 +33,7 @@ class Investigation(models.Model, UniqueSlugMixin):
     )
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True,
-        validators=[validators.validate_slug, validate_slug_stricter])
+                            validators=[validators.validate_slug, validate_slug_stricter])
     cover_image = models.FileField(blank=True, null=True, default=None)
     logo = models.FileField(blank=True, null=True, default=None)
     short_description = models.TextField(blank=True)
@@ -44,7 +41,8 @@ class Investigation(models.Model, UniqueSlugMixin):
     research_questions = models.TextField(blank=True)
     status = models.CharField(max_length=1, choices=STATUSES, default='D')
     # The following fields might be separate?
-    text = models.TextField(blank=True)  # or is this the same as short_description?
+    # or is this the same as short_description?
+    text = models.TextField(blank=True)
     methodology = models.TextField(blank=True)
     faq = models.TextField(blank=True)
     data_privacy_url = models.URLField(null=True, blank=True)
@@ -63,6 +61,7 @@ class Investigation(models.Model, UniqueSlugMixin):
         permissions = (
             ('view_investigation', _('View investigation')),
             ('manage_investigation', _('Manage investigation')),
+            ('admin_investigation', _('Admin investigation')),
             ('master_investigation', _('Delete investigation and manage owners')),
         )
 
@@ -70,7 +69,8 @@ class Investigation(models.Model, UniqueSlugMixin):
         return self.name
 
     def submission_stats(self):
-        investigations = FormResponse.objects.filter(form_instance__form__investigation=self)
+        investigations = FormResponse.objects.filter(
+            form_instance__form__investigation=self)
         total = investigations.count()
         today_start = timezone.now().replace(minute=0, hour=0, second=0)
         yesterday_start = today_start - timedelta(days=1)
@@ -86,21 +86,32 @@ class Investigation(models.Model, UniqueSlugMixin):
 
     @property
     def manager_users(self):
-        user_perms = get_users_with_perms(self, with_superusers=True, attach_perms=True)
+        user_perms = get_users_with_perms(
+            self, with_superusers=True, attach_perms=True)
         return [user for (user, perms) in user_perms.items() if "manage_investigation" in perms]
 
     @property
+    def admin_users(self):
+        user_perms = get_users_with_perms(
+            self, with_superusers=True, attach_perms=True)
+        return [user for (user, perms) in user_perms.items() if "admin_investigation" in perms]
+
+    @property
     def all_users(self):
-        user_perms = get_users_with_perms(self, with_superusers=True, attach_perms=True)
+        user_perms = get_users_with_perms(
+            self, with_superusers=True, attach_perms=True)
         return [user for (user, perms) in user_perms.items() if "view_investigation" in perms]
 
     def add_user(self, user, role):
-        user_group = UserGroup.objects.get(investigation=self, role=role)
+        try:
+            user_group = UserGroup.objects.get(investigation=self, role=role)
+        except UserGroup.DoesNotExist:
+            UserGroup.create_all_for(self)
+            user_group = UserGroup.objects.get(investigation=self, role=role)
         user_group.group.user_set.add(user)
 
     def get_users(self, role):
         return UserGroup.objects.get(investigation=self, role=role).group.user_set
-
 
 
 @receiver(models.signals.post_save, sender=Investigation)
@@ -119,31 +130,33 @@ class UserGroup(models.Model):
     )
     investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    role = models.CharField(max_length=1, choices=ROLES, default=INVESTIGATION_ROLES.VIEWER)
+    role = models.CharField(max_length=1, choices=ROLES,
+                            default=INVESTIGATION_ROLES.VIEWER)
 
     def add_user(self, user):
-        user_groups = UserGroup.objects.filter(investigation=self.investigation)
+        user_groups = UserGroup.objects.filter(
+            investigation=self.investigation)
         for user_group in user_groups:
             user_group.group.user_set.remove(user)
         self.group.user_set.add(user)
 
     def assign_permissions(self):
         assign_perm("view_investigation", self.group, self.investigation)
-        if self.role in [INVESTIGATION_ROLES.OWNER, INVESTIGATION_ROLES.ADMIN]:
+        if self.role in [INVESTIGATION_ROLES.EDITOR, INVESTIGATION_ROLES.OWNER, INVESTIGATION_ROLES.ADMIN]:
             assign_perm("manage_investigation", self.group, self.investigation)
+        if self.role in [INVESTIGATION_ROLES.OWNER, INVESTIGATION_ROLES.ADMIN]:
+            assign_perm("admin_investigation", self.group, self.investigation)
         if self.role == INVESTIGATION_ROLES.OWNER:
             assign_perm("master_investigation", self.group, self.investigation)
-
 
     @classmethod
     def create_all_for(cls, investigation):
         for (key, name) in cls.ROLES:
             group_name = "{} - {}s".format(investigation.name, name)
-            group = Group(name=group_name)
-            group.save()
+            group, _ = Group.objects.get_or_create(name=group_name)
 
-            user_group = UserGroup(role=key, investigation=investigation, group=group)
-            user_group.save()
+            user_group, _ = UserGroup.objects.get_or_create(
+                role=key, investigation=investigation, group=group)
 
             user_group.assign_permissions()
 
@@ -225,7 +238,7 @@ class Form(models.Model, UniqueSlugMixin):
     )
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True,
-        validators=[validators.validate_slug, validate_slug_stricter])
+                            validators=[validators.validate_slug, validate_slug_stricter])
     status = models.CharField(max_length=1, choices=STATUSES, default='D')
     investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
 
@@ -262,13 +275,16 @@ class Form(models.Model, UniqueSlugMixin):
 
 class FormInstance(models.Model):
     form_json = JSONField()
-    ui_schema_json = JSONField(default={})
+    ui_schema_json = JSONField(default=dict)
     version = models.IntegerField(default=0)
     form = models.ForeignKey(Form, on_delete=models.CASCADE)
-    priority_fields = JSONField(default=[], blank=True)
-    email_template = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"))
-    email_template_html = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"));
-    redirect_url_template = models.TextField(default="https://forms.crowdnewsroom.org")
+    priority_fields = JSONField(default=list, blank=True)
+    email_template = models.TextField(
+        default=_("Thank you for participating in a crowdnewsroom investigation!"))
+    email_template_html = models.TextField(
+        default=_("Thank you for participating in a crowdnewsroom investigation!"))
+    redirect_url_template = models.TextField(
+        default="https://forms.crowdnewsroom.org")
 
     def __str__(self):
         return "{} - Instance version {}".format(self.form.name, self.version)
@@ -284,7 +300,8 @@ class FormInstance(models.Model):
     def flat_schema(self):
         properties = {}
         for step in self.form_json:
-            properties.update(step.get("schema", dict()).get("properties", dict()))
+            properties.update(
+                step.get("schema", dict()).get("properties", dict()))
         return {"type": "object", "properties": properties}
 
     @property
@@ -340,11 +357,14 @@ class FormResponse(models.Model):
             flat_ui_schema.update(values)
 
         sorted_properties = sorted(self.all_json_properties().items(),
-            key=self._priority_order)
+                                   key=self._priority_order)
         for name, props in sorted_properties:
-            title = flat_ui_schema.get(name, {}).get("ui:title", name) or props.get("title")
-            row = {"title": title, "json_name": name, "data_type": props.get("type")}
-            if (flat_ui_schema.get(name, dict()).get("ui:widget") == "signatureWidget" or props.get("format") == "data-url"):
+            title = flat_ui_schema.get(name, {}).get(
+                "ui:title", name) or props.get("title")
+            row = {"title": title, "json_name": name,
+                   "data_type": props.get("type")}
+            if (flat_ui_schema.get(name, dict()).get("ui:widget") ==
+                    "signatureWidget" or props.get("format") == "data-url"):
                 if form_data.get(name):
                     row["type"] = "link"
                     row["value"] = reverse("response_file",
@@ -359,7 +379,7 @@ class FormResponse(models.Model):
             elif props.get("type") == "array" and props["items"]["format"] == "data-url":
                 for index, part in enumerate(form_data.get(name, [])):
                     row = {"title": "{} {}".format(title, index),
-                           "json_name": "{}-{}".format(name,index)}
+                           "json_name": "{}-{}".format(name, index)}
                     row["type"] = "link"
                     row["value"] = reverse("response_file_array",
                                            kwargs={"investigation_slug": self.form_instance.form.investigation.slug,
@@ -408,13 +428,15 @@ class FormResponse(models.Model):
     @classmethod
     def get_all_for_form(cls, form):
         return cls.objects\
-                .filter(form_instance__form=form) \
-                .order_by(Coalesce('last_status_changed_date', 'submission_date').desc())
+            .filter(form_instance__form=form) \
+            .order_by(Coalesce('last_status_changed_date', 'submission_date').desc())
 
 
 def generate_emails(form_response: FormResponse):
-    plaintext_template = Engine().from_string(str(form_response.form_instance.email_template))
-    html_template = Engine().from_string(str(form_response.form_instance.email_template_html))
+    plaintext_template = Engine().from_string(
+        str(form_response.form_instance.email_template))
+    html_template = Engine().from_string(
+        str(form_response.form_instance.email_template_html))
     context = Context(dict(response=form_response.json,
                            field_list=mark_safe(form_response.email_fields)))
     return (plaintext_template.render(context=context),
@@ -429,21 +451,18 @@ def send_email(sender, instance, created, *args, **kwargs):
         confirm_summary = form_response.json.get("confirm_summary")
         if email and confirm_summary:
             message, html_message = generate_emails(form_response)
-            try:
-                send_mail(subject=_("Thank you for your submission!"),
-                          message=message,
-                          from_email="Crowdnewsroom <noreply@crowdnewsroom.org>",
-                          recipient_list=[email],
-                          html_message=html_message)
-            except smtplib.SMTPException:
-                # TODO: Notify bugsnag here? Or do something else..
-                pass
+            send_mail(subject=_("Thank you for your submission!"),
+                      message=message,
+                      from_email=settings.DEFAULT_FROM_EMAIL,
+                      recipient_list=[email],
+                      html_message=html_message)
 
 
 class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     date = models.DateTimeField()
-    form_response = models.ForeignKey(FormResponse, on_delete=models.CASCADE, related_name="comments")
+    form_response = models.ForeignKey(
+        FormResponse, on_delete=models.CASCADE, related_name="comments")
     text = models.TextField()
     archived = models.BooleanField(default=False)
 
@@ -459,15 +478,12 @@ class Invitation(models.Model):
     def send_user_email(self):
         template = get_template("invitation_email.txt")
         message = template.render({"investigation": self.investigation})
-        subject = _("You have been invited to join the {} investigation".format(self.investigation.name))
-        try:
-            send_mail(subject=subject,
-                      message=message,
-                      from_email="noreply@crowdnewsroom.org",
-                      recipient_list=[self.user.email])
-        except:
-            pass
-
+        subject = _("You have been invited to join the {} investigation".format(
+            self.investigation.name))
+        send_mail(subject=subject,
+                  message=message,
+                  from_email=settings.DEFAULT_FROM_EMAIL,
+                  recipient_list=[self.user.email])
 
 
 @receiver(models.signals.post_save, sender=Invitation)
@@ -475,14 +491,18 @@ def add_user_to_investigation(sender, instance, created, *args, **kwargs):
     invitation = instance
     if invitation.accepted:
         invitation.investigation.add_user(invitation.user, "V")
+        invitation.delete()
 
 
 class FormInstanceTemplate(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
     form_json = JSONField()
-    ui_schema_json = JSONField(default={}, blank=True)
-    priority_fields = JSONField(default=[], blank=True)
-    email_template = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"))
-    email_template_html = models.TextField(default=_("Thank you for participating in a crowdnewsroom investigation!"));
-    redirect_url_template = models.TextField(default="https://forms.crowdnewsroom.org")
+    ui_schema_json = JSONField(default=dict, blank=True)
+    priority_fields = JSONField(default=list, blank=True)
+    email_template = models.TextField(
+        default=_("Thank you for participating in a crowdnewsroom investigation!"))
+    email_template_html = models.TextField(
+        default=_("Thank you for participating in a crowdnewsroom investigation!"))
+    redirect_url_template = models.TextField(
+        default="https://forms.crowdnewsroom.org")

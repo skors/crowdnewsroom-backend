@@ -1,24 +1,26 @@
 import base64
 import re
 
-from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.http import (Http404, HttpResponse, HttpResponseForbidden,
+                         HttpResponseRedirect)
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.functional import cached_property
+from django.utils.translation import gettext as _
+from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
+                                  TemplateView, UpdateView)
 from django.views.generic.base import ContextMixin
 from guardian.decorators import permission_required
 from guardian.mixins import PermissionRequiredMixin
-from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseForbidden
-from django.shortcuts import get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, TemplateView, DeleteView
 from guardian.shortcuts import get_objects_for_user
-from django.utils.translation import gettext as _
-from jsonschema import validate, ValidationError, FormatChecker
-from django.utils import timezone
+from jsonschema import FormatChecker, ValidationError, validate
 
-from forms.forms import CommentForm, CommentDeleteForm
-from forms.models import FormResponse, Investigation, Comment, Form, Tag, User
+from forms.forms import CommentDeleteForm, CommentForm
+from forms.models import Comment, Form, FormResponse, Investigation, Tag, User
 from forms.utils import create_form_csv
 
 
@@ -88,7 +90,8 @@ class FormListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
     def get_breadcrumbs(self):
         return [
             (_("Investigations"), reverse("investigation_list")),
-            (self.investigation.name, reverse("form_list", kwargs={"investigation_slug": self.investigation.slug})),
+            (self.investigation.name, reverse("form_list", kwargs={
+             "investigation_slug": self.investigation.slug})),
         ]
 
     def get_permission_object(self):
@@ -102,6 +105,8 @@ class FormListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
         context['investigation'] = self.investigation
         context['user_can_manage_investigation'] = self.request.user.has_perm("manage_investigation",
                                                                               self.investigation)
+        context['user_can_admin_investigation'] = self.request.user.has_perm("admin_investigation",
+                                                                             self.investigation)
         return context
 
 
@@ -119,7 +124,8 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
     def get_breadcrumbs(self):
         return [
             (_("Investigations"), reverse("investigation_list")),
-            (self.investigation.name, reverse("form_list", kwargs={"investigation_slug": self.investigation.slug})),
+            (self.investigation.name, reverse("form_list", kwargs={
+             "investigation_slug": self.investigation.slug})),
             (self.form.name, reverse("form_responses", kwargs={"investigation_slug": self.investigation.slug,
                                                                "form_slug": self.form.slug,
                                                                "bucket": "inbox"})),
@@ -136,7 +142,8 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
     def get_queryset(self):
         investigation_responses = FormResponse.get_all_for_form(self.form)
         filter_params = _get_filter_params(self.kwargs, self.request.GET)
-        investigation_responses = investigation_responses.filter(**filter_params)
+        investigation_responses = investigation_responses.filter(
+            **filter_params)
         investigation_responses = investigation_responses \
             .prefetch_related("tags") \
             .prefetch_related("assignees")
@@ -146,8 +153,10 @@ class FormResponseListView(InvestigationAuthMixin, BreadCrumbMixin, ListView):
         if sum(self.form.count_by_bucket().values()) == 0:
             return _("No one contributed to your investigation yet. Time to advertise!")
 
-        active_filters = [key for key, value in self.request.GET.items() if value]
-        is_filtered = {'has', 'tag', 'email', 'assignee'}.intersection(active_filters)
+        active_filters = [key for key,
+                          value in self.request.GET.items() if value]
+        is_filtered = {'has', 'tag', 'email',
+                       'assignee'}.intersection(active_filters)
 
         if is_filtered:
             return _("There are no results using your current filters. Maybe try something else?")
@@ -219,7 +228,8 @@ class FormResponseDetailView(InvestigationAuthMixin, BreadCrumbMixin, DetailView
     def get_breadcrumbs(self):
         return [
             (_("Investigations"), reverse("investigation_list")),
-            (self.investigation.name, reverse("form_list", kwargs={"investigation_slug": self.investigation.slug})),
+            (self.investigation.name, reverse("form_list", kwargs={
+             "investigation_slug": self.investigation.slug})),
             (self.form.name, reverse("form_responses", kwargs={"investigation_slug": self.investigation.slug,
                                                                "form_slug": self.form.slug,
                                                                "bucket": "inbox"})),
@@ -241,7 +251,8 @@ class CommentAddView(InvestigationAuthMixin, CreateView):
 
     def form_valid(self, form):
         response = FormResponse.objects.get(id=self.kwargs.get("response_id"))
-        form.save_with_extra_props(form_response=response, author=self.request.user)
+        form.save_with_extra_props(
+            form_response=response, author=self.request.user)
         return super().form_valid(form)
 
 
@@ -282,7 +293,8 @@ def form_response_batch_edit(request, *args, **kwargs):
 
     # need to also filter for investigation to
     # make sure that we only edit responses that user is allowed to edit
-    investigation = Investigation.objects.get(slug=kwargs["investigation_slug"])
+    investigation = Investigation.objects.get(
+        slug=kwargs["investigation_slug"])
     form_responses = FormResponse.objects.filter(id__in=ids,
                                                  form_instance__form__investigation=investigation)
 
@@ -292,10 +304,13 @@ def form_response_batch_edit(request, *args, **kwargs):
         if tag_id == "clear_tags":
             for form_response in form_responses:
                 form_response.tags.clear()
-        else:
-            tag = Tag.objects.filter(investigation=investigation).get(id=tag_id)
+        elif tag_id:
+            tag = Tag.objects.filter(
+                investigation=investigation).get(id=tag_id)
             for form_response in form_responses:
                 form_response.tags.add(tag)
+        else:
+            pass
     except ObjectDoesNotExist:
         pass
 
@@ -341,10 +356,13 @@ def form_response_csv_view(request, *args, **kwargs):
     filter_params = _get_filter_params(kwargs, request.GET)
 
     response = HttpResponse(content_type='text/csv')
-    filename = 'crowdnewsroom_download_{}_{}.csv'.format(investigation_slug, form_slug)
-    response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
+    filename = 'crowdnewsroom_download_{}_{}.csv'.format(
+        investigation_slug, form_slug)
+    response['Content-Disposition'] = 'attachment; filename="{}"'.format(
+        filename)
 
-    create_form_csv(form, investigation_slug, request.build_absolute_uri, response, filter_params)
+    create_form_csv(form, investigation_slug,
+                    request.build_absolute_uri, response, filter_params)
 
     return response
 
@@ -397,12 +415,13 @@ def form_response_file_view(request, *args, **kwargs):
     prefixed_filename = "{}-{}".format(form_response.id, filename)
     response = HttpResponse(content_type=file_type)
     response.write(file_content)
-    response['Content-Disposition'] = 'inline; filename="{}"'.format(prefixed_filename)
+    response['Content-Disposition'] = 'inline; filename="{}"'.format(
+        prefixed_filename)
     return response
 
 
 @login_required(login_url="/admin/login")
-@permission_required('manage_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
+@permission_required('admin_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
 def form_response_json_edit_view(request, *args, **kwargs):
     form_slug = kwargs.get("form_slug")
     investigation_slug = kwargs.get("investigation_slug")
@@ -444,7 +463,8 @@ class InvestigationView(InvestigationAuthMixin, TemplateView, BreadCrumbMixin):
     permission_required = "manage_investigation"
 
     def get_breadcrumbs(self):
-        investigation = get_object_or_404(Investigation, slug=self.kwargs.get("investigation_slug"))
+        investigation = get_object_or_404(
+            Investigation, slug=self.kwargs.get("investigation_slug"))
 
         return [
             (_("Investigations"), reverse("investigation_list")),
@@ -467,10 +487,11 @@ class InvestigationCreateView(TemplateView, BreadCrumbMixin):
 
 class InterviewerView(InvestigationAuthMixin, TemplateView, BreadCrumbMixin):
     template_name = "forms/interviewer_new.html"
-    permission_required = "manage_investigation"
+    permission_required = "admin_investigation"
 
     def get_breadcrumbs(self):
-        investigation = get_object_or_404(Investigation, slug=self.kwargs.get("investigation_slug"))
+        investigation = get_object_or_404(
+            Investigation, slug=self.kwargs.get("investigation_slug"))
 
         form_name = _("New Form")
         form_slug = self.kwargs.get("form_slug")

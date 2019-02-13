@@ -1,10 +1,11 @@
 from django.contrib import admin
-from django.contrib.postgres import fields
-from django_json_widget.widgets import JSONEditorWidget
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
+from django.contrib.postgres import fields
 from django.utils.translation import ugettext_lazy as _
+from django_json_widget.widgets import JSONEditorWidget
 
-from .models import User, Investigation, Form, FormResponse, FormInstance, Partner, Tag, Comment, FormInstanceTemplate
+from .models import (Comment, Form, FormInstance, FormInstanceTemplate,
+                     FormResponse, Investigation, Partner, Tag, User)
 
 
 @admin.register(User)
@@ -45,6 +46,7 @@ class InvestigationAdmin(admin.ModelAdmin):
     inlines = [
         TagInline,
     ]
+
 
 class FormInstanceTemplateAdmin(admin.ModelAdmin):
     formfield_overrides = {

@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import ReactDOM from "react-dom";
-import { Button } from "carbon-components-react";
-import {authorizedDELETE, authorizedFetch, authorizedPATCH} from "./api";
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
+import { Button } from 'carbon-components-react'
+import { authorizedDELETE, authorizedFetch, authorizedPATCH } from './api'
 
 function InvestigationInvitation({ invitation, acceptCallback }) {
   return (
@@ -20,42 +20,42 @@ function InvestigationInvitation({ invitation, acceptCallback }) {
         <ul id="investigation-stats"> </ul>
       </div>
     </div>
-  );
+  )
 }
 
 class App extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       invitations: []
-    };
-    this.acceptInvitation = this.acceptInvitation.bind(this);
+    }
+    this.acceptInvitation = this.acceptInvitation.bind(this)
   }
 
   componentDidMount() {
-    this.loadInvitations();
+    this.loadInvitations()
   }
 
   loadInvitations() {
     authorizedFetch(`/forms/invitations`).then(invitations => {
-      this.setState({ invitations });
-    });
+      this.setState({ invitations })
+    })
   }
 
   acceptInvitation(invitation) {
     authorizedPATCH(`/forms/invitations/${invitation.id}`, {
       body: JSON.stringify({ accepted: true })
     }).then(() => {
-      window.location.reload();
-    });
+      window.location.reload()
+    })
   }
 
   render() {
     const pendingInvitations = this.state.invitations.filter(
       invitation => invitation.accepted === null
-    );
+    )
     if (!pendingInvitations.length) {
-      return <div />;
+      return <div />
     }
 
     return (
@@ -69,15 +69,17 @@ class App extends Component {
           ))}
         </div>
       </div>
-    );
+    )
   }
 }
 
 window.leaveInvestigation = (investigationSlug, role, userId) => {
-  authorizedDELETE(`/forms/investigations/${investigationSlug}/groups/${role}/users/${userId}`).then(() => {
-    window.location.reload();
+  authorizedDELETE(
+    `/forms/investigations/${investigationSlug}/groups/${role}/users/${userId}`
+  ).then(() => {
+    window.location.reload()
   })
-};
+}
 
-const rootElement = document.getElementById("invitation-list");
-ReactDOM.render(<App />, rootElement);
+const rootElement = document.getElementById('invitation-list')
+ReactDOM.render(<App />, rootElement)

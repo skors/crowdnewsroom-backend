@@ -1,31 +1,39 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import {HashRouter, Redirect, Route} from "react-router-dom";
-import {Switch} from "react-router";
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { HashRouter, Redirect, Route } from 'react-router-dom'
+import { Switch } from 'react-router'
 
-import {CarbonMenuLink} from "./utils";
-import FormDetails from "./form-details";
-import FormInstanceDetails from "./forminstance-details";
+import { CarbonMenuLink } from './utils'
+import FormDetails from './form-details'
+import FormInstanceDetails from './forminstance-details'
 
-function getUrlParams(){
-  const pattern = /investigations\/([\w-]+)\/interviewers\/?([\w-]+)?/;
-  const [match, investigationSlug, formSlug] = window.location.pathname.match(pattern);
-  return {investigationSlug, formSlug}
+function getUrlParams() {
+  const pattern = /investigations\/([\w-]+)\/interviewers\/?([\w-]+)?/
+  const [match, investigationSlug, formSlug] = window.location.pathname.match(
+    pattern
+  )
+  return { investigationSlug, formSlug }
 }
 
-function hasSlug(){
-  return !!getUrlParams().formSlug;
+function hasSlug() {
+  return !!getUrlParams().formSlug
 }
 
 const App = () => (
   <HashRouter>
     <div>
-      <nav data-tabs className="bx--tabs investigation-management__tabs" role="navigation">
+      <nav
+        data-tabs
+        className="bx--tabs investigation-management__tabs"
+        role="navigation"
+      >
         <ul className="bx--tabs__nav bx--tabs__nav--hidden" role="tablist">
-          <CarbonMenuLink to="/form" label={gettext("Basics")}/>
-          <CarbonMenuLink to="/form_instance"
-                          disabled={!hasSlug()}
-                          label={gettext("Interviewer")}/>
+          <CarbonMenuLink to="/form" label={gettext('Basics')} />
+          <CarbonMenuLink
+            to="/form_instance"
+            disabled={!hasSlug()}
+            label={gettext('Interviewer')}
+          />
         </ul>
       </nav>
       <div>
@@ -39,7 +47,7 @@ const App = () => (
       </div>
     </div>
   </HashRouter>
-);
+)
 
-const rootElement = document.getElementById("form-management");
-ReactDOM.render(<App />, rootElement);
+const rootElement = document.getElementById('form-management')
+ReactDOM.render(<App />, rootElement)

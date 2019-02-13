@@ -14,19 +14,22 @@ def create_form_csv(form, investigation_slug, build_absolute_uri, io_object, fil
         .order_by("id")\
         .all()
 
-    extra_fields = {"url", "version", "status", "submission_date", "id", "tags"}
+    extra_fields = {"url", "version", "status",
+                    "submission_date", "id", "tags"}
     fields = {"meta_{}".format(field) for field in extra_fields}
     for instance in form_instances:
         fields |= instance.json_properties
 
-    writer = csv.DictWriter(io_object, fieldnames=sorted(fields), extrasaction='ignore')
+    writer = csv.DictWriter(io_object, fieldnames=sorted(
+        fields), extrasaction='ignore')
     writer.writeheader()
     for form_response in responses:
         try:
             row = {}
             for field in form_response.rendered_fields():
                 if field['type'] == "link":
-                    row[field["json_name"]] = build_absolute_uri(field["value"])
+                    row[field["json_name"]] = build_absolute_uri(
+                        field["value"])
                 else:
                     row[field["json_name"]] = field["value"]
 

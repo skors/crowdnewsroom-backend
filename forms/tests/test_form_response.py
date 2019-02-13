@@ -109,14 +109,14 @@ class FormReponseBatchEditTest(TestCase):
         user = UserFactory.create()
 
         self.investigation = investigations[0]
-        self.investigation.add_user(user, INVESTIGATION_ROLES.ADMIN)
+        self.investigation.add_user(user, INVESTIGATION_ROLES.EDITOR)
 
         self.responses = responses
         self.admin_user = user
 
         self.client.force_login(self.admin_user)
 
-    def test_assign_tags_fails_for_editor(self):
+    def test_assign_tags_for_editor(self):
         editor = UserFactory.create()
         self.investigation.add_user(editor, "E")
 
@@ -133,7 +133,7 @@ class FormReponseBatchEditTest(TestCase):
         }
 
         response = self.client.post(make_url(form), data=payload)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
 
     def test_assign_tags_multiple(self):
         responses = self.responses[0]
