@@ -3,7 +3,8 @@ from django.urls import path, register_converter
 
 from forms.admin_views import (CommentAddView, CommentDeleteView, FormListView,
                                FormResponseDetailView, FormResponseListView,
-                               InterviewerView, InvestigationCreateView,
+                               InterviewerView, InterviewerEditorView,
+                               InvestigationCreateView,
                                InvestigationListView, InvestigationView,
                                UserSettingsView, form_response_batch_edit,
                                form_response_csv_view, form_response_file_view,
@@ -76,10 +77,14 @@ urlpatterns = [
          InvestigationView.as_view(), name="admin_investigation"),
     path('admin/investigations/<slug:investigation_slug>/forms',
          FormListView.as_view(), name="form_list"),
+
     path('admin/investigations/<slug:investigation_slug>/interviewers',
          InterviewerView.as_view(), name="admin_interviewer_new"),
     path('admin/investigations/<slug:investigation_slug>/interviewers/<slug:form_slug>',
          InterviewerView.as_view(), name="admin_interviewer_edit"),
+    path('admin/investigations/<slug:investigation_slug>/interviewers/editor/<slug:form_slug>',
+         InterviewerEditorView.as_view(), name="admin_interviewer_edit_neweditor"),
+
     path('admin/investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses/batch_edit',
          form_response_batch_edit, name="form_responses_edit"),
     path('admin/investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses',

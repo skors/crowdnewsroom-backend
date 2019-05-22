@@ -1,0 +1,263 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>CNR Editor prototype</title>
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="/static/fonts/foundation-icons/foundation-icons.css">
+    <link rel="stylesheet" href="/static/css/neweditor/foundation.min.css">
+    <link rel="stylesheet" href="/static/css/neweditor/widgets.css">
+    <link rel="stylesheet" href="/static/css/neweditor/app.css">
+
+    <link rel="shortcut icon" type="image/png" href="/images/favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  </head>
+  <body>
+        <div id="editor" class="grid-y medium-grid-frame">
+        
+          <!--
+            {{ form }}
+            {{ form.as_p }}
+            
+            <pre> {% filter force_escape %} {% debug %} {% endfilter %} </pre>
+
+
+            <div id="campaign-nav" class="cell shrink header medium-cell-block-container">  
+              <h2>${ model.title }</h2>
+              <h3>${ model.description }</h3>
+            </div>
+          -->
+            
+            <section id="slide-editor" class="cell medium-auto medium-cell-block-container">
+                <div class="grid-x grid-padding-x">
+                    <div id="slide-nav" class="cell medium-2 medium-cell-block-y">
+                        <ul>
+                            <draggable v-model="slides" handle=".slide-list-handle">
+                            <li class="slide-list-item grid-x" v-for="(slide, slideIdx) in slides"
+                                v-bind:class="{ active: slide == activeSlide }">
+                                <ul class="slide-options cell small-3 medium-2">
+                                    <li><span class="slide-list-handle" aria-hidden="true"><i class="fi-list"></i> <em class="show-for-sr">move</em></span></li>
+                                    <li><a href="#" aria-hidden="true" v-on:click="removeSlide($event, slideIdx)"><i class="fi-trash"></i> <em class="show-for-sr">delete</em></a></li>
+                                </ul>
+                                <a class="slide-thumbnail cell small-9 medium-10" href="#" v-on:click="selectSlide(slide)"><strong>${slide.schema.title}</strong></a>
+                            </li>
+                            </draggable>
+                        </ul>
+                        <!-- <p>Active slide: ${ activeSlide.schema.title }</p> -->
+                        <!-- <p><a class="button hollow expanded" href="#" v-on:click="addSlide($event)"><i class="fi-plus"></i> Add slide</a></p> -->
+                    </div><!-- /#slide-nav-->
+                    <main id="slide-builder" class="cell medium-7 medium-cell-block-y">
+                        <form action="" method="GET">      
+                            <div class="slide grid-container">
+                              <!--
+                                <div class="cell small-12 button-group">
+                                    <a class="button hollow" href="#" v-if="!isFirstSlide" v-on:click="selectPrevSlide()"><i class="fi-arrow-left"></i> previous</a>
+                                    <a class="button hollow" href="#" v-if="!isLastSlide" v-on:click="selectNextSlide()">next <i class="fi-arrow-right"></i></a>
+                                </div>
+                              -->
+                                <div class="slide-field slide-title grid-x grid-padding-x">
+                                  <div class="drag-slide small-1 medium-2 cell">
+                                    <span><i class="fi-list"></i></span><!-- drag slide -->
+                                  </div>
+                                  <div class="slide-content small-10 medium-8 text-center cell">
+                                    <h1 contenteditable 
+                                        @blur="ceEdit($event, activeSlide.schema, 'title')" @keydown.enter="cePressEnter($event, activeSlide.schema, 'title')"
+                                        v-bind:key="activeSlide.schema.title">
+                                      ${ activeSlide.schema.title }
+                                    </h1>
+                                    <p class="lead" contenteditable 
+                                    @blur="ceEdit($event, activeSlide.schema, 'description')" @keydown.enter="cePressEnter($event, activeSlide.schema, 'description')"
+                                    v-bind:key="activeSlide.schema.description"
+                                    >
+                                      ${ activeSlide.schema.description }
+                                    </p>
+                                  </div>
+                                </div>                                
+                                <draggable v-model="activeSlide.schema.properties.keys" handle=".drag-slide">
+                                <div class="slide-field grid-x grid-padding-x" v-bind:class="{'slide-field-edit': editingField == fieldName}" v-for="(field, fieldName) in activeSlide.schema.properties" :key="fieldName">
+                                    <div class="drag-slide small-1 medium-2 cell">
+                                        <span><i class="fi-list" v-show="editingField != fieldName"></i></span><!-- drag slide -->
+                                    </div>
+                                    <div class="slide-content small-10 medium-8 cell">
+                                        <label class="control-label" :for="fieldName" v-if="field.title">
+                                          ${ field.title }
+                                        </label>
+                                        <label class="control-label" :for="fieldName" v-if="!field.title">
+                                          ${ fieldName }
+                                        </label>
+
+                                        <!-- All field types -->
+
+                                        <!-- Text input (string) -->
+                                        <input v-if="['string'].indexOf(field.type) > -1 && !(fieldName in uischema && 'ui:widget' in uischema[fieldName] && uischema[fieldName]['ui:widget'] == 'textarea')"
+                                               :name="fieldName"
+                                               :value="field.default" 
+                                               :id="field.key" 
+                                               :label="field.title" 
+                                               :placeholder="field.placeholder" 
+                                               type="text">
+
+                                        <!-- Long text input (string) -->
+                                        <textarea v-if="['string'].indexOf(field.type) > -1 && (fieldName in uischema) && ('ui:widget' in uischema[fieldName]) && (uischema[fieldName]['ui:widget'] == 'textarea')"
+                                               :name="fieldName"
+                                               :value="field.default"
+                                               :id="field.key"
+                                               :label="field.title"
+                                               :placeholder="field.placeholder" 
+                                               type="text">
+                                        </textarea>
+
+                                        <!-- Numeric input (integer) -->
+                                        <input v-if="['integer'].indexOf(field.type) > -1"
+                                               :name="fieldName"
+                                               :value="field.default"
+                                               :id="field.key"
+                                               :label="field.title"
+                                               type="number">
+
+                                        <!-- File/Image upload (file) -->
+                                        <input v-if="['file'].indexOf(field.type) > -1"
+                                               :name="fieldName"
+                                               type="file" accept="image/*">
+
+
+                                        <!-- Field options -->
+                                        <div class="field-options grid-x grid-margin-x" v-show="fieldName == editingField">
+                                            <h5 class="small-12 cell">Edit field</h5>
+                                            <p class="small-12 medium-3 cell">
+                                                <label class="text-right middle" :for="fieldName + 'label'">Label</label>
+                                            </p>
+                                            <p class="small-12 medium-9 cell">
+                                                <input type="text" :name="fieldName + 'label'" v-model="field.title">
+                                            </p>
+                                            <p class="small-12 medium-3 cell">
+                                                <label class="text-right middle" :for="fieldName + 'default'">Default value</label>
+                                            </p>
+                                            <p class="small-12 medium-9 cell">
+                                                <input type="text" :name="fieldName + 'default'" v-model="field.default">
+                                            </p>
+                                            <p class="small-12 medium-3 cell">
+                                                <label class="text-right middle" :for="fieldName + 'default'">Placeholder</label>
+                                            </p>
+                                            <p class="small-12 medium-9 cell">
+                                              <input type="text" :name="fieldName + 'placeholder'" v-model="field.placeholder">
+                                            </p>
+                                            <p class="small-12 medium-9 medium-offset-3 cell">
+                                                <input type="checkbox" :value="fieldName" v-model="activeSlide.schema.required"><label :for="fieldName + 'required'">Required field?</label>
+                                            </p>
+                                            <p class="small-12 cell text-right">
+                                                <a class="button secondary" href="#" v-on:click="editingField = null" v-show="editingField == fieldName">Save and Close</a>
+                                            </p><!-- save slide-->
+                                        </div>
+                                    </div><!-- /.slide-content -->
+                                    <div class="field-actions small-1 medium-2 cell">
+                                        <ul class="menu simple">
+                                            <li><i class="fi-pencil" v-on:click="editingField = fieldName" v-show="editingField != fieldName"></i></li><!-- edit slide-->
+                                            <li>
+                                                <a href="#" v-on:click="removeField($event, fieldName)" v-show="editingField != fieldName"><i class="fi-trash"></i></a>
+                                            </li><!-- delete slide-->
+                                        </ul>
+                                    </div>
+
+
+                                </div><!-- /.slide-field -->
+                                </draggable>
+                                <div class="slide-navigation grid-x grid-padding-x">
+                                    <p class="small-10 small-offset-1 medium-8 medium-offset-2 cell text-right">
+                                        <a class="button hollow" href="#"
+                                           contenteditable @blur="ceEdit($event, activeSlide.schema, 'nextButtonLabel')" @keydown.enter="cePressEnter($event, activeSlide.schema, 'nextButtonLabel')"
+                                          >${ activeSlide.schema.nextButtonLabel }</a>
+
+                                    </p>
+                                </div>
+                      </div><!-- /.slide -->
+                      <!-- 
+                      </draggable>
+                      -->
+                      <!-- <input type="submit" value="Finish and submit" /> -->
+                      </form>
+                    </main><!-- /#slide-builder -->
+                    <div id="slide-editor-menu" class="cell medium-3 medium-cell-block-y">
+                        <div class="grid-container">
+                            <p><a class="button hollow expanded" href="#" v-on:click="addSlide($event)"><i class="fi-plus"></i> Add slide</a></p>
+                            <hr>
+                            <h5 class="cell">Add new field</h5>
+                            <ul class="grid-x grid-margin-x small-up-1 medium-up-3 text-center">
+                                <li class="cell"><a  class="button hollow disabled" href="#">
+                                  <img src="/static/img/field-icons/one-line-text.png" alt="One line text">
+                                  <span>One line text</span>
+                                </a></li>
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addTextInputField()">
+                                  <img src="/static/img/field-icons/text-input.png" alt="Text input">
+                                  <span>Text input</span>
+                                </a></li>
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addEmailInputField()">
+                                  <img src="/static/img/field-icons/email.png" alt="Email">
+                                  <span>Email</span>
+                                </a></li>
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addTextAreaField()">
+                                    <img src="/static/img/field-icons/comment-box.png" alt="Comments box">
+                                    <span>Comments box</span>
+                                </a></li>
+                                <li class="cell"><a class="button hollow disabled" href="#">
+                                    <img src="/static/img/field-icons/checkboxes.png" alt="Checkboxes">
+                                    <span>Checkboxes</span>
+                                </a></li>
+                                <li class="cell"><a class="button hollow disabled" href="#">
+                                    <img src="/static/img/field-icons/radio-buttons.png" alt="Radio buttons">
+                                    <span>Radio buttons</span>
+                                </a></li>
+                                <li class="cell"><a class="button hollow disabled" href="#">
+                                    <img src="/static/img/field-icons/dropdown.png" alt="Dropdown">
+                                    <span>Dropdown</span>
+                                </a></li>
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addFileUploadField()">
+                                    <img src="/static/img/field-icons/file-upload.png" alt="File upload"> 
+                                    <span>File upload</span>
+                                </a></li>
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addImageUploadField()">
+                                    <img src="/static/img/field-icons/image-upload.png" alt="Image upload">
+                                    <span>Image upload</span>
+                                </a></li>
+                                <li class="cell"><a class="button hollow disabled" href="#">
+                                    <img src="/static/img/field-icons/date-picker.png" alt="Date picker">
+                                    <span>Date picker</span>
+                                </a></li>
+                                <li class="cell"><a class="button hollow disabled" href="#">
+                                    <img src="/static/img/field-icons/e-signature.png" alt="E-signature">
+                                    <span>E-signature</span>
+                                </a></li>
+                            </ul>
+                        </div>
+                    </div><!-- /#slide-editor-menu -->
+                </div><!-- /.grid-x -->
+            </section><!-- /#slide-editor -->
+            <div id="slide-editor-actions" class="cell shrink footer medium-cell-block-container">
+                <div class="grid-x grid-margin-x">
+                    <ul class="menu align-right cell small-12 medium-7 medium-offset-2">
+                        <!--<li><a class="button hollow expanded" href=""><i class="fi-eye"></i> Preview</a></li>-->
+                        <li><a class="button expanded" href="">Save</a></li>
+                    </ul>
+                </div>
+            </div><!-- /#slide-editor-actions -->
+        </div><!-- /#editor.grid-y -->
+
+    <script>
+      var form_slug = "{{ form_slug }}";
+      console.log(form_slug);
+    </script>
+
+    <script src="/static/js/neweditor/vendor/jquery.js"></script>
+    <script src="/static/js/neweditor/vendor/foundation.js"></script>
+    <script src="/static/js/neweditor/vendor/vue.js"></script>
+    <script src="/static/js/neweditor/vendor/sortable.min.js"></script>
+    <script src="/static/js/neweditor/vendor/vuedraggable.umd.min.js"></script>
+    <script src="/static/js/neweditor/vendor/axios.js"></script>
+    <script src="/static/js/neweditor/widgets.js"></script>
+    <script src="/static/js/neweditor/app.js"></script>
+  </body>
+</html>
