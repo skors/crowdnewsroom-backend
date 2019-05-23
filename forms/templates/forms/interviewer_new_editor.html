@@ -171,6 +171,17 @@
                     <div id="slide-editor-menu" class="cell medium-3 medium-cell-block-y">
                         <div class="grid-container">
                             <p><a class="button hollow expanded" href="#" v-on:click="addSlide($event)"><i class="fi-plus"></i> Add slide</a></p>
+
+                            <p class="small-12 medium-3 cell">
+                                <label class="text-right middle" for="activeSlideSlug">Slide slug</label>
+                            </p>
+                            <p class="small-12 medium-9 cell">
+                                <input type="text" name="activeSlideSlug" v-model="activeSlide.schema.slug">
+                            </p>
+
+
+
+
                             <hr>
                             <h5 class="cell">Add new field</h5>
                             <ul class="grid-x grid-margin-x small-up-1 medium-up-3 text-center">
