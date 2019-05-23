@@ -122,7 +122,7 @@ class FormInstance extends Component {
 
           <a
             href="mailto:crowdnewsroom@correctiv.org?subject=Customization%20for%20Crowdnewsroom%20interviewer"
-            className="bx--btn bx--btn--primary"
+            className="bx--btn bx--btn--secondary"
           >
             {gettext('Contact CORRECTIV for customization')}
           </a>

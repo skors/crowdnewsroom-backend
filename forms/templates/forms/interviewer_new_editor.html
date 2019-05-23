@@ -65,7 +65,10 @@
                                   </div>
                                 </div>                                
                                 <draggable v-model="activeSlide.schema.properties.keys" handle=".drag-slide">
-                                <div class="slide-field grid-x grid-padding-x" v-bind:class="{'slide-field-edit': editingField == fieldName}" v-for="(field, fieldName) in activeSlide.schema.properties" :key="fieldName">
+                                <div class="slide-field grid-x grid-padding-x" 
+                                     v-bind:class="{'slide-field-edit': editingField == fieldName}" 
+                                     v-for="(field, fieldName) in activeSlide.schema.properties" 
+                                     v-bind:key="fieldName">
                                     <div class="drag-slide small-1 medium-2 cell">
                                         <span><i class="fi-list" v-show="editingField != fieldName"></i></span><!-- drag slide -->
                                     </div>
@@ -132,6 +135,15 @@
                                             </p>
                                             <p class="small-12 medium-9 cell">
                                               <input type="text" :name="fieldName + 'placeholder'" v-model="field.placeholder">
+                                            </p>
+                                            <p class="small-12 medium-3 cell">
+                                                <label class="text-right middle" :for="fieldName + 'slug'">Slug</label>
+                                            </p>
+                                            <p class="small-12 medium-9 cell">
+                                                <input type="text" 
+                                                       :name="fieldName + 'slug'" 
+                                                       :value="fieldName" 
+                                                       @change="updateFieldSlug($event, fieldName)">
                                             </p>
                                             <p class="small-12 medium-9 medium-offset-3 cell">
                                                 <input type="checkbox" :value="fieldName" v-model="activeSlide.schema.required"><label :for="fieldName + 'required'">Required field?</label>

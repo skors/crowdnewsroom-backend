@@ -126,18 +126,15 @@ var vm = new Vue({
       axios.get('/forms/forms/' + form_slug)
         .then(function (response) {
           vm.$set(vm.$data, 'investigationId',  response.data.investigation);
-          console.log(response.data);
           vm.$set(vm.$data, 'postUrl', '/forms/forms/' + vm.investigationId + '/form_instances?limit=1');
           vm.$set(vm.$data, 'doneUrl', '/forms/admin/investigations/' + inv_slug + '/interviewers/' + form_slug + '#/form_instance');
           var form = document.getElementById('editor-hidden-form');
-          console.log(vm.postUrl);
           axios.get(vm.postUrl)
             .then(function (response) {
               formjson = response.data.results[0].form_json;
               vm.$set(vm.$data, 'slides', response.data.results[0].form_json);
               vm.$set(vm.$data, 'uischema', response.data.results[0].ui_schema_json);
               vm.activeSlide = vm.slides[0];
-              console.log(form);
             })
             .catch(function (error) {
               this.message = "getFormData - I get null";
@@ -150,10 +147,11 @@ var vm = new Vue({
         .then(function (response) {
           if (response.status === 201) {
             window.location.href = vm.doneUrl;
+          } else {
+            console.log('Error posting form data!!');
+            console.log(response);
           }
-          console.log(response);
         });
-
     },
 
     removeSlide: function(ev, idx) {
@@ -179,13 +177,28 @@ var vm = new Vue({
     */
     removeField: function(ev, fieldName) {
       ev.preventDefault();
-      // remove field reference from slide
-      // this.model.slides[idx].fields.splice(this.model.slides[idx].fields.indexOf(fieldName), 1);
-      // remove the actual field object from model.properties
       delete this.activeSlide.schema.properties[fieldName];
     },
     updateRequiredField: function(ev, fieldName) {
       console.log(ev);
+    },
+    updateFieldSlug: function(ev, fieldName) {
+      var oldSlug = fieldName;
+      var newSlug = ev.target.value;
+      // go through properties and replace the key/value pair
+      // https://stackoverflow.com/a/54959591/122400
+      var o = this.activeSlide.schema.properties;
+      var new_o = {};
+      for (var i in o) {
+          if (i == oldSlug) {
+            new_o[newSlug] = o[oldSlug];
+          } else {
+            new_o[i] = o[i];
+          }
+      }
+      this.$set(this.activeSlide.schema, 'properties', new_o);
+      this.editingField = newSlug;
+      // TODO: Change slug in other places, e.g. UIschema and required
     },
 
     selectSlide: function(slide) {
@@ -319,50 +332,6 @@ var vm = new Vue({
             }
         ],
       });
-    },
-
-    addImage: function(bit) {
-      $input = $('#image-upload-form').find('input[name="file_source"]');
-      // set up form to handle submit event differently
-      $('#image-upload-form').submit(function (event) {
-        event.preventDefault();
-        var data = new FormData($('#image-upload-form').get(0));
-        $.ajax({
-          url: $(this).attr('action'),
-          type: $(this).attr('method'),
-          data: data,
-          cache: false,
-          processData: false,
-          contentType: false,
-          success: function(data) {
-            console.log("success!");
-            if (bit.type == 'text') {
-              bit.type = 'image';
-            }
-            bit.media_url = data.url;
-            // FIXME hack: we have to refresh the text field for the var to update
-            bit.text = bit.text + " ";
-            bit.text = bit.text.trim();
-          }
-        });
-        return false;
-      });
-      // when image field changes (file selected), submit form
-      $input.change( function() {
-        $('#image-upload-form').submit();
-      });
-
-      // now, simulate click on file upload field for user to pick image
-      $input.click();
-    },
-    removeImage: function(bit) {
-      delete bit.media_url;
-      if (bit.type == 'image') {
-        bit.type = 'text';
-      }
-      // FIXME hack: we have to refresh the text field for the var to update
-      bit.text = bit.text + " ";
-      bit.text = bit.text.trim();
     },
 
 
