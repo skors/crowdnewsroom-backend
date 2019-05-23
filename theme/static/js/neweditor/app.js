@@ -208,7 +208,8 @@ var vm = new Vue({
 
     addField: function(slug, data) {
       // TODO: check if slug exists, change if it does
-      this.activeSlide.schema.properties[slug] = data;
+      var uniqueSlug = slug + '-' + Math.floor(Math.random() * 100) + 100;  
+      this.$set(this.activeSlide.schema.properties, uniqueSlug, data);
     },
     addTextInputField: function() {
       this.addField("text-input", {
