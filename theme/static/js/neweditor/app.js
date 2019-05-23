@@ -234,10 +234,16 @@ var vm = new Vue({
         title: "Email",
       });
     },
+    addFileUploadField: function() {
+      this.addField("image-input", {
+        type: "file",
+        title: "Image upload",
+      });
+    },
     addImageUploadField: function() {
       this.addField("image-input", {
         type: "file",
-        title: "Image",
+        title: "File upload",
       });
     },
 

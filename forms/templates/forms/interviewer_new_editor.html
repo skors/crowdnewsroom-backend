@@ -99,7 +99,7 @@
                                         </textarea>
 
                                         <!-- Numeric input (integer) -->
-                                        <input v-if="['integer'].indexOf(field.type) > -1"
+                                        <input v-if="field.type == 'integer' || field.type == 'number'"
                                                :name="fieldName"
                                                :value="field.default"
                                                :id="field.key"
