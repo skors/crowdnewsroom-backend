@@ -82,7 +82,7 @@ urlpatterns = [
          InterviewerView.as_view(), name="admin_interviewer_new"),
     path('admin/investigations/<slug:investigation_slug>/interviewers/<slug:form_slug>',
          InterviewerView.as_view(), name="admin_interviewer_edit"),
-    path('admin/investigations/<slug:investigation_slug>/interviewers/editor/<slug:form_slug>',
+    path('admin/investigations/<slug:investigation_slug>/interviewers/<slug:form_slug>/editor',
          InterviewerEditorView.as_view(), name="admin_interviewer_edit_neweditor"),
 
     path('admin/investigations/<slug:investigation_slug>/forms/<slug:form_slug>/responses/batch_edit',

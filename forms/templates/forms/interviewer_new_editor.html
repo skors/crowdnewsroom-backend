@@ -20,12 +20,6 @@
         <div id="editor" class="grid-y medium-grid-frame">
         
           <!--
-            {{ form }}
-            {{ form.as_p }}
-            
-            <pre> {% filter force_escape %} {% debug %} {% endfilter %} </pre>
-
-
             <div id="campaign-nav" class="cell shrink header medium-cell-block-container">  
               <h2>${ model.title }</h2>
               <h3>${ model.description }</h3>
@@ -47,18 +41,11 @@
                             </li>
                             </draggable>
                         </ul>
-                        <!-- <p>Active slide: ${ activeSlide.schema.title }</p> -->
                         <!-- <p><a class="button hollow expanded" href="#" v-on:click="addSlide($event)"><i class="fi-plus"></i> Add slide</a></p> -->
                     </div><!-- /#slide-nav-->
                     <main id="slide-builder" class="cell medium-7 medium-cell-block-y">
                         <form action="" method="GET">      
                             <div class="slide grid-container">
-                              <!--
-                                <div class="cell small-12 button-group">
-                                    <a class="button hollow" href="#" v-if="!isFirstSlide" v-on:click="selectPrevSlide()"><i class="fi-arrow-left"></i> previous</a>
-                                    <a class="button hollow" href="#" v-if="!isLastSlide" v-on:click="selectNextSlide()">next <i class="fi-arrow-right"></i></a>
-                                </div>
-                              -->
                                 <div class="slide-field slide-title grid-x grid-padding-x">
                                   <div class="drag-slide small-1 medium-2 cell">
                                     <span><i class="fi-list"></i></span><!-- drag slide -->
@@ -238,17 +225,23 @@
             </section><!-- /#slide-editor -->
             <div id="slide-editor-actions" class="cell shrink footer medium-cell-block-container">
                 <div class="grid-x grid-margin-x">
+                  <form @submit.prevent="sendFormData" id="editor-hidden-form" :action="postUrl" method="POST">{% csrf_token %}
+                    <input type="hidden" name="form_json" :value="JSON.stringify(slides)">
+                    <input type="hidden" name="ui_schema_json" :value="JSON.stringify(uischema)">
                     <ul class="menu align-right cell small-12 medium-7 medium-offset-2">
                         <!--<li><a class="button hollow expanded" href=""><i class="fi-eye"></i> Preview</a></li>-->
-                        <li><a class="button expanded" href="">Save</a></li>
+                        <li><button type="submit">Save</a></li>
+                        <li><a href="#" v-on:click="sendFormData()">Save AJAX</a></li>
                     </ul>
                 </div>
             </div><!-- /#slide-editor-actions -->
         </div><!-- /#editor.grid-y -->
 
     <script>
+      // get form slug from the Django view and save it as a var
+      // so we can access it from the .js files
       var form_slug = "{{ form_slug }}";
-      console.log(form_slug);
+      var inv_slug = "{{ investigation_slug }}";
     </script>
 
     <script src="/static/js/neweditor/vendor/jquery.js"></script>

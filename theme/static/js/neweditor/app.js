@@ -95,6 +95,10 @@ var vm = new Vue({
     uischema: uischema,
     activeSlide: null,
     editingField: null,
+    formSlug: null,
+    investigationId: null,
+    postUrl: null,
+    doneUrl: null,
   },
   beforeMount: function() {
     this.activeSlide = this.slides[0];
@@ -121,23 +125,36 @@ var vm = new Vue({
       // form_slug is given in the HTML template, and set in a <script> tag there
       axios.get('/forms/forms/' + form_slug)
         .then(function (response) {
-          var id = response.data.investigation;
-          console.log(id);
-          axios.get('/forms/forms/' + id + '/form_instances?limit=1')
+          vm.$set(vm.$data, 'investigationId',  response.data.investigation);
+          console.log(response.data);
+          vm.$set(vm.$data, 'postUrl', '/forms/forms/' + vm.investigationId + '/form_instances?limit=1');
+          vm.$set(vm.$data, 'doneUrl', '/forms/admin/investigations/' + inv_slug + '/interviewers/' + form_slug + '#/form_instance');
+          var form = document.getElementById('editor-hidden-form');
+          console.log(vm.postUrl);
+          axios.get(vm.postUrl)
             .then(function (response) {
               formjson = response.data.results[0].form_json;
               vm.$set(vm.$data, 'slides', response.data.results[0].form_json);
-              // this.slides = response.data.results[0].form_json;
-              // this.uischema = response.data.results[0].ui_schema_json;
+              vm.$set(vm.$data, 'uischema', response.data.results[0].ui_schema_json);
               vm.activeSlide = vm.slides[0];
-              console.log(vm.slides);
+              console.log(form);
             })
             .catch(function (error) {
               this.message = "getFormData - I get null";
             });
           });
         },
+    sendFormData: function() {
+      var formData = new FormData(document.getElementById('editor-hidden-form'));
+      axios.post(this.postUrl, formData)
+        .then(function (response) {
+          if (response.status === 201) {
+            window.location.href = vm.doneUrl;
+          }
+          console.log(response);
+        });
 
+    },
 
     removeSlide: function(ev, idx) {
       ev.preventDefault();
