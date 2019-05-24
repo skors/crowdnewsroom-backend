@@ -177,7 +177,7 @@ var vm = new Vue({
     */
     removeField: function(ev, fieldName) {
       ev.preventDefault();
-      delete this.activeSlide.schema.properties[fieldName];
+      Vue.delete(this.activeSlide.schema.properties, fieldName);
     },
     updateRequiredField: function(ev, fieldName) {
       console.log(ev);
@@ -249,15 +249,17 @@ var vm = new Vue({
       });
     },
     addFileUploadField: function() {
-      this.addField("image-input", {
-        type: "file",
-        title: "Image upload",
+      this.addField("file-input", {
+        type: "string",
+        format: "data-url",
+        title: "File upload",
       });
     },
     addImageUploadField: function() {
       this.addField("image-input", {
-        type: "file",
-        title: "File upload",
+        type: "string",
+        format: "data-url",
+        title: "Image upload",
       });
     },
 
