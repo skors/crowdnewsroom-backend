@@ -335,10 +335,18 @@ var vm = new Vue({
     },
 
     removeOption: function(field, idx) {
-      field.items.enum.splice(idx, 1);
+      if ('items' in field) {
+        field.items.enum.splice(idx, 1);
+      } else {
+        field.enum.splice(idx, 1);
+      }
     },
     addOption: function(field) {
-      field.items.enum.push('New option');
+      if ('items' in field) {
+        field.items.enum.push('New option');
+      } else {
+        field.enum.push('New option');
+      }
     },
 
     ceEdit: function(ev, target, property) {
