@@ -92,6 +92,16 @@
                                                readonly
                                                type="text">
 
+                                        <!-- Email -->
+                                        <input v-if="field.type == 'string' && !getFieldWidget(fieldName) && field.format == 'email'"
+                                               :name="fieldName"
+                                               :value="field.default" 
+                                               :id="field.key" 
+                                               :label="field.title" 
+                                               :placeholder="field.placeholder" 
+                                               readonly
+                                               type="text">
+
                                         <!-- Long text input (string) -->
                                         <textarea v-if="field.type == 'string' && getFieldWidget(fieldName) == 'textarea'"
                                                :name="fieldName"
@@ -118,7 +128,7 @@
                                                type="file">
 
                                         <!-- Image upload -->
-                                        <input v-if="field.type == 'string' && field.format == 'data-url' && getFieldWidget(fieldName) == 'imageupload'"
+                                        <input v-if="field.type == 'string' && field.format == 'data-url' && getFieldWidget(fieldName) == 'imageUpload'"
                                                :name="fieldName"
                                                type="file" accept="image/*" capture="environment">
 
@@ -238,7 +248,7 @@
                             <hr>
                             <h5 class="cell">Add new field</h5>
                             <ul class="grid-x grid-margin-x small-up-1 medium-up-3 text-center">
-                                <li class="cell"><a  class="button hollow disabled" href="#">
+                                <li class="cell"><a  class="button hollow" href="#" v-on:click="addOneLineField()">
                                   <img src="/static/img/field-icons/one-line-text.png" alt="One line text">
                                   <span>One line text</span>
                                 </a></li>

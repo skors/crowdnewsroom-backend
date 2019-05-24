@@ -258,6 +258,13 @@ var vm = new Vue({
         title: "Text",
       });
     },
+    addOneLineField: function() {
+      this.addField("one-line", {
+        type: "string",
+        title: "Edit this field's title to change this text.",
+      }, {classNames: 'hidden-title',
+          'ui:widget': 'oneLineWidget'});
+    },
     addTextAreaField: function() {
       var slug = "text-area";
       this.addField(slug, {
@@ -284,7 +291,7 @@ var vm = new Vue({
         type: "string",
         format: "data-url",
         title: "Image upload",
-      }, {'ui:widget': 'imageupload'});
+      }, {'ui:widget': 'imageUpload'});
     },
 
     addCheckboxField: function() {
