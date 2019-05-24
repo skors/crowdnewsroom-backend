@@ -284,62 +284,6 @@ var vm = new Vue({
     },
 
 
-
-
-
-
-    removeBit: function(ev, index) {
-      ev.preventDefault();
-      this.tutorial_bits.splice(index, 1);
-    },
-    addTextBit: function() {
-      this.tutorial_bits.unshift({ type: "text", text: "New line" });
-    },
-    addQuestionChoice: function(bit) {
-      bit.choices.push({
-        "label": "Another choice",
-        "next": {
-          "type": "text",
-          "text": "You selected this choice, good!"
-        }
-      });
-    },
-    renderMarkdown: function(text) {
-      return jQuery.renderMarkdown(text, false, true);
-    },
-    removeQuestionChoice: function(ev, bit, choice) {
-      ev.preventDefault();
-      bit.choices = bit.choices.filter( function(el) {
-        return el.label !== choice.label;
-      });
-    },
-    addQuestionBit: function() {
-      this.tutorial_bits.unshift({ 
-        type: "question-tutorial", 
-        text: "What's the right answer?",
-        choices: [
-            {
-                "label": "Right",
-                "next": {
-                    "type": "text",
-                    "text": "Yes! You picked the right answer!"
-                }
-            },
-            {
-                "label": "Wrong",
-                "next": {
-                    "type": "text",
-                    "text": "No, 'Right' was the correct answer."
-                }
-            }
-        ],
-      });
-    },
-
-
-    captureSpace: function(ev) {
-      console.log(ev);
-    },
     buttonClicked: function(ev) {
       // this deals with the Space key firing the onClick event
       // we want it to add an actual space
@@ -352,24 +296,19 @@ var vm = new Vue({
     }
 
     /*
-    updateTutorialText: function(ev) {
-      // click Update in tutorial text form
-      ev.preventDefault();
-      this.$refs.tutorialFormStatus.innerText = "Saving...";
-      // catch form input values -- this ensures we also submit the csrf_token field
-      var postdata = {};
-      for (var i=0; i<ev.target.elements.length; i++) {
-        var el = ev.target.elements[i];
-        if (el.name) {
-          postdata[el.name] = el.value;
-        }
+    // catch form input values -- this ensures we also submit the csrf_token field
+    var postdata = {};
+    for (var i=0; i<ev.target.elements.length; i++) {
+      var el = ev.target.elements[i];
+      if (el.name) {
+        postdata[el.name] = el.value;
       }
-      this.$http.post(setTutorialURL, postdata).then(function (response) {
-        this.$refs.tutorialFormStatus.innerText = "Saved!";
-      }, function (response) {
-        this.$refs.tutorialFormStatus.innerText = "Error when saving :-(";
-      });
     }
+    this.$http.post(setTutorialURL, postdata).then(function (response) {
+      this.$refs.tutorialFormStatus.innerText = "Saved!";
+    }, function (response) {
+      this.$refs.tutorialFormStatus.innerText = "Error when saving :-(";
+    });
     */
   }
 });
