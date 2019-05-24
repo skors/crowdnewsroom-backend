@@ -199,6 +199,18 @@
                                                        :value="fieldName" 
                                                        @change="updateFieldSlug($event, fieldName)">
                                             </p>
+
+                                            <div class="small-12 medium-9 cell" v-if="field.type == 'array'">
+                                                <p class="multiple-fields" v-for="(option, idx) in field.items.enum">
+                                                    <input :name="option" type="text" v-model="field.items.enum[idx]">
+                                                    <i class="fi-x remove-field-option" v-on:click="removeOption(field, idx)"></i>
+                                                </p>
+                                                <p><a href="#" class="button hollow small" v-on:click="addOption(field)"><i class="fi-plus"></i> Add option</a></p>
+                                                </p>
+                                            </div>
+
+
+
                                             <p class="small-12 medium-9 medium-offset-3 cell">
                                                 <input type="checkbox" :value="fieldName" v-model="activeSlide.schema.required"><label :for="fieldName + 'required'">Required field?</label>
                                             </p>

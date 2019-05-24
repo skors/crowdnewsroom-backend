@@ -334,6 +334,13 @@ var vm = new Vue({
       });
     },
 
+    removeOption: function(field, idx) {
+      field.items.enum.splice(idx, 1);
+    },
+    addOption: function(field) {
+      field.items.enum.push('New option');
+    },
+
     ceEdit: function(ev, target, property) {
       // edit ContentEditable element
       this.$set(target, property, ev.target.innerText.replace(/\n/g, ' '));
