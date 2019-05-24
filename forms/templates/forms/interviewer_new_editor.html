@@ -83,22 +83,25 @@
                                         <!-- All field types -->
 
                                         <!-- Text input (string) -->
-                                        <input v-if="field.type == 'string'&& !(activeSlide.slug in uischema && 'ui:widget' in uischema[activeSlide.slug][fieldName] && uischema[activeSlide.slug][fieldName]['ui:widget'] == 'textarea')"
+                                        <input v-if="field.type == 'string' && !getFieldWidget(fieldName) && !field.enum && !field.format"
                                                :name="fieldName"
                                                :value="field.default" 
                                                :id="field.key" 
                                                :label="field.title" 
                                                :placeholder="field.placeholder" 
+                                               readonly
                                                type="text">
 
                                         <!-- Long text input (string) -->
-                                        <textarea v-if="['string'].indexOf(field.type) > -1 && (activeSlide.slug in uischema) && ('ui:widget' in uischema[activeSlide.slug][fieldName]) && (uischema[activeSlide.slug][fieldName]['ui:widget'] == 'textarea')"
+                                        <textarea v-if="field.type == 'string' && getFieldWidget(fieldName) == 'textarea'"
                                                :name="fieldName"
                                                :value="field.default"
                                                :id="field.key"
                                                :label="field.title"
                                                :placeholder="field.placeholder" 
-                                               type="text">
+                                               readonly
+                                               type="text"
+                                               style="height: auto;">
                                         </textarea>
 
                                         <!-- Numeric input (integer) -->
@@ -109,10 +112,51 @@
                                                :label="field.title"
                                                type="number">
 
-                                        <!-- File/Image upload (file) -->
-                                        <input v-if="['file'].indexOf(field.type) > -1"
+                                        <!-- File upload -->
+                                        <input v-if="field.type == 'string' && field.format == 'data-url' && !getFieldWidget(fieldName)"
                                                :name="fieldName"
-                                               type="file" accept="image/*">
+                                               type="file">
+
+                                        <!-- Image upload -->
+                                        <input v-if="field.type == 'string' && field.format == 'data-url' && getFieldWidget(fieldName) == 'imageupload'"
+                                               :name="fieldName"
+                                               type="file" accept="image/*" capture="environment">
+
+                                        <!-- Yes/No (boolean) -->
+
+                                        <!-- Checkboxes -->
+                                        <div class="checkboxes" v-if="field.type == 'array' && getFieldWidget(fieldName) == 'checkboxes'">
+                                          <div class="checkbox" v-for="option in field.items.enum">
+                                            <label>
+                                              <span>
+                                                <input :name="option" type="checkbox">
+                                                <span>${ option }</span>
+                                              </span>
+                                            </label>
+                                          </div>
+                                        </div>
+
+                                        <!-- Radio buttons -->
+                                        <fieldset class="large-5 cell" v-if="field.type == 'string' && getFieldWidget(fieldName) == 'radio'">
+                                          <div v-for="option in field.enum">
+                                            <input type="radio" :name="option" :value="option" :id="option"><label :for="option">${ option }</label>
+                                          </div>
+                                        </fieldset>
+
+                                        <!-- Dropdown -->
+                                        <select v-if="field.type == 'string' && field.enum && !getFieldWidget(fieldName)">
+                                          <option value="">Select one...</option>
+                                          <option v-for="option in field.enum" value="option">${ option }</option>
+                                        </select>
+
+                                        <!-- Date picker -->
+                                        <input v-if="field.type == 'string' && field.format == 'date'"
+                                               :name="fieldName"
+                                               :value="field.default" 
+                                               :id="field.key" 
+                                               :label="field.title" 
+                                               :placeholder="field.placeholder" 
+                                               type="date">
 
 
                                         <!-- Field options -->
@@ -191,9 +235,6 @@
                                 <input type="text" name="activeSlideSlug" v-model="activeSlide.schema.slug">
                             </p>
 
-
-
-
                             <hr>
                             <h5 class="cell">Add new field</h5>
                             <ul class="grid-x grid-margin-x small-up-1 medium-up-3 text-center">
@@ -213,15 +254,15 @@
                                     <img src="/static/img/field-icons/comment-box.png" alt="Comments box">
                                     <span>Comments box</span>
                                 </a></li>
-                                <li class="cell"><a class="button hollow disabled" href="#">
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addCheckboxField()">
                                     <img src="/static/img/field-icons/checkboxes.png" alt="Checkboxes">
                                     <span>Checkboxes</span>
                                 </a></li>
-                                <li class="cell"><a class="button hollow disabled" href="#">
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addRadioField()">
                                     <img src="/static/img/field-icons/radio-buttons.png" alt="Radio buttons">
                                     <span>Radio buttons</span>
                                 </a></li>
-                                <li class="cell"><a class="button hollow disabled" href="#">
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addDropdownField()">
                                     <img src="/static/img/field-icons/dropdown.png" alt="Dropdown">
                                     <span>Dropdown</span>
                                 </a></li>
@@ -233,7 +274,7 @@
                                     <img src="/static/img/field-icons/image-upload.png" alt="Image upload">
                                     <span>Image upload</span>
                                 </a></li>
-                                <li class="cell"><a class="button hollow disabled" href="#">
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addDateField()">
                                     <img src="/static/img/field-icons/date-picker.png" alt="Date picker">
                                     <span>Date picker</span>
                                 </a></li>

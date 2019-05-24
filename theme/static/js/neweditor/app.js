@@ -215,6 +215,23 @@ var vm = new Vue({
       this.$set(this.$data, 'activeSlide', slide);
     },
 
+    getFieldWidget: function(fieldName) {
+      // if a specific widget is specified in the UI Schema, return its name
+      if (!(this.activeSlide.schema.slug in this.uischema)) {
+        console.log('slide not in UIschema');
+        return null;
+      }
+      if (!(fieldName in this.uischema[this.activeSlide.schema.slug])) {
+        console.log('field not in UIschema');
+        return null;
+      }
+      if (!('ui:widget' in this.uischema[this.activeSlide.schema.slug][fieldName])) {
+        console.log('widget not in UIschema');
+        return null;
+      }
+      return this.uischema[this.activeSlide.schema.slug][fieldName]['ui:widget'];
+    },
+
     addField: function(slug, data, uischema) {
       // TODO: check if slug exists, change if it does
       slug = slug + '-' + Math.floor(Math.random() * 100) + 100;  
@@ -267,9 +284,48 @@ var vm = new Vue({
         type: "string",
         format: "data-url",
         title: "Image upload",
-      });
+      }, {'ui:widget': 'imageupload'});
     },
 
+    addCheckboxField: function() {
+      this.addField("checkbox", {
+        type: "array",
+        title: "Multiple choice",
+        items: {
+          type: "string",
+          enum: ["One", "Two", "Three"]
+        },
+        uniqueItems: true
+      }, {"ui:widget": "checkboxes"});
+    },
+    addRadioField: function() {
+      this.addField("radio", {
+        type: "string",
+        title: "Radio choice",
+        enum: ["Crowd", "News", "Room"]
+      }, {"ui:widget": "radio"});
+    },
+    addDropdownField: function() {
+      this.addField("dropdown", {
+        type: "string",
+        title: "Dropdown choice",
+        enum: ["Crowd", "News", "Room"]
+      });
+    },
+    addDateField: function() {
+      this.addField("date", {
+        type: "string",
+        format: "date",
+        title: "Date",
+      });
+    },
+    addBooleanField: function() {
+      this.addField("date", {
+        type: "string",
+        format: "date",
+        title: "Date",
+      });
+    },
 
     ceEdit: function(ev, target, property) {
       // edit ContentEditable element
