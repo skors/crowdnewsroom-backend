@@ -83,7 +83,7 @@
                                         <!-- All field types -->
 
                                         <!-- Text input (string) -->
-                                        <input v-if="['string'].indexOf(field.type) > -1 && !(fieldName in uischema && 'ui:widget' in uischema[fieldName] && uischema[fieldName]['ui:widget'] == 'textarea')"
+                                        <input v-if="field.type == 'string'&& !(activeSlide.slug in uischema && 'ui:widget' in uischema[activeSlide.slug][fieldName] && uischema[activeSlide.slug][fieldName]['ui:widget'] == 'textarea')"
                                                :name="fieldName"
                                                :value="field.default" 
                                                :id="field.key" 
@@ -92,7 +92,7 @@
                                                type="text">
 
                                         <!-- Long text input (string) -->
-                                        <textarea v-if="['string'].indexOf(field.type) > -1 && (fieldName in uischema) && ('ui:widget' in uischema[fieldName]) && (uischema[fieldName]['ui:widget'] == 'textarea')"
+                                        <textarea v-if="['string'].indexOf(field.type) > -1 && (activeSlide.slug in uischema) && ('ui:widget' in uischema[activeSlide.slug][fieldName]) && (uischema[activeSlide.slug][fieldName]['ui:widget'] == 'textarea')"
                                                :name="fieldName"
                                                :value="field.default"
                                                :id="field.key"

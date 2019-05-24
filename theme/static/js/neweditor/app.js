@@ -58,11 +58,7 @@ var formschema = [
   },
 ];
 
-var uischema = {
-  bio: {
-    "ui:widget": "textarea"
-  }
-};
+var uischema = {};
 
 var defaultNewField = {
   "title": "New field",
@@ -219,10 +215,25 @@ var vm = new Vue({
       this.$set(this.$data, 'activeSlide', slide);
     },
 
-    addField: function(slug, data) {
+    addField: function(slug, data, uischema) {
       // TODO: check if slug exists, change if it does
-      var uniqueSlug = slug + '-' + Math.floor(Math.random() * 100) + 100;  
-      this.$set(this.activeSlide.schema.properties, uniqueSlug, data);
+      slug = slug + '-' + Math.floor(Math.random() * 100) + 100;  
+      this.$set(this.activeSlide.schema.properties, slug, data);
+
+      if (uischema) {
+        if (!(this.activeSlide.schema.slug in this.uischema)) {
+          // slide is not in uischema
+          this.uischema[this.activeSlide.schema.slug] = {};
+        }
+
+        if (!(slug in this.uischema[this.activeSlide.schema.slug])) {
+          // field is not yet in uischema
+          this.$set(this.uischema[this.activeSlide.schema.slug], slug, uischema);
+        } else {
+          // field is in uischema, merge objects
+          Object.assign(this.uischema[this.activeSlide.schema.slug][slug], uischema);
+        }
+      }
     },
     addTextInputField: function() {
       this.addField("text-input", {
@@ -235,11 +246,7 @@ var vm = new Vue({
       this.addField(slug, {
         type: "string",
         title: "Comments",
-      });
-      if (!(slug in this.model.ui)) {
-        this.model.ui[slug] = {};
-      }
-      this.model.ui[slug]['ui:widget'] = 'textarea';
+      }, {'ui:widget': 'textarea'});
     },
     addEmailInputField: function() {
       this.addField("email-input", {
