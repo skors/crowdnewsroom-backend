@@ -59,18 +59,16 @@ h1, h2, h3, h4, h5, h6,
 }
 
 h1, h2, h3, h4, h5, h6,
-.h1, .h2, .h3, .h4, .h5, .h6 {
-  font-weight: 300;
-}
+.h1, .h2, .h3, .h4, .h5, .h6 { font-weight: 300; }
 
-.slide .slide-title h1, h2 {
-    font-weight: 900;
-}
+.slide .slide-title h1, h2 { font-weight: 900; }
 
 button,
-.button {
-    font-weight: 500;
-}
+.button { font-weight: 500; }
+
+button:focus,
+.button:focus { outline: 0; }
+
 
 .button.hollow:focus, .button.hollow:hover {
     background-color: #d4e0e8;
@@ -84,6 +82,10 @@ button,
 .button.secondary:hover, .button.secondary:focus {
     background-color: #5e5e5e;
     color: #fefefe;
+}
+
+p.oneline {
+    text-align: center;
 }
 
 /* Layout
@@ -152,7 +154,7 @@ button,
 }
 
 #slide-nav li {
-    padding: 0 0.5em;
+    padding: 0 0.25rem;
 }
 
 #slide-nav li a.slide-thumbnail {
@@ -204,6 +206,8 @@ button,
 #slide-nav li a.slide-thumbnail strong {
     line-height: 1;
     margin-bottom: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #slide-nav .slide-options i {
@@ -291,6 +295,34 @@ button,
     cursor: grab; /* move */
 }
 
+.slide-field .slide-content > label:first-child {
+    font-size: 100%;
+    font-weight: 500;
+}
+
+.slide-field .checkboxes > div,
+.slide-field .radio-buttons > div {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: baseline;
+}
+
+.slide-field .checkboxes div:last-child,
+.slide-field .radio-buttons div:last-child {
+    margin-bottom: 1rem;
+}
+
+.slide-field .checkboxes > div label,
+.slide-field .radio-buttons > div label {
+    line-height: 1.3;
+}
+
+.slide-field .checkboxes input[type="checkbox"],
+.slide-field .radio-buttons input[type="radio"] {
+    margin-bottom: 0;
+    display: inline-block;
+}
+
 
 /* Field edit mode */
 
@@ -298,6 +330,12 @@ button,
 .slide-field-edit:hover {
     background-color: #eee;
     cursor: default;
+}
+
+.slide-field-edit .field-options > h5 {
+    border-bottom: 1px solid #cacaca;
+    margin-bottom: 1rem;
+    padding-bottom: 0.25rem;
 }
 
 .slide-field-edit .field-options > h5 {
@@ -373,12 +411,18 @@ button,
 
 /* End field edit mode */
 
-.slide .slide-navigation a.button  {
+.slide .slide-navigation a.button {
     cursor: text;
+    min-height: 2.4375rem;
+}
+
+.slide .slide-navigation a.button > span {
+    display: block;
 }
 
 #slide-editor-menu ul {
     list-style-type: none;
+    margin-left: -.9375rem;
 }
 
 #slide-editor-menu li .button {
@@ -390,6 +434,7 @@ button,
     border-color: #ccc;
     background-color: #fff;
     border-radius: 6px;
+    padding: 0.85em 0.5rem;
 }
 
 #slide-editor-menu li .button:hover {
