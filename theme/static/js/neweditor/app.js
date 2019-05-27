@@ -213,7 +213,17 @@ var vm = new Vue({
       }
       this.$set(this.activeSlide.schema, 'properties', new_o);
       this.editingField = newSlug;
-      // TODO: Change slug in other places, e.g. UIschema and required
+      if (this.getFieldWidget(oldSlug)) {
+        // get value from old field
+        var val = this.uischema[this.activeSlide.schema.slug][oldSlug];
+        // create new property with new slug
+        this.$set(this.uischema[this.activeSlide.schema.slug], newSlug, val);
+        // delete the old property
+        delete this.uischema[this.activeSlide.schema.slug][oldSlug];
+      }
+      if (this.activeSlide.schema.required && oldSlug in this.activeSlide.schema.required) {
+        this.activeSlide.schema.required.splice(this.activeSlide.schema.required.indexOf(oldSlug), 1, newSlug);
+      }
     },
 
     onFieldReorder: function(ev) {
