@@ -44,7 +44,6 @@
                         <!-- <p><a class="button hollow expanded" href="#" v-on:click="addSlide($event)"><i class="fi-plus"></i> Add slide</a></p> -->
                     </div><!-- /#slide-nav-->
                     <main id="slide-builder" class="cell medium-7 medium-cell-block-y">
-                        <form action="" method="GET">      
                             <div class="slide grid-container">
                                 <div class="slide-field slide-title grid-x grid-padding-x">
                                   <div class="drag-slide small-1 medium-2 cell">
@@ -64,7 +63,7 @@
                                     </p>
                                   </div>
                                 </div>                                
-                                <draggable v-model="activeSlide.schema.properties.keys" handle=".drag-slide">
+                                <draggable v-model="activeFieldKeys" handle=".drag-slide" @end="onFieldReorder">
                                 <div class="slide-field grid-x grid-padding-x" 
                                      v-bind:class="{'slide-field-edit': editingField == fieldName}" 
                                      v-for="(field, fieldName) in activeSlide.schema.properties" 
@@ -245,10 +244,9 @@
                                             </li><!-- delete slide-->
                                         </ul>
                                     </div>
-
+                                </draggable>
 
                                 </div><!-- /.slide-field -->
-                                </draggable>
                                 <div class="slide-navigation grid-x grid-padding-x">
                                     <p class="small-10 small-offset-1 medium-8 medium-offset-2 cell text-right">
                                         <a class="button hollow" href="#"
@@ -258,11 +256,6 @@
                                     </p>
                                 </div>
                       </div><!-- /.slide -->
-                      <!-- 
-                      </draggable>
-                      -->
-                      <!-- <input type="submit" value="Finish and submit" /> -->
-                      </form>
                     </main><!-- /#slide-builder -->
                     <div id="slide-editor-menu" class="cell medium-3 medium-cell-block-y">
                         <div class="grid-container">
@@ -336,6 +329,7 @@
                         <!--<li><a class="button hollow expanded" href=""><i class="fi-eye"></i> Preview</a></li>-->
                         <li><button type="submit">Save and Close</a></li>
                     </ul>
+                  </form>
                 </div>
             </div><!-- /#slide-editor-actions -->
         </div><!-- /#editor.grid-y -->
