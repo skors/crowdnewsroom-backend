@@ -4,66 +4,6 @@ $(document).foundation()
 
 // TODO:
 // - required fields
-// - nextButtonLabel
-
-var formschema = [
-  {
-    schema: {
-      title: "First slide",
-      description: "We start here!",
-      slug: "first-slide", 
-      type: "object",
-      properties: {
-        firstName: {
-          type: "string",
-          title: "First name",
-          default: "Chuck"
-        },
-        lastName: {
-          type: "string",
-          title: "Last name"
-        },
-      } 
-    },
-    conditions: {}
-  },
-  {
-    schema: {
-      title: "Second slide",
-      description: "We end here!",
-      slug: "second-slide", 
-      "final": true,
-      type: "object",
-      properties: {
-        age: {
-          type: "integer",
-          title: "Age"
-        },
-        bio: {
-          type: "string",
-          title: "Bio"
-        },
-        photo: {
-          type: "file",
-          title: "Photo",
-        },
-        telephone: {
-          type: "string",
-          title: "Telephone",
-          minLength: 10
-        },
-      } 
-    },
-    conditions: {}
-  },
-];
-
-var uischema = {};
-
-var defaultNewField = {
-  "title": "New field",
-  "type": "string"
-};
 
 var defaultNewSlide = {
   schema: {
@@ -74,9 +14,10 @@ var defaultNewSlide = {
     properties: {
       dummy: {
         type: "string",
-        title: "Dummy field"
+        title: "New field"
       },
-    } 
+    },
+    nextButtonLabel: "This is the 'Next' button, click me to edit the text",
   },
   conditions: {}
 };
@@ -87,8 +28,8 @@ var vm = new Vue({
   name: 'editor',
   delimiters: ['${', '}'],
   data: {
-    slides: formschema,
-    uischema: uischema,
+    slides: [],
+    uischema: [],
     activeSlide: null,
     activeFieldKeys: [],
     editingField: null,
