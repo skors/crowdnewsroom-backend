@@ -72,7 +72,7 @@
                                         <span><i class="fi-list" v-show="editingField != fieldName"></i></span><!-- drag slide -->
                                     </div>
                                     <div class="slide-content small-10 medium-8 cell">
-                                        <label class="control-label" :for="fieldName" v-if="field.title">
+                                        <label class="control-label" :for="fieldName" v-if="field.title && getFieldWidget(fieldName) != 'oneLineWidget'">
                                           ${ field.title }
                                         </label>
                                         <label class="control-label" :for="fieldName" v-if="!field.title">
@@ -80,6 +80,12 @@
                                         </label>
 
                                         <!-- All field types -->
+
+                                        <!-- Oneline (only text) -->
+                                        <p class="oneline"
+                                           v-if="getFieldWidget(fieldName) == 'oneLineWidget'"
+                                           >${ field.title }
+                                        </p>
 
                                         <!-- Text input (string) -->
                                         <input v-if="field.type == 'string' && !getFieldWidget(fieldName) && !field.enum && !field.format"
