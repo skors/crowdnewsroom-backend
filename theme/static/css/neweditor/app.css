@@ -1,0 +1,428 @@
+/* Colours
+
+Dark blue: #204763 or rgba(32, 71, 99, 0.6)
+Text color: #152934
+Light blue: #d4e0e8;
+
+*/
+
+/* Typography
+*/
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 300;
+  font-style: normal;
+  src: local('Roboto Light'), url('../assets/fonts/Robot/Roboto-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 400;
+  font-style: normal;
+  src: local('Roboto Regular'), url('../assets/fonts/Robot/Roboto-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 500;
+  font-style: normal;
+  src: local('Roboto Medium'), url('../assets/fonts/Robot/Roboto-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 700;
+  font-style: normal;
+  src: local('Roboto Bold'), url('../assets/fonts/Robot/Roboto-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 900;
+  font-style: normal;
+  src: local('Roboto Black'), url('../assets/fonts/Robot/Roboto-Black.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 400;
+  font-style: italic;
+  src: local('Roboto Italic'), url('../assets/fonts/Robot/Roboto-Italic.ttf') format('truetype');
+}
+
+body,
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: "Roboto", DejaVu Sans, "Helvetica Neue", Helvetica, sans-serif;
+  color: #152934;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-weight: 300;
+}
+
+.slide .slide-title h1, h2 {
+    font-weight: 900;
+}
+
+button,
+.button {
+    font-weight: 500;
+}
+
+.button.hollow:focus, .button.hollow:hover {
+    background-color: #d4e0e8;
+}
+
+.button.secondary { /* Foundation default for .secondary */
+    background-color: #767676;
+    color: #fefefe;
+}
+
+.button.secondary:hover, .button.secondary:focus {
+    background-color: #5e5e5e;
+    color: #fefefe;
+}
+
+/* Layout
+*/
+
+#main-nav.top-bar, #main-nav.top-bar ul {
+    background-color: #204763;
+}
+
+#main-nav.top-bar a { color: #fff; }
+
+#campaign-nav {
+    position: relative;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+#campaign-nav .grid-x {
+    padding-top: 0.75em;
+}
+
+#campaign-nav strong,
+#campaign-nav .menu {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#campaign-nav strong {
+    line-height: 1;
+    text-decoration: none;
+    display: block;
+    padding: .7rem 1rem;
+}
+
+#campaign-nav .menu a {
+    color: #666;
+    background-color: transparent;
+    border-bottom: 2px solid #fff;
+}
+
+#campaign-nav .menu .active a {
+    color: #204763;
+    border-bottom: 2px solid #204763;
+}
+
+#slide-editor {
+    background-color: #eeeeee;
+}
+
+#slide-editor > .grid-x:first-child {
+    min-height: 100%;
+}
+
+#slide-nav,
+#slide-builder,
+#slide-editor-menu {
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+#slide-nav ul {
+    list-style-type: none;
+    margin-left: 0;
+    background-color: #fff;
+    padding: 1em 0;
+}
+
+#slide-nav li {
+    padding: 0 0.5em;
+}
+
+#slide-nav li a.slide-thumbnail {
+    display: flex;
+    align-items: center;
+    color: #ccc;
+    padding: 1em;
+    border: 2px solid #ccc;
+    margin-bottom: 1em;
+    position: relative;
+    min-height: 5em;
+}
+
+#slide-nav li.active a.slide-thumbnail::before,
+#slide-nav li.active a.slide-thumbnail::after {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 100%;
+    width: 0;
+    height: 0;
+    border-style: solid;
+}
+
+#slide-nav li.active a.slide-thumbnail::after {
+    top: calc(50% - 6px);
+    border-color: transparent transparent transparent #d4e0e8;
+    border-width: 6px;
+}
+
+#slide-nav li.active a.slide-thumbnail::before {
+    top: calc(50% - 9px);
+    border-color: transparent transparent transparent #204763;
+    border-width: 9px;
+}
+
+#slide-nav li a.slide-thumbnail:hover {
+    color: rgba(32, 71, 99, 0.6);
+    border: 2px solid rgba(32, 71, 99, 0.6);
+}
+
+#slide-nav li.active a.slide-thumbnail,
+#slide-nav li.active a.slide-thumbnail:hover {
+    color: #204763;
+    background-color: #d4e0e8;
+    border: 2px solid #204763;
+}
+
+#slide-nav li a.slide-thumbnail strong {
+    line-height: 1;
+    margin-bottom: 0;
+}
+
+#slide-nav .slide-options i {
+    font-size: 18px;
+    color: #999;
+}
+
+#slide-nav .slide-options i:hover {
+    color: #204763;
+}
+
+#slide-nav .slide-options .slide-list-handle {
+    cursor: grab; /* move */
+}
+
+#slide-builder {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+
+.slide {
+    background-color: #fff;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    margin-bottom: 2rem;
+}
+
+#slide-builder .slide:not(:last-child) {
+    margin-bottom: 1em;
+}
+
+.slide-title .slide-content > *:focus {
+    border-bottom: 1px solid #204763;
+    outline: 0;
+}
+
+.slide-field {
+    padding-top: 1.5em;
+    padding-bottom: 1.5em;
+}
+
+.slide-field label {
+    color: #152934;
+}
+
+.slide-field input,
+.slide-field textarea {
+    border-color: #ddd; /* rgba(32, 71, 99, 0.6)*/
+    box-shadow: 0 0 0 transparent;
+}
+
+.slide .slide-field:first-child {
+    padding-top: 3em;
+}
+
+.slide .slide-field:last-child {
+    padding-bottom: 3em;
+}
+.slide-field:hover {
+    background-color: #f0f0f0;
+}
+
+.slide-field .drag-slide > span,
+.slide-field .field-actions > ul {
+    display: none;
+}
+
+.slide-field:hover .drag-slide > span,
+.slide-field:hover .field-actions > ul {
+    display: flex;
+}
+
+.slide-field .drag-slide span i,
+.slide-field .field-actions li i {
+    font-size: 24px;
+    color: #999;
+}
+
+.slide-field .field-actions li:hover i {
+    color: #204763;
+    cursor: pointer;
+}
+
+.slide-field .drag-slide span {
+    color: #204763;
+    cursor: grab; /* move */
+}
+
+
+/* Field edit mode */
+
+.slide-field-edit,
+.slide-field-edit:hover {
+    background-color: #eee;
+    cursor: default;
+}
+
+.slide-field-edit .field-options > h5 {
+    border-bottom: 1px solid #cacaca;
+    margin-bottom: 1rem;
+    padding-bottom: 0.25rem;
+}
+
+.slide-field-edit .field-options p {
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.slide-field-edit .field-options label {
+    color: inherit;
+    font-size: 85%;
+    line-height: 1;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.slide-field-edit .field-options .help-tooltip {
+    color: #999;
+    line-height: 1;
+    font-style: normal;
+    border-bottom: 0;
+    display: inline-block;
+}
+
+.slide-field-edit .field-options .help-tooltip:hover {
+    color: #444;
+}
+
+.slide-field-edit .field-options .help-tooltip i {
+    vertical-align: middle;
+    font-size: 24px;
+    margin-left: 0.25rem;
+}
+
+.slide-field-edit .field-options input[type="text"],
+.slide-field-edit .field-options textarea {
+    color: inherit;
+    font-size: 85%;
+    line-height: 1;
+    height: 2rem;
+    border-color: #8a8a8a;
+}
+
+.slide-field-edit .field-options .help-text {
+    color: #666;
+    display: block;
+    margin-top: -0.75rem;
+    margin-bottom: 1rem;
+}
+
+.slide-field-edit .field-options .multiple-fields {
+    display: flex;
+    align-items: baseline;
+}
+
+.slide-field-edit .field-options .multiple-fields input {
+    margin-right: 0.5rem;
+}
+
+.slide-field-edit .field-options .multiple-fields .remove-field-option {
+    color: #999;
+}
+
+.slide-field-edit .field-options .multiple-fields .remove-field-option:hover {
+    color: #204763;
+    cursor: pointer;
+}
+
+/* End field edit mode */
+
+.slide .slide-navigation a.button  {
+    cursor: text;
+}
+
+#slide-editor-menu ul {
+    list-style-type: none;
+}
+
+#slide-editor-menu li .button {
+    display: block;
+    width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+    color: #666;
+    border-color: #ccc;
+    background-color: #fff;
+    border-radius: 6px;
+}
+
+#slide-editor-menu li .button:hover {
+    color: #204763;
+    border-color: #204763;
+}
+
+#slide-editor-menu li .button img,
+#slide-editor-menu li .button span {
+    display: block;
+}
+
+#slide-editor-menu li .button img {
+    max-height: 60px;
+    margin: 0 auto;
+}
+
+#slide-editor-menu li .button span {
+    margin-top: 0.5em;
+}
+
+#slide-editor-actions.footer {
+    padding-top: 0.75em;
+    padding-bottom: 0.75em;
+    position: relative;
+    box-shadow: 0px -2px 6px rgba(0, 0, 0, 0.3);
+}
+
+#slide-editor-actions.footer li {
+    min-width: 8em;
+}
+
+#slide-editor-actions.footer li:not(:last-child) { margin-right: 1em; }
+
+
+
