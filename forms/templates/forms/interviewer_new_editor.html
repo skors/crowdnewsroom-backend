@@ -30,7 +30,7 @@
                 <div class="grid-x grid-padding-x">
                     <div id="slide-nav" class="cell medium-2 medium-cell-block-y">
                         <ul>
-                            <draggable v-model="slides" handle=".slide-list-handle">
+                            <draggable v-model="slides" handle=".slide-list-handle" @update="correctFinalSlide()">
                             <li class="slide-list-item grid-x" v-for="(slide, slideIdx) in slides"
                                 v-bind:class="{ active: slide == activeSlide }">
                                 <ul class="slide-options cell small-3 medium-2">

@@ -101,6 +101,7 @@ var vm = new Vue({
   },
   mounted: function() {
     this.getFormData();
+    this.correctFinalSlide();
   },
   computed: {
     isFirstSlide: function() {
@@ -153,6 +154,7 @@ var vm = new Vue({
     removeSlide: function(ev, idx) {
       ev.preventDefault();
       this.slides.splice(idx, 1);
+      this.correctFinalSlide();
     },
     addSlide: function(ev) {
       ev.preventDefault();
@@ -160,6 +162,16 @@ var vm = new Vue({
       var newSlide = Object.assign({}, defaultNewSlide);
       this.slides.push(newSlide);
       this.selectSlide(newSlide);
+      this.correctFinalSlide();
+    },
+    correctFinalSlide: function() {
+      for (var idx in this.slides) {
+        var slide = this.slides[idx];
+        if ("final" in slide) {
+            delete slide.final;
+        }           
+      }
+      this.slides[this.slides.length-1].final = true;
     },
     /*
     addFieldToSlide: function(ev, idx) {
@@ -218,15 +230,12 @@ var vm = new Vue({
     getFieldWidget: function(fieldName) {
       // if a specific widget is specified in the UI Schema, return its name
       if (!(this.activeSlide.schema.slug in this.uischema)) {
-        console.log('slide not in UIschema');
         return null;
       }
       if (!(fieldName in this.uischema[this.activeSlide.schema.slug])) {
-        console.log('field not in UIschema');
         return null;
       }
       if (!('ui:widget' in this.uischema[this.activeSlide.schema.slug][fieldName])) {
-        console.log('widget not in UIschema');
         return null;
       }
       return this.uischema[this.activeSlide.schema.slug][fieldName]['ui:widget'];
