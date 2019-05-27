@@ -213,7 +213,10 @@
                                                        @change="updateFieldSlug($event, fieldName)">
                                             </p>
                                             
-                                            <div class="small-12 medium-9 medium-offset-3 cell" v-if="field.type == 'array'">
+                                            <p class="small-12 medium-3 cell text-right"><!-- should be visible only for radio buttons and checkboxes -->
+                                                <label>Options</label>
+                                            </p>
+                                            <div class="small-12 medium-9 cell" v-if="field.type == 'array'">
                                                 <p class="multiple-fields" v-for="(option, idx) in field.items.enum">
                                                     <input :name="option" type="text" v-model="field.items.enum[idx]">
                                                     <i class="fi-x remove-field-option" v-on:click="removeOption(field, idx)"></i>
