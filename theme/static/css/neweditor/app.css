@@ -59,18 +59,16 @@ h1, h2, h3, h4, h5, h6,
 }
 
 h1, h2, h3, h4, h5, h6,
-.h1, .h2, .h3, .h4, .h5, .h6 {
-  font-weight: 300;
-}
+.h1, .h2, .h3, .h4, .h5, .h6 { font-weight: 300; }
 
-.slide .slide-title h1, h2 {
-    font-weight: 900;
-}
+.slide .slide-title h1, h2 { font-weight: 900; }
 
 button,
-.button {
-    font-weight: 500;
-}
+.button { font-weight: 500; }
+
+button:focus,
+.button:focus { outline: 0; }
+
 
 .button.hollow:focus, .button.hollow:hover {
     background-color: #d4e0e8;
@@ -152,7 +150,7 @@ button,
 }
 
 #slide-nav li {
-    padding: 0 0.5em;
+    padding: 0 0.25rem;
 }
 
 #slide-nav li a.slide-thumbnail {
@@ -204,6 +202,8 @@ button,
 #slide-nav li a.slide-thumbnail strong {
     line-height: 1;
     margin-bottom: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #slide-nav .slide-options i {
@@ -373,12 +373,18 @@ button,
 
 /* End field edit mode */
 
-.slide .slide-navigation a.button  {
+.slide .slide-navigation a.button {
     cursor: text;
+    min-height: 2.4375rem;
+}
+
+.slide .slide-navigation a.button > span {
+    display: inline-block;
 }
 
 #slide-editor-menu ul {
     list-style-type: none;
+    margin-left: -.9375rem;
 }
 
 #slide-editor-menu li .button {
@@ -390,6 +396,7 @@ button,
     border-color: #ccc;
     background-color: #fff;
     border-radius: 6px;
+    padding: 0.85em 0.5rem;
 }
 
 #slide-editor-menu li .button:hover {
