@@ -90,6 +90,7 @@ var vm = new Vue({
     slides: formschema,
     uischema: uischema,
     activeSlide: null,
+    activeFieldKeys: [],
     editingField: null,
     formSlug: null,
     investigationId: null,
@@ -132,6 +133,9 @@ var vm = new Vue({
               vm.$set(vm.$data, 'slides', response.data.results[0].form_json);
               vm.$set(vm.$data, 'uischema', response.data.results[0].ui_schema_json);
               vm.activeSlide = vm.slides[0];
+              vm.$set(vm.$data, 'activeFieldKeys', Object.keys(vm.activeSlide.schema.properties));
+              console.log(vm.activeSlide);
+              console.log(vm.activeFieldKeys);
             })
             .catch(function (error) {
               this.message = "getFormData - I get null";
@@ -139,11 +143,14 @@ var vm = new Vue({
           });
         },
     sendFormData: function() {
+      this.editingField = null;
       var formData = new FormData(document.getElementById('editor-hidden-form'));
+      console.log(formData);
       axios.post(this.postUrl, formData)
         .then(function (response) {
           if (response.status === 201) {
-            window.location.href = vm.doneUrl;
+            // window.location.href = vm.doneUrl;
+            console.log(JSON.stringify(vm.slides[0].schema.properties));
           } else {
             console.log('Error posting form data!!');
             console.log(response);
@@ -209,6 +216,15 @@ var vm = new Vue({
       // TODO: Change slug in other places, e.g. UIschema and required
     },
 
+    onFieldReorder: function(ev) {
+      var updatedProperties = {};
+      for (var prop in this.activeFieldKeys) {
+        var value = this.activeSlide.schema.properties[this.activeFieldKeys[prop]];
+        updatedProperties[this.activeFieldKeys[prop]] = value;
+      }
+      this.$set(this.activeSlide.schema, 'properties', updatedProperties);
+      console.log(JSON.stringify(this.slides[0].schema.properties));
+    },
     selectSlide: function(slide) {
       this.$set(this.$data, 'activeSlide', slide);
     },

@@ -44,7 +44,6 @@
                         <!-- <p><a class="button hollow expanded" href="#" v-on:click="addSlide($event)"><i class="fi-plus"></i> Add slide</a></p> -->
                     </div><!-- /#slide-nav-->
                     <main id="slide-builder" class="cell medium-7 medium-cell-block-y">
-                        <form action="" method="GET">      
                             <div class="slide grid-container">
                                 <div class="slide-field slide-title grid-x grid-padding-x">
                                   <div class="drag-slide small-1 medium-2 cell">
@@ -64,7 +63,7 @@
                                     </p>
                                   </div>
                                 </div>                                
-                                <draggable v-model="activeSlide.schema.properties.keys" handle=".drag-slide">
+                                <draggable v-model="activeFieldKeys" handle=".drag-slide" @end="onFieldReorder">
                                 <div class="slide-field grid-x grid-padding-x" 
                                      v-bind:class="{'slide-field-edit': editingField == fieldName}" 
                                      v-for="(field, fieldName) in activeSlide.schema.properties" 
@@ -73,7 +72,7 @@
                                         <span><i class="fi-list" v-show="editingField != fieldName"></i></span><!-- drag slide -->
                                     </div>
                                     <div class="slide-content small-10 medium-8 cell">
-                                        <label class="control-label" :for="fieldName" v-if="field.title">
+                                        <label class="control-label" :for="fieldName" v-if="field.title && getFieldWidget(fieldName) != 'oneLineWidget'">
                                           ${ field.title }
                                         </label>
                                         <label class="control-label" :for="fieldName" v-if="!field.title">
@@ -81,6 +80,12 @@
                                         </label>
 
                                         <!-- All field types -->
+
+                                        <!-- Oneline (only text) -->
+                                        <p class="oneline"
+                                           v-if="getFieldWidget(fieldName) == 'oneLineWidget'"
+                                           >${ field.title }
+                                        </p>
 
                                         <!-- Text input (string) -->
                                         <input v-if="field.type == 'string' && !getFieldWidget(fieldName) && !field.enum && !field.format"
@@ -245,10 +250,9 @@
                                             </li><!-- delete slide-->
                                         </ul>
                                     </div>
-
+                                </draggable>
 
                                 </div><!-- /.slide-field -->
-                                </draggable>
                                 <div class="slide-navigation grid-x grid-padding-x">
                                     <p class="small-10 small-offset-1 medium-8 medium-offset-2 cell text-right">
                                         <a class="button hollow" href="#"
@@ -258,11 +262,6 @@
                                     </p>
                                 </div>
                       </div><!-- /.slide -->
-                      <!-- 
-                      </draggable>
-                      -->
-                      <!-- <input type="submit" value="Finish and submit" /> -->
-                      </form>
                     </main><!-- /#slide-builder -->
                     <div id="slide-editor-menu" class="cell medium-3 medium-cell-block-y">
                         <div class="grid-container">
