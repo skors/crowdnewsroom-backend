@@ -80,6 +80,14 @@ class FormInstance extends Component {
     this.state = { ...props.formInstance }
   }
 
+  get urlParams() {
+    const pattern = /investigations\/([\w-]+)\/interviewers\/?([\w-]+)?/
+    const [match, investigationSlug, formSlug] = window.location.pathname.match(
+      pattern
+    )
+    return { investigationSlug, formSlug }
+  }
+
   render() {
     return (
       <div>
@@ -106,8 +114,15 @@ class FormInstance extends Component {
           }}
         >
           <a
-            href="mailto:crowdnewsroom@correctiv.org?subject=Customization%20for%20Crowdnewsroom%20interviewer"
+            href={this.urlParams.formSlug + '/editor'}
             className="bx--btn bx--btn--primary"
+          >
+            {gettext('Open in Interview Editor')}
+          </a>
+
+          <a
+            href="mailto:crowdnewsroom@correctiv.org?subject=Customization%20for%20Crowdnewsroom%20interviewer"
+            className="bx--btn bx--btn--secondary"
           >
             {gettext('Contact CORRECTIV for customization')}
           </a>

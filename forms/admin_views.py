@@ -506,3 +506,8 @@ class InterviewerView(InvestigationAuthMixin, TemplateView, BreadCrumbMixin):
                      kwargs={"investigation_slug": investigation.slug})),
             (form_name, "#")
         ]
+
+
+class InterviewerEditorView(InterviewerView):
+    template_name = "forms/interviewer_new_editor.html"
+    permission_required = "admin_investigation"
