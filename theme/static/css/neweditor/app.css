@@ -84,6 +84,10 @@ button:focus,
     color: #fefefe;
 }
 
+p.oneline {
+    text-align: center;
+}
+
 /* Layout
 */
 
@@ -291,6 +295,28 @@ button:focus,
     cursor: grab; /* move */
 }
 
+.slide-field .checkboxes,
+.slide-field .radio-buttons {
+}
+
+.slide-field .checkboxes > div,
+.slide-field .radio-buttons > div {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: baseline;
+}
+
+.slide-field .checkboxes > div label,
+.slide-field .radio-buttons > div label {
+    line-height: 1.3;
+}
+
+.slide-field .checkboxes input[type="checkbox"],
+.slide-field .radio-buttons input[type="radio"] {
+    margin-bottom: 0;
+    display: inline-block;
+}
+
 
 /* Field edit mode */
 
@@ -379,7 +405,7 @@ button:focus,
 }
 
 .slide .slide-navigation a.button > span {
-    display: inline-block;
+    display: block;
 }
 
 #slide-editor-menu ul {

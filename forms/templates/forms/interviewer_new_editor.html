@@ -142,17 +142,13 @@
                                         <!-- Checkboxes -->
                                         <div class="checkboxes" v-if="field.type == 'array' && getFieldWidget(fieldName) == 'checkboxes'">
                                           <div class="checkbox" v-for="option in field.items.enum">
-                                            <label>
-                                              <span>
-                                                <input :name="option" type="checkbox">
-                                                <span>${ option }</span>
-                                              </span>
-                                            </label>
+                                            <input :name="option" type="checkbox">
+                                            <label>${ option }</label>
                                           </div>
                                         </div>
 
                                         <!-- Radio buttons -->
-                                        <fieldset class="large-5 cell" v-if="field.type == 'string' && getFieldWidget(fieldName) == 'radio'">
+                                        <fieldset class="radio-buttons" v-if="field.type == 'string' && getFieldWidget(fieldName) == 'radio'">
                                           <div v-for="option in field.enum">
                                             <input type="radio" :name="option" :value="option" :id="option"><label :for="option">${ option }</label>
                                           </div>
@@ -177,8 +173,8 @@
                                         <!-- Field options -->
                                         <div class="field-options grid-x grid-margin-x" v-show="fieldName == editingField">
                                             <h5 class="small-12 cell">Edit field</h5>
-                                            <p class="small-12 medium-3 cell">
-                                                <label class="text-right middle" :for="fieldName + 'label'">Label</label>
+                                            <p class="small-12 medium-3 cell text-right">
+                                                <label class="middle" :for="fieldName + 'label'">Label</label>
                                                 <span data-tooltip class="help-tooltip" title="Look! Help text! It can be as long as needed since it's on a tooltip. Oh yes!">
                                                   <i class="fi-info"></i>
                                                 </span>
@@ -186,8 +182,8 @@
                                             <p class="small-12 medium-9 cell">
                                                 <input type="text" :name="fieldName + 'label'" v-model="field.title">
                                             </p>
-                                            <p class="small-12 medium-3 cell">
-                                                <label class="text-right middle" :for="fieldName + 'default'">Default value</label>
+                                            <p class="small-12 medium-3 cell text-right">
+                                                <label class="middle" :for="fieldName + 'default'">Default value</label>
                                                 <span data-tooltip class="help-tooltip" title="Look! Help text! It can be as long as needed since it's on a tooltip. Oh yes!">
                                                   <i class="fi-info"></i>
                                                 </span>
@@ -195,8 +191,8 @@
                                             <p class="small-12 medium-9 cell">
                                                 <input type="text" :name="fieldName + 'default'" v-model="field.default">
                                             </p>
-                                            <p class="small-12 medium-3 cell">
-                                                <label class="text-right middle" :for="fieldName + 'default'">Placeholder</label>
+                                            <p class="small-12 medium-3 cell text-right">
+                                                <label class="middle" :for="fieldName + 'default'">Placeholder</label>
                                                 <span data-tooltip class="help-tooltip" title="Look! Help text! It can be as long as needed since it's on a tooltip. Oh yes!">
                                                   <i class="fi-info"></i>
                                                 </span>
@@ -204,8 +200,8 @@
                                             <p class="small-12 medium-9 cell">
                                               <input type="text" :name="fieldName + 'placeholder'" v-model="field.placeholder">
                                             </p>
-                                            <p class="small-12 medium-3 cell">
-                                                <label class="text-right middle" :for="fieldName + 'slug'">Slug</label>
+                                            <p class="small-12 medium-3 cell text-right">
+                                                <label class="middle" :for="fieldName + 'slug'">Slug</label>
                                                 <span data-tooltip class="help-tooltip" title="Look! Help text! It can be as long as needed since it's on a tooltip. Oh yes!">
                                                   <i class="fi-info"></i>
                                                 </span>
@@ -216,7 +212,10 @@
                                                        :value="fieldName" 
                                                        @change="updateFieldSlug($event, fieldName)">
                                             </p>
-
+                                            
+                                            <p class="small-12 medium-3 cell text-right">
+                                                <label>Options</label>
+                                            </p>
                                             <div class="small-12 medium-9 cell" v-if="field.type == 'array'">
                                                 <p class="multiple-fields" v-for="(option, idx) in field.items.enum">
                                                     <input :name="option" type="text" v-model="field.items.enum[idx]">
