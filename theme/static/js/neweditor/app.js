@@ -232,7 +232,7 @@ var vm = new Vue({
         var value = this.activeSlide.schema.properties[this.activeFieldKeys[prop]];
         updatedProperties[this.activeFieldKeys[prop]] = value;
       }
-      this.$set(this.activeSlide.schema, 'properties', updatedProperties);
+      // this.$set(this.activeSlide.schema, 'properties', updatedProperties);
       console.log(JSON.stringify(this.slides[0].schema.properties));
     },
     selectSlide: function(slide) {
