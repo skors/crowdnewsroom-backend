@@ -102,7 +102,7 @@ class FormInstance extends Component {
 
         <p>
           {gettext(
-            'If you would like to tweak it, you can either contact CORRECTIV to make changes for you or you can enable expert mode.'
+            'You can edit the questions and other details in our interactive editor. If you run into problems, contact Correctiv for help with customising your interviewer.'
           )}
         </p>
 
@@ -127,9 +127,6 @@ class FormInstance extends Component {
             {gettext('Contact CORRECTIV for customization')}
           </a>
 
-          <Button onClick={this.props.toggleExpertMode} kind="secondary">
-            {gettext('Edit in expert mode')}
-          </Button>
         </div>
       </div>
     )

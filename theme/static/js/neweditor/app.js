@@ -4,66 +4,6 @@ $(document).foundation()
 
 // TODO:
 // - required fields
-// - nextButtonLabel
-
-var formschema = [
-  {
-    schema: {
-      title: "First slide",
-      description: "We start here!",
-      slug: "first-slide", 
-      type: "object",
-      properties: {
-        firstName: {
-          type: "string",
-          title: "First name",
-          default: "Chuck"
-        },
-        lastName: {
-          type: "string",
-          title: "Last name"
-        },
-      } 
-    },
-    conditions: {}
-  },
-  {
-    schema: {
-      title: "Second slide",
-      description: "We end here!",
-      slug: "second-slide", 
-      "final": true,
-      type: "object",
-      properties: {
-        age: {
-          type: "integer",
-          title: "Age"
-        },
-        bio: {
-          type: "string",
-          title: "Bio"
-        },
-        photo: {
-          type: "file",
-          title: "Photo",
-        },
-        telephone: {
-          type: "string",
-          title: "Telephone",
-          minLength: 10
-        },
-      } 
-    },
-    conditions: {}
-  },
-];
-
-var uischema = {};
-
-var defaultNewField = {
-  "title": "New field",
-  "type": "string"
-};
 
 var defaultNewSlide = {
   schema: {
@@ -74,9 +14,10 @@ var defaultNewSlide = {
     properties: {
       dummy: {
         type: "string",
-        title: "Dummy field"
+        title: "New field"
       },
-    } 
+    },
+    nextButtonLabel: "This is the 'Next' button, click me to edit the text",
   },
   conditions: {}
 };
@@ -87,8 +28,8 @@ var vm = new Vue({
   name: 'editor',
   delimiters: ['${', '}'],
   data: {
-    slides: formschema,
-    uischema: uischema,
+    slides: [],
+    uischema: [],
     activeSlide: null,
     activeFieldKeys: [],
     editingField: null,
@@ -213,7 +154,17 @@ var vm = new Vue({
       }
       this.$set(this.activeSlide.schema, 'properties', new_o);
       this.editingField = newSlug;
-      // TODO: Change slug in other places, e.g. UIschema and required
+      if (this.getFieldWidget(oldSlug)) {
+        // get value from old field
+        var val = this.uischema[this.activeSlide.schema.slug][oldSlug];
+        // create new property with new slug
+        this.$set(this.uischema[this.activeSlide.schema.slug], newSlug, val);
+        // delete the old property
+        delete this.uischema[this.activeSlide.schema.slug][oldSlug];
+      }
+      if (this.activeSlide.schema.required && oldSlug in this.activeSlide.schema.required) {
+        this.activeSlide.schema.required.splice(this.activeSlide.schema.required.indexOf(oldSlug), 1, newSlug);
+      }
     },
 
     onFieldReorder: function(ev) {
@@ -222,7 +173,7 @@ var vm = new Vue({
         var value = this.activeSlide.schema.properties[this.activeFieldKeys[prop]];
         updatedProperties[this.activeFieldKeys[prop]] = value;
       }
-      this.$set(this.activeSlide.schema, 'properties', updatedProperties);
+      // this.$set(this.activeSlide.schema, 'properties', updatedProperties);
       console.log(JSON.stringify(this.slides[0].schema.properties));
     },
     selectSlide: function(slide) {
