@@ -33,7 +33,7 @@
                             <draggable v-model="slides" handle=".slide-list-handle" @update="correctFinalSlide()">
                             <li class="slide-list-item grid-x" v-for="(slide, slideIdx) in slides"
                                 v-bind:class="{ active: slide == activeSlide }">
-                                <ul class="slide-options cell small-3 medium-2">
+                                <ul class="slide-options text-center cell small-3 medium-2">
                                     <li><span class="slide-list-handle" aria-hidden="true"><i class="fi-list"></i> <em class="show-for-sr">move</em></span></li>
                                     <li><a href="#" aria-hidden="true" v-on:click="removeSlide($event, slideIdx)"><i class="fi-trash"></i> <em class="show-for-sr">delete</em></a></li>
                                 </ul>
@@ -266,18 +266,16 @@
                     </main><!-- /#slide-builder -->
                     <div id="slide-editor-menu" class="cell medium-3 medium-cell-block-y">
                         <div class="grid-container">
-                            <p><a class="button hollow expanded" href="#" v-on:click="addSlide($event)"><i class="fi-plus"></i> Add slide</a></p>
-
-                            <p class="small-12 medium-3 cell">
-                                <label class="text-right middle" for="activeSlideSlug">Slide slug</label>
+                            <p>
+                                <label for="activeSlideSlug">Slide slug
+                                    <input type="text" name="activeSlideSlug" v-model="activeSlide.schema.slug">
+                                </label>
                             </p>
-                            <p class="small-12 medium-9 cell">
-                                <input type="text" name="activeSlideSlug" v-model="activeSlide.schema.slug">
-                            </p>
-
                             <hr>
-                            <h5 class="cell">Add new field</h5>
-                            <ul class="grid-x grid-margin-x small-up-1 medium-up-3 text-center">
+                            <p><a class="button hollow expanded" href="#" v-on:click="addSlide($event)"><i class="fi-plus"></i> Add slide</a></p>
+                            <hr>
+                            <h5>Add new field</h5>
+                            <ul class="grid-x grid-padding-x small-up-1 medium-up-2 large-up-3 text-center">
                                 <li class="cell"><a  class="button hollow" href="#" v-on:click="addOneLineField()">
                                   <img src="/static/img/field-icons/one-line-text.png" alt="One line text">
                                   <span>One line text</span>
@@ -328,15 +326,14 @@
                 </div><!-- /.grid-x -->
             </section><!-- /#slide-editor -->
             <div id="slide-editor-actions" class="cell shrink footer medium-cell-block-container">
-                <div class="grid-x grid-margin-x">
-                  <form @submit.prevent="sendFormData" id="editor-hidden-form" :action="postUrl" method="POST">{% csrf_token %}
+                <form @submit.prevent="sendFormData" id="editor-hidden-form" class="grid-x grid-margin-x" :action="postUrl" method="POST">{% csrf_token %}
                     <input type="hidden" name="form_json" :value="JSON.stringify(slides)">
                     <input type="hidden" name="ui_schema_json" :value="JSON.stringify(uischema)">
                     <ul class="menu align-right cell small-12 medium-7 medium-offset-2">
                         <!--<li><a class="button hollow expanded" href=""><i class="fi-eye"></i> Preview</a></li>-->
-                        <li><button type="submit">Save and Close</a></li>
+                        <li><button class="button" type="submit">Save and Close</a></li>
                     </ul>
-                </div>
+                </form>
             </div><!-- /#slide-editor-actions -->
         </div><!-- /#editor.grid-y -->
 
