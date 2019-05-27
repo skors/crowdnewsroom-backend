@@ -295,8 +295,9 @@ p.oneline {
     cursor: grab; /* move */
 }
 
-.slide-field .checkboxes,
-.slide-field .radio-buttons {
+.slide-field .slide-content > label:first-child {
+    font-size: 100%;
+    font-weight: 500;
 }
 
 .slide-field .checkboxes > div,
@@ -304,6 +305,11 @@ p.oneline {
     margin-top: 0.5rem;
     display: flex;
     align-items: baseline;
+}
+
+.slide-field .checkboxes div:last-child,
+.slide-field .radio-buttons div:last-child {
+    margin-bottom: 1rem;
 }
 
 .slide-field .checkboxes > div label,
@@ -324,6 +330,12 @@ p.oneline {
 .slide-field-edit:hover {
     background-color: #eee;
     cursor: default;
+}
+
+.slide-field-edit .field-options > h5 {
+    border-bottom: 1px solid #cacaca;
+    margin-bottom: 1rem;
+    padding-bottom: 0.25rem;
 }
 
 .slide-field-edit .field-options > h5 {
