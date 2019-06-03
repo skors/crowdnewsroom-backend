@@ -20,7 +20,17 @@ var defaultNewSlide = {
     nextButtonLabel: "This is the 'Next' button, click me to edit the text",
   },
   conditions: {}
-};
+}
+var loadingSlide = {
+  schema: {
+    title: "Loading...",
+    slug: "loading", 
+    type: "object",
+    properties: {},
+    //nextButtonLabel: "This is the 'Next' button, click me to edit the text",
+  },
+  conditions: {}
+};;
 
 
 var vm = new Vue({
@@ -30,7 +40,7 @@ var vm = new Vue({
   data: {
     slides: [],
     uischema: [],
-    activeSlide: null,
+    activeSlide: loadingSlide,
     activeFieldKeys: [],
     editingField: null,
     formSlug: null,
@@ -38,23 +48,23 @@ var vm = new Vue({
     postUrl: null,
     doneUrl: null,
   },
-  beforeMount: function() {
-    this.activeSlide = this.slides[0];
-  },
   mounted: function() {
     this.getFormData();
-    this.correctFinalSlide();
   },
   computed: {
     isFirstSlide: function() {
-      if (this.slides.indexOf(this.activeSlide) === 0) {
-        return true;
+      if (this.slides && this.activeSlide) {
+        if (this.slides.indexOf(this.activeSlide) === 0) {
+          return true;
+        }
       }
       return false;
     },
     isLastSlide: function() {
-      if (this.slides.indexOf(this.activeSlide) == this.slides.length - 1) {
-        return true;
+      if (this.slides && this.activeSlide) {
+        if (this.slides.indexOf(this.activeSlide) == this.slides.length - 1) {
+          return true;
+        }
       }
       return false;
     }
@@ -75,6 +85,7 @@ var vm = new Vue({
               vm.$set(vm.$data, 'uischema', response.data.results[0].ui_schema_json);
               vm.activeSlide = vm.slides[0];
               vm.$set(vm.$data, 'activeFieldKeys', Object.keys(vm.activeSlide.schema.properties));
+              this.correctFinalSlide();
               console.log(vm.activeSlide);
               console.log(vm.activeFieldKeys);
             })
@@ -83,15 +94,16 @@ var vm = new Vue({
             });
           });
         },
-    sendFormData: function() {
+    sendFormData: function(close) {
       this.editingField = null;
       var formData = new FormData(document.getElementById('editor-hidden-form'));
-      console.log(formData);
       axios.post(this.postUrl, formData)
         .then(function (response) {
           if (response.status === 201) {
-            // window.location.href = vm.doneUrl;
             console.log(JSON.stringify(vm.slides[0].schema.properties));
+            if (close) {
+              window.location.href = vm.doneUrl;
+            }
           } else {
             console.log('Error posting form data!!');
             console.log(response);
@@ -108,6 +120,7 @@ var vm = new Vue({
       ev.preventDefault();
       // make a deep copy of the default new slide
       var newSlide = Object.assign({}, defaultNewSlide);
+      var slideSlug = 'slide-' + Math.floor(Math.random() * 100) + 100;  
       this.slides.push(newSlide);
       this.selectSlide(newSlide);
       this.correctFinalSlide();
@@ -173,8 +186,8 @@ var vm = new Vue({
         var value = this.activeSlide.schema.properties[this.activeFieldKeys[prop]];
         updatedProperties[this.activeFieldKeys[prop]] = value;
       }
-      // this.$set(this.activeSlide.schema, 'properties', updatedProperties);
-      console.log(JSON.stringify(this.slides[0].schema.properties));
+      this.$set(this.activeSlide.schema, 'properties', updatedProperties);
+      console.log(JSON.stringify(this.slides));
     },
     selectSlide: function(slide) {
       this.$set(this.$data, 'activeSlide', slide);
