@@ -77,6 +77,8 @@ class FormInstanceSerializer(ModelSerializer):
         view = self.context.get("view")
 
         form = get_object_or_404(Form, id=view.kwargs.get("form_id"))
+        form.is_simple = view.request.data.get('is_simple', True)
+        form.save()
 
         latest_form_instance = FormInstance.get_latest_for_form(form.slug)
         next_version = 1 if not latest_form_instance else latest_form_instance.version + 1

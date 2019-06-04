@@ -511,3 +511,7 @@ class FormInstanceTemplate(models.Model):
         default=_("Thank you for participating in a crowdnewsroom investigation!"))
     redirect_url_template = models.TextField(
         default="https://forms.crowdnewsroom.org")
+    is_simple = models.BooleanField(default=False)  # if `True`, this form is editable via the frontend form builder
+
+    def __str__(self):
+        return self.name
