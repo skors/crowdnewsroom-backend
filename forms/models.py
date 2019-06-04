@@ -241,6 +241,7 @@ class Form(models.Model, UniqueSlugMixin):
                             validators=[validators.validate_slug, validate_slug_stricter])
     status = models.CharField(max_length=1, choices=STATUSES, default='D')
     investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
+    is_simple = models.BooleanField(default=False)  # if `True`, this form is editable via the frontend form builder
 
     def __str__(self):
         return self.name
@@ -307,6 +308,10 @@ class FormInstance(models.Model):
     @property
     def json_properties(self):
         return set(self.flat_schema["properties"].keys())
+
+    @property
+    def is_simple(self):
+        return self.form.is_simple
 
 
 class FormResponse(models.Model):

@@ -60,7 +60,33 @@ class InvestigationDetail(generics.RetrieveUpdateDestroyAPIView):
 class FormInstanceSerializer(ModelSerializer):
     class Meta:
         model = FormInstance
-        fields = "__all__"
+        fields = (
+            "form_json",
+            "ui_schema_json",
+            "version",
+            "form",
+            "priority_fields",
+            "email_template",
+            "email_template_html",
+            "is_simple",
+            "redirect_url_template"
+        )
+        read_only_fields = ("form", "version", "is_simple")
+
+    def create(self, validated_data, *args, **kwargs):
+        view = self.context.get("view")
+
+        form = get_object_or_404(Form, id=view.kwargs.get("form_id"))
+
+        latest_form_instance = FormInstance.get_latest_for_form(form.slug)
+        next_version = 1 if not latest_form_instance else latest_form_instance.version + 1
+
+        form_instance = FormInstance(**validated_data)
+        form_instance.form = form
+        form_instance.version = next_version
+        form_instance.save()
+
+        return form_instance
 
 
 class FormInstanceDetail(generics.RetrieveAPIView):
@@ -463,28 +489,6 @@ class TagEditDelete(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tag
     serializer_class = TagSerializer
     permission_classes = (IsAuthenticated, CanEditInvestigation)
-
-
-class FormInstanceSerializer(ModelSerializer):
-    class Meta:
-        model = FormInstance
-        fields = "__all__"
-        read_only_fields = ("form", "version")
-
-    def create(self, validated_data, *args, **kwargs):
-        view = self.context.get("view")
-
-        form = get_object_or_404(Form, id=view.kwargs.get("form_id"))
-
-        latest_form_instance = FormInstance.get_latest_for_form(form.slug)
-        next_version = 1 if not latest_form_instance else latest_form_instance.version + 1
-
-        form_instance = FormInstance(**validated_data)
-        form_instance.form = form
-        form_instance.version = next_version
-        form_instance.save()
-
-        return form_instance
 
 
 class FormInstancePermissions(DjangoObjectPermissions):

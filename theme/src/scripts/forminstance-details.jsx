@@ -91,7 +91,7 @@ class FormInstance extends Component {
   render() {
     return (
       <div>
-        <h2> Your Interviewer </h2>
+        <h2>{gettext('Your Interviewer')}</h2>
         <p>
           {gettext(
             'You can check below how your form is looking and behaving now.'
@@ -126,7 +126,6 @@ class FormInstance extends Component {
           >
             {gettext('Contact CORRECTIV for customization')}
           </a>
-
         </div>
       </div>
     )
