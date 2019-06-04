@@ -1,4 +1,4 @@
-$(document).foundation()
+$(document).foundation();
 
 // Vue.http.options.emulateJSON = true;
 
@@ -9,7 +9,7 @@ var defaultNewSlide = {
   schema: {
     title: "New slide",
     description: "I'm a new slide, fill me!",
-    slug: "new-slide", 
+    slug: "new-slide",
     type: "object",
     properties: {
       dummy: {
@@ -20,11 +20,12 @@ var defaultNewSlide = {
     nextButtonLabel: "This is the 'Next' button, click me to edit the text",
   },
   conditions: {}
-}
+};
+
 var loadingSlide = {
   schema: {
     title: "Loading...",
-    slug: "loading", 
+    slug: "loading",
     type: "object",
     properties: {},
     //nextButtonLabel: "This is the 'Next' button, click me to edit the text",
@@ -44,7 +45,7 @@ var vm = new Vue({
     activeFieldKeys: [],
     editingField: null,
     formSlug: null,
-    investigationId: null,
+    formId: null,
     postUrl: null,
     doneUrl: null,
   },
@@ -74,8 +75,8 @@ var vm = new Vue({
       // form_slug is given in the HTML template, and set in a <script> tag there
       axios.get('/forms/forms/' + form_slug)
         .then(function (response) {
-          vm.$set(vm.$data, 'investigationId',  response.data.investigation);
-          vm.$set(vm.$data, 'postUrl', '/forms/forms/' + vm.investigationId + '/form_instances?limit=1');
+          vm.$set(vm.$data, 'formId',  response.data.id);
+          vm.$set(vm.$data, 'postUrl', '/forms/forms/' + vm.formId + '/form_instances?limit=1');
           vm.$set(vm.$data, 'doneUrl', '/forms/admin/investigations/' + inv_slug + '/interviewers/' + form_slug + '#/form_instance');
           var form = document.getElementById('editor-hidden-form');
           axios.get(vm.postUrl)
@@ -120,7 +121,7 @@ var vm = new Vue({
       ev.preventDefault();
       // make a deep copy of the default new slide
       var newSlide = Object.assign({}, defaultNewSlide);
-      var slideSlug = 'slide-' + Math.floor(Math.random() * 100) + 100;  
+      var slideSlug = 'slide-' + Math.floor(Math.random() * 100) + 100;
       this.slides.push(newSlide);
       this.selectSlide(newSlide);
       this.correctFinalSlide();
@@ -130,14 +131,14 @@ var vm = new Vue({
         var slide = this.slides[idx];
         if ("final" in slide) {
             delete slide.final;
-        }           
+        }
       }
       this.slides[this.slides.length-1].final = true;
     },
     /*
     addFieldToSlide: function(ev, idx) {
       ev.preventDefault();
-      var fieldSlug = 'field-' + Math.floor(Math.random() * 100) + 100;  
+      var fieldSlug = 'field-' + Math.floor(Math.random() * 100) + 100;
       // make a deep copy of the default new field
       var newField = Object.assign({}, defaultNewField);
       this.model.properties[fieldSlug] = newField;
@@ -193,8 +194,8 @@ var vm = new Vue({
       this.$set(this.$data, 'activeSlide', slide);
     },
     selectSlideByTitle: function(slideTitle) {
-      var result = this.model.slides.find(function( slide ) { 
-        return slide.title === slideTitle; 
+      var result = this.model.slides.find(function( slide ) {
+        return slide.title === slideTitle;
       });
       this.$set(this.$data, 'activeSlide', slide);
     },
@@ -223,7 +224,7 @@ var vm = new Vue({
 
     addField: function(slug, data, uischema) {
       // TODO: check if slug exists, change if it does
-      slug = slug + '-' + Math.floor(Math.random() * 100) + 100;  
+      slug = slug + '-' + Math.floor(Math.random() * 100) + 100;
       this.$set(this.activeSlide.schema.properties, slug, data);
 
       if (uischema) {
