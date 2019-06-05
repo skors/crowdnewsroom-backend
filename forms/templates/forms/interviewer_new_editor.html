@@ -137,6 +137,11 @@
                                                type="file" accept="image/*" capture="environment">
 
                                         <!-- Yes/No (boolean) -->
+                                        <div class="checkboxes" v-if="field.type == 'boolean'">
+                                          <div class="checkbox">
+                                            <input :name="fieldName" type="checkbox">
+                                          </div>
+                                        </div>
 
                                         <!-- Checkboxes -->
                                         <div class="checkboxes" v-if="field.type == 'array' && getFieldWidget(fieldName) == 'checkboxes'">
@@ -288,6 +293,10 @@
                                 <li class="cell"><a class="button hollow" href="#" v-on:click="addTextAreaField()">
                                     <img src="/static/img/field-icons/comment-box.png" alt="Comments box">
                                     <span>Comments box</span>
+                                </a></li>
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addBooleanField()">
+                                    <img src="/static/img/field-icons/comment-box.png" alt="Yes/No field">
+                                    <span>Yes/No</span>
                                 </a></li>
                                 <li class="cell"><a class="button hollow" href="#" v-on:click="addCheckboxField()">
                                     <img src="/static/img/field-icons/checkboxes.png" alt="Checkboxes">
