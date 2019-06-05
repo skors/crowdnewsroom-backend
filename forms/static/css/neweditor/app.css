@@ -420,16 +420,6 @@ p.oneline {
     display: block;
 }
 
-#slide-editor-menu,
-#slide-nav { /* disable dragging from sidebar to slide */
-    /* https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events */
-    -moz-user-select: none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
-    pointer-events: none;
-}
-
 #slide-editor-menu ul {
     list-style-type: none;
     margin-left: -.9375rem;
@@ -444,7 +434,7 @@ p.oneline {
     border-color: #ccc;
     background-color: #fff;
     border-radius: 6px;
-    padding: 0.85em 0.5rem;
+    padding: 0.85em 0.5rem;    
 }
 
 #slide-editor-menu li .button:hover {
