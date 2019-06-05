@@ -141,7 +141,7 @@
                                         <!-- Checkboxes -->
                                         <div class="checkboxes" v-if="field.type == 'array' && getFieldWidget(fieldName) == 'checkboxes'">
                                           <div class="checkbox" v-for="option in field.items.enum">
-                                            <input :name="option" type="checkbox">
+                                            <input :name="fieldName" type="checkbox">
                                             <label>${ option }</label>
                                           </div>
                                         </div>
