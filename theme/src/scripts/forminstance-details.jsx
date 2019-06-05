@@ -211,31 +211,6 @@ class FormInstanceEditor extends Component {
             />
           </FormGroup>
 
-          <FormGroup legendText={gettext('Email confirmation messages')}>
-            <TextArea
-              id="email_template"
-              labelText={gettext('Email Template')}
-              onChange={this.handleChange}
-              value={this.state.email_template}
-            />
-
-            <TextArea
-              id="email_template_html"
-              labelText={gettext('HTML Email Template')}
-              onChange={this.handleChange}
-              value={this.state.email_template_html}
-            />
-          </FormGroup>
-
-          <FormGroup legendText={gettext('URL to redirect after submission')}>
-            <TextInput
-              id="redirect_url_template"
-              labelText={gettext('Redirect URL Template')}
-              value={this.state.redirect_url_template}
-              onChange={this.handleChange}
-            />
-          </FormGroup>
-
           <Button kind="secondary" onClick={this.props.toggleExpertMode}>
             {gettext('Cancel')}
           </Button>

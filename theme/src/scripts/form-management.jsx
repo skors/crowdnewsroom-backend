@@ -5,6 +5,7 @@ import { Switch } from 'react-router'
 
 import { CarbonMenuLink } from './utils'
 import FormDetails from './form-details'
+import FormInstanceSettings from './forminstance-settings'
 import FormInstanceDetails from './forminstance-details'
 
 function getUrlParams() {
@@ -34,12 +35,18 @@ const App = () => (
             disabled={!hasSlug()}
             label={gettext('Interviewer')}
           />
+          <CarbonMenuLink
+            to="/form_settings"
+            disabled={!hasSlug()}
+            label={gettext('Settings')}
+          />
         </ul>
       </nav>
       <div>
         <Switch>
           <Route path="/form" component={FormDetails} />
           <Route path="/form_instance" component={FormInstanceDetails} />
+          <Route path="/form_settings" component={FormInstanceSettings} />
           <Route exact path="/">
             <Redirect to="/form" />
           </Route>
