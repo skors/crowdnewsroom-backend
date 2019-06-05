@@ -41,7 +41,7 @@ export default class FormDetails extends Component {
   }
 
   get isEdit() {
-    return this.state.form.id
+    return !!this.state.form.id
   }
 
   updateName(event) {
