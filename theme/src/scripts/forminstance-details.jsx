@@ -89,6 +89,17 @@ class FormInstance extends Component {
   }
 
   render() {
+    var editButton;
+    var helpText;
+
+    if (this.props.formInstance.is_simple) {
+      editButton = <a href={this.urlParams.formSlug + '/editor'} className="bx--btn bx--btn--primary" > {gettext('Open in Interview Editor')} </a>;
+      helpText = 'You can edit the questions and other details in our interactive editor. If you run into problems, contact Correctiv for help with customising your interviewer.';
+    } else {
+      editButton = <Button onClick={this.props.toggleExpertMode} kind="secondary"> {gettext('Edit in expert mode')} </Button>;
+      helpText = 'As this is a complex form, it can only be edited in the Expert mode editor. If you run into problems, contact Correctiv for help with customising your interviewer.';
+    }
+
     return (
       <div>
         <h2>{gettext('Your Interviewer')}</h2>
@@ -101,9 +112,7 @@ class FormInstance extends Component {
         <iframe src={this.props.frontendURL} width="100%" height="600" />
 
         <p>
-          {gettext(
-            'You can edit the questions and other details in our interactive editor. If you run into problems, contact Correctiv for help with customising your interviewer.'
-          )}
+          {gettext(helpText)}
         </p>
 
         <div
@@ -113,12 +122,8 @@ class FormInstance extends Component {
             margin: '3em auto'
           }}
         >
-          <a
-            href={this.urlParams.formSlug + '/editor'}
-            className="bx--btn bx--btn--primary"
-          >
-            {gettext('Open in Interview Editor')}
-          </a>
+          
+          {editButton}
 
           <a
             href="mailto:crowdnewsroom@correctiv.org?subject=Customization%20for%20Crowdnewsroom%20interviewer"

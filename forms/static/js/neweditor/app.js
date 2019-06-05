@@ -120,8 +120,10 @@ var vm = new Vue({
     addSlide: function(ev) {
       ev.preventDefault();
       // make a deep copy of the default new slide
-      var newSlide = Object.assign({}, defaultNewSlide);
-      var slideSlug = 'slide-' + Math.floor(Math.random() * 100) + 100;
+      var newSlide = JSON.parse(JSON.stringify( defaultNewSlide )); 
+      var slideSlug = 'slide-' + (Math.floor(Math.random() * 900) + 100);
+      newSlide.schema.slug = slideSlug;
+      console.log(slideSlug);
       this.slides.push(newSlide);
       this.selectSlide(newSlide);
       this.correctFinalSlide();
@@ -224,7 +226,7 @@ var vm = new Vue({
 
     addField: function(slug, data, uischema) {
       // TODO: check if slug exists, change if it does
-      slug = slug + '-' + Math.floor(Math.random() * 100) + 100;
+      slug = slug + '-' + (Math.floor(Math.random() * 900) + 100);
       this.$set(this.activeSlide.schema.properties, slug, data);
 
       if (uischema) {
