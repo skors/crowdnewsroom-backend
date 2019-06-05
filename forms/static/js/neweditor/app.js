@@ -271,6 +271,12 @@ var vm = new Vue({
         title: "Email",
       });
     },
+    addBooleanField: function() {
+      this.addField("yes-no", {
+        type: "boolean",
+        title: "Here's a question, do you agree?",
+      }, {"ui:widget": "buttonWidget"});
+    },
     addFileUploadField: function() {
       this.addField("file-input", {
         type: "string",
@@ -312,13 +318,6 @@ var vm = new Vue({
       });
     },
     addDateField: function() {
-      this.addField("date", {
-        type: "string",
-        format: "date",
-        title: "Date",
-      });
-    },
-    addBooleanField: function() {
       this.addField("date", {
         type: "string",
         format: "date",
