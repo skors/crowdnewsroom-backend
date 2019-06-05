@@ -420,6 +420,16 @@ p.oneline {
     display: block;
 }
 
+#slide-editor-menu,
+#slide-nav { /* disable dragging from sidebar to slide */
+    /* https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events */
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    pointer-events: none;
+}
+
 #slide-editor-menu ul {
     list-style-type: none;
     margin-left: -.9375rem;
