@@ -179,42 +179,34 @@
                                             <h5 class="small-12 cell">Edit field</h5>
                                             <p class="small-12 medium-3 cell text-right">
                                                 <label class="middle" :for="fieldName + 'label'">Label</label>
-                                                <span data-tooltip class="help-tooltip" title="Look! Help text! It can be as long as needed since it's on a tooltip. Oh yes!">
-                                                  <i class="fi-info"></i>
-                                                </span>
                                             </p>
                                             <p class="small-12 medium-9 cell">
                                                 <input type="text" :name="fieldName + 'label'" v-model="field.title">
+                                                <span class="help-text" id="nameHelpText">This could be some help text if it's not too long</span>
                                             </p>
                                             <p class="small-12 medium-3 cell text-right">
                                                 <label class="middle" :for="fieldName + 'default'">Default value</label>
-                                                <span data-tooltip class="help-tooltip" title="Look! Help text! It can be as long as needed since it's on a tooltip. Oh yes!">
-                                                  <i class="fi-info"></i>
-                                                </span>
                                             </p>
                                             <p class="small-12 medium-9 cell">
                                                 <input type="text" :name="fieldName + 'default'" v-model="field.default">
+                                                <span class="help-text" id="nameHelpText">This could be some help text if it's not too long</span>
                                             </p>
                                             <p class="small-12 medium-3 cell text-right">
                                                 <label class="middle" :for="fieldName + 'default'">Placeholder</label>
-                                                <span data-tooltip class="help-tooltip" title="Look! Help text! It can be as long as needed since it's on a tooltip. Oh yes!">
-                                                  <i class="fi-info"></i>
-                                                </span>
                                             </p>
                                             <p class="small-12 medium-9 cell">
                                               <input type="text" :name="fieldName + 'placeholder'" v-model="field.placeholder">
+                                                <span class="help-text" id="nameHelpText">This could be some help text if it's not too long</span>
                                             </p>
                                             <p class="small-12 medium-3 cell text-right">
                                                 <label class="middle" :for="fieldName + 'slug'">Slug</label>
-                                                <span data-tooltip class="help-tooltip" title="Look! Help text! It can be as long as needed since it's on a tooltip. Oh yes!">
-                                                  <i class="fi-info"></i>
-                                                </span>
                                             </p>
                                             <p class="small-12 medium-9 cell">
                                                 <input type="text" 
                                                        :name="fieldName + 'slug'" 
                                                        :value="fieldName" 
                                                        @change="updateFieldSlug($event, fieldName)">
+                                                <span class="help-text" id="nameHelpText">This could be some help text if it's not too long</span>
                                             </p>
                                             
                                             <p class="small-12 medium-3 cell text-right"><!-- should be visible only for radio buttons and checkboxes -->
