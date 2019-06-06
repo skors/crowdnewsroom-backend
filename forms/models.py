@@ -276,7 +276,7 @@ class Form(models.Model, UniqueSlugMixin):
 
 class FormInstance(models.Model):
     form_json = JSONField()
-    ui_schema_json = JSONField(default=dict)
+    ui_schema_json = JSONField(default=dict, blank=True)
     version = models.IntegerField(default=0)
     form = models.ForeignKey(Form, on_delete=models.CASCADE)
     priority_fields = JSONField(default=list, blank=True)
