@@ -31,7 +31,7 @@ var loadingSlide = {
     //nextButtonLabel: "This is the 'Next' button, click me to edit the text",
   },
   conditions: {}
-};;
+};
 
 
 var vm = new Vue({
@@ -51,17 +51,6 @@ var vm = new Vue({
   },
   mounted: function() {
     this.getFormData();
-    
-    // ensure interface items are not draggable
-    $('.slide-editor-menu').bind("dragover", function(e) {
-      e.preventDefault();
-      return false;
-    });
-
-    $('.slide-editor-menu').bind("drop", function(e){
-      e.preventDefault();
-      return false;
-    });
   },
   computed: {
     isFirstSlide: function() {
