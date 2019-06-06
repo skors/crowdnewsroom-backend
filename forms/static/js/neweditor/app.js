@@ -51,6 +51,17 @@ var vm = new Vue({
   },
   mounted: function() {
     this.getFormData();
+    
+    // ensure interface items are not draggable
+    $('.slide-editor-menu').bind("dragover", function(e) {
+      e.preventDefault();
+      return false;
+    });
+
+    $('.slide-editor-menu').bind("drop", function(e){
+      e.preventDefault();
+      return false;
+    });
   },
   computed: {
     isFirstSlide: function() {
@@ -271,6 +282,12 @@ var vm = new Vue({
         title: "Email",
       });
     },
+    addBooleanField: function() {
+      this.addField("yes-no", {
+        type: "boolean",
+        title: "Here's a question, do you agree?",
+      }, {"ui:widget": "buttonWidget"});
+    },
     addFileUploadField: function() {
       this.addField("file-input", {
         type: "string",
@@ -312,13 +329,6 @@ var vm = new Vue({
       });
     },
     addDateField: function() {
-      this.addField("date", {
-        type: "string",
-        format: "date",
-        title: "Date",
-      });
-    },
-    addBooleanField: function() {
       this.addField("date", {
         type: "string",
         format: "date",

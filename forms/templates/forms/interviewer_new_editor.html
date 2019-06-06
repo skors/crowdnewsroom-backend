@@ -37,7 +37,7 @@
                                     <li><span class="slide-list-handle" aria-hidden="true"><i class="fi-list"></i> <em class="show-for-sr">move</em></span></li>
                                     <li><a href="#" aria-hidden="true" v-on:click="removeSlide($event, slideIdx)"><i class="fi-trash"></i> <em class="show-for-sr">delete</em></a></li>
                                 </ul>
-                                <a class="slide-thumbnail cell small-9 medium-10" href="#" v-on:click="selectSlide(slide)"><strong>${slide.schema.title}</strong></a>
+                                <a class="slide-thumbnail cell small-9 medium-10" href="#" v-on:click="selectSlide(slide)" draggable="false" ondragstart="return false;"><strong>${slide.schema.title}</strong></a>
                             </li>
                             </draggable>
                         </ul>
@@ -137,11 +137,16 @@
                                                type="file" accept="image/*" capture="environment">
 
                                         <!-- Yes/No (boolean) -->
+                                        <div class="checkboxes" v-if="field.type == 'boolean'">
+                                          <div class="checkbox">
+                                            <input :name="fieldName" type="checkbox">
+                                          </div>
+                                        </div>
 
                                         <!-- Checkboxes -->
                                         <div class="checkboxes" v-if="field.type == 'array' && getFieldWidget(fieldName) == 'checkboxes'">
                                           <div class="checkbox" v-for="option in field.items.enum">
-                                            <input :name="option" type="checkbox">
+                                            <input :name="fieldName" type="checkbox">
                                             <label>${ option }</label>
                                           </div>
                                         </div>
@@ -177,21 +182,21 @@
                                             </p>
                                             <p class="small-12 medium-9 cell">
                                                 <input type="text" :name="fieldName + 'label'" v-model="field.title">
-                                                <span class="help-text" id="nameHelpText">This could be some help text if it's not too long</span>
+                                                <span class="help-text" id="nameHelpText">The label to be shown next to this field.</span>
                                             </p>
                                             <p class="small-12 medium-3 cell text-right">
                                                 <label class="middle" :for="fieldName + 'default'">Default value</label>
                                             </p>
                                             <p class="small-12 medium-9 cell">
                                                 <input type="text" :name="fieldName + 'default'" v-model="field.default">
-                                                <span class="help-text" id="nameHelpText">This could be some help text if it's not too long</span>
+                                                <span class="help-text" id="nameHelpText">If specified, the field will have this value when the form is opened.</span>
                                             </p>
                                             <p class="small-12 medium-3 cell text-right">
                                                 <label class="middle" :for="fieldName + 'default'">Placeholder</label>
                                             </p>
                                             <p class="small-12 medium-9 cell">
                                               <input type="text" :name="fieldName + 'placeholder'" v-model="field.placeholder">
-                                                <span class="help-text" id="nameHelpText">This could be some help text if it's not too long</span>
+                                                <span class="help-text" id="nameHelpText">Text to show in the field itself, which will be replaced when the user types something. Good to show an example of the expected input.</span>
                                             </p>
                                             <p class="small-12 medium-3 cell text-right">
                                                 <label class="middle" :for="fieldName + 'slug'">Slug</label>
@@ -201,7 +206,7 @@
                                                        :name="fieldName + 'slug'" 
                                                        :value="fieldName" 
                                                        @change="updateFieldSlug($event, fieldName)">
-                                                <span class="help-text" id="nameHelpText">This could be some help text if it's not too long</span>
+                                                <span class="help-text" id="nameHelpText">The column name for storing this field in the database.</span>
                                             </p>
                                             
                                             <p class="small-12 medium-3 cell text-right"><!-- should be visible only for radio buttons and checkboxes -->
@@ -261,51 +266,55 @@
                                 </label>
                             </p>
                             <hr>
-                            <p><a class="button expanded" href="#" v-on:click="addSlide($event)"><i class="fi-plus"></i> Add new slide</a></p>
+                            <p><a class="button expanded" href="#" v-on:click="addSlide($event)" draggable="false" ondragstart="return false;"><i class="fi-plus"></i> Add new slide</a></p>
                             <hr>
                             <h5>Add new field</h5>
                             <ul class="grid-x grid-padding-x small-up-1 medium-up-2 large-up-3 text-center">
-                                <li class="cell"><a  class="button hollow" href="#" v-on:click="addOneLineField()">
+                                <li class="cell"><a  class="button hollow" href="#" v-on:click="addOneLineField()" draggable="false" ondragstart="return false;">
                                   <img src="/static/img/field-icons/one-line-text.png" alt="One line text">
                                   <span>One line text</span>
                                 </a></li>
-                                <li class="cell"><a class="button hollow" href="#" v-on:click="addTextInputField()">
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addTextInputField()" draggable="false" ondragstart="return false;">
                                   <img src="/static/img/field-icons/text-input.png" alt="Text input">
                                   <span>Text input</span>
                                 </a></li>
-                                <li class="cell"><a class="button hollow" href="#" v-on:click="addEmailInputField()">
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addEmailInputField()" draggable="false" ondragstart="return false;">
                                   <img src="/static/img/field-icons/email.png" alt="Email">
                                   <span>Email</span>
                                 </a></li>
-                                <li class="cell"><a class="button hollow" href="#" v-on:click="addTextAreaField()">
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addTextAreaField()" draggable="false" ondragstart="return false;">
                                     <img src="/static/img/field-icons/comment-box.png" alt="Comments box">
                                     <span>Comments box</span>
                                 </a></li>
-                                <li class="cell"><a class="button hollow" href="#" v-on:click="addCheckboxField()">
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addBooleanField()" draggable="false" ondragstart="return false;">
+                                    <img src="/static/img/field-icons/comment-box.png" alt="Yes/No field">
+                                    <span>Yes/No</span>
+                                </a></li>
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addCheckboxField()" draggable="false" ondragstart="return false;">
                                     <img src="/static/img/field-icons/checkboxes.png" alt="Checkboxes">
                                     <span>Checkboxes</span>
                                 </a></li>
-                                <li class="cell"><a class="button hollow" href="#" v-on:click="addRadioField()">
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addRadioField()" draggable="false" ondragstart="return false;">
                                     <img src="/static/img/field-icons/radio-buttons.png" alt="Radio buttons">
                                     <span>Radio buttons</span>
                                 </a></li>
-                                <li class="cell"><a class="button hollow" href="#" v-on:click="addDropdownField()">
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addDropdownField()" draggable="false" ondragstart="return false;">
                                     <img src="/static/img/field-icons/dropdown.png" alt="Dropdown">
                                     <span>Dropdown</span>
                                 </a></li>
-                                <li class="cell"><a class="button hollow" href="#" v-on:click="addFileUploadField()">
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addFileUploadField()" draggable="false" ondragstart="return false;">
                                     <img src="/static/img/field-icons/file-upload.png" alt="File upload"> 
                                     <span>File upload</span>
                                 </a></li>
-                                <li class="cell"><a class="button hollow" href="#" v-on:click="addImageUploadField()">
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addImageUploadField()" draggable="false" ondragstart="return false;">
                                     <img src="/static/img/field-icons/image-upload.png" alt="Image upload">
                                     <span>Image upload</span>
                                 </a></li>
-                                <li class="cell"><a class="button hollow" href="#" v-on:click="addDateField()">
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addDateField()" draggable="false" ondragstart="return false;">
                                     <img src="/static/img/field-icons/date-picker.png" alt="Date picker">
                                     <span>Date picker</span>
                                 </a></li>
-                                <li class="cell"><a class="button hollow disabled" href="#">
+                                <li class="cell"><a class="button hollow disabled" href="#" draggable="false" ondragstart="return false;">
                                     <img src="/static/img/field-icons/e-signature.png" alt="E-signature">
                                     <span>E-signature</span>
                                 </a></li>
