@@ -61,6 +61,7 @@ class FormInstanceSerializer(ModelSerializer):
     class Meta:
         model = FormInstance
         fields = (
+            "id",
             "form_json",
             "ui_schema_json",
             "version",
