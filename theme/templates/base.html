@@ -46,7 +46,7 @@
         </nav>
     </header>
 
-    <main class="page">
+    <main class="page {% block main_css_modifier %}{% endblock %}">
       <div class="cnr--header">
           <h2>
             {% block headertitle %}Title{% endblock %}
@@ -57,7 +57,9 @@
       {% block main %}{% endblock %}
     </main>
 
+
     {% include 'includes/footer.html' %}
+    {% block footer_js %}{% endblock %}
     {% render_bundle 'main' %}
 
   </body>
