@@ -18,19 +18,19 @@
   </head>
   <body>
         <div id="editor" class="grid-y medium-grid-frame">
-        
+
           <!--
-            <div id="campaign-nav" class="cell shrink header medium-cell-block-container">  
+            <div id="campaign-nav" class="cell shrink header medium-cell-block-container">
               <h2>${ model.title }</h2>
               <h3>${ model.description }</h3>
             </div>
           -->
-            
+
             <section id="slide-editor" class="cell medium-auto medium-cell-block-container">
                 <div class="grid-x grid-padding-x">
                     <div id="slide-nav" class="cell medium-2 medium-cell-block-y">
                         <ul>
-                            <draggable v-model="slides" handle=".slide-list-handle" @update="correctFinalSlide()">
+                            <draggable v-model="slides" handle=".slide-list-handle" @update="correctSchema()">
                             <li class="slide-list-item grid-x" v-for="(slide, slideIdx) in slides"
                                 v-bind:class="{ active: slide == activeSlide }">
                                 <ul class="slide-options text-center cell small-3 medium-2">
@@ -49,23 +49,23 @@
                                     <span><i class="fi-list"></i></span><!-- drag slide -->
                                   </div>
                                   <div class="slide-content small-10 medium-8 text-center cell">
-                                    <h1 contenteditable 
+                                    <h1 contenteditable
                                         @blur="ceEdit($event, activeSlide.schema, 'title')" @keydown.enter="cePressEnter($event, activeSlide.schema, 'title')"
                                         v-bind:key="activeSlide.schema.title">
                                       ${ activeSlide.schema.title }
                                     </h1>
-                                    <p class="lead" contenteditable 
+                                    <p class="lead" contenteditable
                                     @blur="ceEdit($event, activeSlide.schema, 'description')" @keydown.enter="cePressEnter($event, activeSlide.schema, 'description')"
                                     v-bind:key="activeSlide.schema.description"
                                     >
                                       ${ activeSlide.schema.description }
                                     </p>
                                   </div>
-                                </div>                                
+                                </div>
                                 <draggable v-model="activeFieldKeys" handle=".drag-slide" @end="onFieldReorder">
-                                <div class="slide-field grid-x grid-padding-x" 
-                                     v-bind:class="{'slide-field-edit': editingField == fieldName}" 
-                                     v-for="(field, fieldName) in activeSlide.schema.properties" 
+                                <div class="slide-field grid-x grid-padding-x"
+                                     v-bind:class="{'slide-field-edit': editingField == fieldName}"
+                                     v-for="(field, fieldName) in activeSlide.schema.properties"
                                      v-bind:key="fieldName">
                                     <div class="drag-slide small-1 medium-2 cell">
                                         <span><i class="fi-list" v-show="editingField != fieldName"></i></span><!-- drag slide -->
@@ -89,20 +89,20 @@
                                         <!-- Text input (string) -->
                                         <input v-if="field.type == 'string' && !getFieldWidget(fieldName) && !field.enum && !field.format"
                                                :name="fieldName"
-                                               :value="field.default" 
-                                               :id="field.key" 
-                                               :label="field.title" 
-                                               :placeholder="field.placeholder" 
+                                               :value="field.default"
+                                               :id="field.key"
+                                               :label="field.title"
+                                               :placeholder="field.placeholder"
                                                readonly
                                                type="text">
 
                                         <!-- Email -->
                                         <input v-if="field.type == 'string' && !getFieldWidget(fieldName) && field.format == 'email'"
                                                :name="fieldName"
-                                               :value="field.default" 
-                                               :id="field.key" 
-                                               :label="field.title" 
-                                               :placeholder="field.placeholder" 
+                                               :value="field.default"
+                                               :id="field.key"
+                                               :label="field.title"
+                                               :placeholder="field.placeholder"
                                                readonly
                                                type="text">
 
@@ -112,7 +112,7 @@
                                                :value="field.default"
                                                :id="field.key"
                                                :label="field.title"
-                                               :placeholder="field.placeholder" 
+                                               :placeholder="field.placeholder"
                                                readonly
                                                type="text"
                                                style="height: auto;">
@@ -167,10 +167,10 @@
                                         <!-- Date picker -->
                                         <input v-if="field.type == 'string' && field.format == 'date'"
                                                :name="fieldName"
-                                               :value="field.default" 
-                                               :id="field.key" 
-                                               :label="field.title" 
-                                               :placeholder="field.placeholder" 
+                                               :value="field.default"
+                                               :id="field.key"
+                                               :label="field.title"
+                                               :placeholder="field.placeholder"
                                                type="date">
 
 
@@ -202,13 +202,13 @@
                                                 <label class="middle" :for="fieldName + 'slug'">Slug</label>
                                             </p>
                                             <p class="small-12 medium-9 cell">
-                                                <input type="text" 
-                                                       :name="fieldName + 'slug'" 
-                                                       :value="fieldName" 
+                                                <input type="text"
+                                                       :name="fieldName + 'slug'"
+                                                       :value="fieldName"
                                                        @change="updateFieldSlug($event, fieldName)">
                                                 <span class="help-text" id="nameHelpText">The column name for storing this field in the database.</span>
                                             </p>
-                                            
+
                                             <p class="small-12 medium-3 cell text-right"><!-- should be visible only for radio buttons and checkboxes -->
                                                 <label>Options</label>
                                             </p>
@@ -303,7 +303,7 @@
                                     <span>Dropdown</span>
                                 </a></li>
                                 <li class="cell"><a class="button hollow" href="#" v-on:click="addFileUploadField()" draggable="false" ondragstart="return false;">
-                                    <img src="/static/img/field-icons/file-upload.png" alt="File upload"> 
+                                    <img src="/static/img/field-icons/file-upload.png" alt="File upload">
                                     <span>File upload</span>
                                 </a></li>
                                 <li class="cell"><a class="button hollow" href="#" v-on:click="addImageUploadField()" draggable="false" ondragstart="return false;">

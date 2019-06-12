@@ -18,8 +18,9 @@ class Command(BaseCommand):
             name="Food Investigation")
         form = factories.FormFactory.create(name="Banana consumption",
                                             investigation=investigation)
-        form_json = [
-            {"schema": {
+        form_json = [{
+            "schema": {
+                "final": True,
                 "title": "Banana consumption",
                 "slug": "banana-consumption",
                 "type": "object",
@@ -33,10 +34,11 @@ class Command(BaseCommand):
                     }
                 }
             },
+            "rules": [{
+                "event": "summary",
                 "conditions": {},
-                "final": True
-            }
-        ]
+            }]
+        }]
         form_instance = factories.FormInstanceFactory.create(form=form,
                                                              form_json=form_json)
 
@@ -67,8 +69,9 @@ class Command(BaseCommand):
                 factories.TagFactory(investigation=investigation, name="africa"),
                 factories.TagFactory(investigation=investigation, name="asia"),
                 factories.TagFactory(investigation=investigation, name="australia"), ]
-        form_json = [
-            {"schema": {
+
+        form_json = [{
+            "schema": {
                 "title": "Did you ever travel outside of your home country?",
                 "slug": "travel-outside-europe",
                 "type": "object",
@@ -79,9 +82,18 @@ class Command(BaseCommand):
                     },
                 }
             },
-                "conditions": {},
-            },
-            {"schema": {
+            "rules": [{
+                "event": "where-to",
+                "conditions": {
+                    "traveled_outside": {"equal": True},
+                }
+            }, {
+                "event": "would-like-to-travel",
+                "conditions": {
+                    "traveled_outside": {"equal": False}},
+            }]
+        }, {
+            "schema": {
                 "title": "Where to?",
                 "slug": "where-to",
                 "type": "object",
@@ -96,9 +108,12 @@ class Command(BaseCommand):
                     }
                 }
             },
-                "conditions": {"traveled_outside": {"equal": True}},
-            },
-            {"schema": {
+            "rules": [{
+                "event": "summary",
+                "conditions": {}
+            }]
+        }, {
+            "schema": {
                 "title": "Would you like to?",
                 "slug": "would-like-to-travel",
                 "final": True,
@@ -113,9 +128,11 @@ class Command(BaseCommand):
                     }
                 }
             },
-                "conditions": {"traveled_outside": {"equal": False}},
-            }
-        ]
+            "rules": [{
+                "event": "summary",
+                "conditions": {}
+            }]
+        }]
 
         ui_json = {
             "travel-outside-europe": {
@@ -223,7 +240,7 @@ class Command(BaseCommand):
         for slug, create_function in parts:
             investigation = Investigation.objects.filter(slug=slug).first()
             if investigation:
-                self.warn("It looks like you already have a `{}` investigation (maybe from a previous run?)".format(slug))
+                self.warn("It looks like you already have a `{}` investigation (maybe from a previous run?)".format(slug))  # noqa
                 self.warn("should we delete and recreate it and all of the realted objects?")
                 self.warn("type \"yes\" to continue")
                 confirm = input()

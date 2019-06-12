@@ -94,15 +94,20 @@ class FormInstance extends Component {
 
     if (this.props.formInstance.is_simple) {
       editButton = <a href={this.urlParams.formSlug + '/editor'} className="bx--btn bx--btn--primary" > {gettext('Open in Interview Editor')} </a>;
-      helpText = 'You can edit the questions and other details in our interactive editor. If you run into problems, contact Correctiv for help with customising your interviewer.';
+      helpText = gettext('You can edit the questions and other details in our interactive editor. If you run into problems, contact Correctiv for help with customising your interviewer.');
     } else {
       editButton = <Button onClick={this.props.toggleExpertMode} kind="secondary"> {gettext('Edit in expert mode')} </Button>;
-      helpText = 'As this is a complex form, it can only be edited in the Expert mode editor. If you run into problems, contact Correctiv for help with customising your interviewer.';
+      helpText = gettext('As this is a complex form, it can only be edited in the Expert mode editor. If you run into problems, contact Correctiv for help with customising your interviewer.');
     }
 
     return (
       <div>
         <h2>{gettext('Your Interviewer')}</h2>
+        <p>
+          <a target="_blank" href={this.props.frontendURL} className="bx--btn bx--btn--primary">
+            {gettext('See your interviewer in action')}
+          </a>
+        </p>
         <p>
           {gettext(
             'You can check below how your form is looking and behaving now.'
@@ -122,7 +127,7 @@ class FormInstance extends Component {
             margin: '3em auto'
           }}
         >
-          
+
           {editButton}
 
           <a

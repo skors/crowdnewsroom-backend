@@ -19,7 +19,10 @@ var defaultNewSlide = {
     },
     nextButtonLabel: "This is the 'Next' button, click me to edit the text",
   },
-  conditions: {}
+  rules: [{
+    event: "",
+    conditions: {}
+  }]
 };
 
 var loadingSlide = {
@@ -30,7 +33,10 @@ var loadingSlide = {
     properties: {},
     //nextButtonLabel: "This is the 'Next' button, click me to edit the text",
   },
-  conditions: {}
+  rules: [{
+    event: "",
+    conditions: {}
+  }]
 };
 
 
@@ -51,6 +57,16 @@ var vm = new Vue({
   },
   mounted: function() {
     this.getFormData();
+    // ensure interface items are not draggable
+    $('.slide-editor-menu').bind("dragover", function(e) {
+      e.preventDefault();
+      return false;
+    });
+
+    $('.slide-editor-menu').bind("drop", function(e){
+      e.preventDefault();
+      return false;
+    });
   },
   computed: {
     isFirstSlide: function() {
@@ -86,7 +102,7 @@ var vm = new Vue({
               vm.$set(vm.$data, 'uischema', response.data.results[0].ui_schema_json);
               vm.activeSlide = vm.slides[0];
               vm.$set(vm.$data, 'activeFieldKeys', Object.keys(vm.activeSlide.schema.properties));
-              this.correctFinalSlide();
+              this.correctSchema();
               console.log(vm.activeSlide);
               console.log(vm.activeFieldKeys);
             })
@@ -115,27 +131,50 @@ var vm = new Vue({
     removeSlide: function(ev, idx) {
       ev.preventDefault();
       this.slides.splice(idx, 1);
-      this.correctFinalSlide();
+      this.correctSchema();
     },
     addSlide: function(ev) {
       ev.preventDefault();
       // make a deep copy of the default new slide
-      var newSlide = JSON.parse(JSON.stringify( defaultNewSlide )); 
+      var newSlide = JSON.parse(JSON.stringify( defaultNewSlide ));
       var slideSlug = 'slide-' + (Math.floor(Math.random() * 900) + 100);
       newSlide.schema.slug = slideSlug;
-      console.log(slideSlug);
       this.slides.push(newSlide);
       this.selectSlide(newSlide);
-      this.correctFinalSlide();
+      this.correctSchema();
     },
     correctFinalSlide: function() {
       for (var idx in this.slides) {
         var slide = this.slides[idx];
-        if ("final" in slide) {
-            delete slide.final;
+        if ("final" in slide.schema) {
+            delete slide.schema.final;
         }
       }
-      this.slides[this.slides.length-1].final = true;
+      var finalSlide = this.slides[this.slides.length-1]
+      finalSlide.schema.final = true;
+      finalSlide.rules = [{
+        event: "summary",
+        conditions: {}
+      }];
+    },
+    correctConditions: function() {
+      for (var idx in this.slides) {
+        var slide = this.slides[idx];
+        if ("conditions" in slide) {
+          delete slide.conditions
+        }
+        var nextSlide = this.slides[parseInt(idx) + 1];
+        if (nextSlide) {
+          slide.rules = [{
+            event: nextSlide.schema.slug,
+            conditions: {}
+          }];
+        }
+      }
+    },
+    correctSchema: function() {
+      this.correctFinalSlide();
+      this.correctConditions();
     },
     /*
     addFieldToSlide: function(ev, idx) {
