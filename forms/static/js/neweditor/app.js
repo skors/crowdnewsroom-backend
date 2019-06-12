@@ -332,6 +332,8 @@ var vm = new Vue({
       this.addField("yes-no", {
         type: "boolean",
         title: "Here's a question, do you agree?",
+        enum: ["yes", "no"],
+        enumNames: ["Yes", "No"],
       }, {"ui:widget": "buttonWidget"});
     },
     addFileUploadField: function() {
