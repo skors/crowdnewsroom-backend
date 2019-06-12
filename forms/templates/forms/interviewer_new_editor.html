@@ -116,6 +116,7 @@
                                                :value="field.default"
                                                :id="field.key"
                                                :label="field.title"
+                                               readonly
                                                type="number">
 
                                         <!-- File upload -->
@@ -131,7 +132,7 @@
                                         <!-- Yes/No (boolean) -->
                                         <div class="checkboxes" v-if="field.type == 'boolean'">
                                           <div class="checkbox">
-                                            <input :name="fieldName" type="checkbox">
+                                            <input :name="fieldName" readonly type="checkbox">
                                           </div>
                                         </div>
 
@@ -146,7 +147,7 @@
                                         <!-- Radio buttons -->
                                         <fieldset class="radio-buttons" v-if="field.type == 'string' && getFieldWidget(fieldName) == 'radio'">
                                           <div v-for="option in field.enum">
-                                            <input type="radio" :name="option" :value="option" :id="option"><label :for="option">${ option }</label>
+                                            <input type="radio" :name="fieldName" :value="option" :id="option"><label :for="option">${ option }</label>
                                           </div>
                                         </fieldset>
 
@@ -163,6 +164,7 @@
                                                :id="field.key"
                                                :label="field.title"
                                                :placeholder="field.placeholder"
+                                               readonly
                                                type="date">
 
 
