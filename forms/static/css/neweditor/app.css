@@ -426,6 +426,16 @@ p.oneline {
     cursor: pointer;
 }
 
+.slide-field-edit .field-options input[type="text"][readonly]:focus,
+.slide-field-edit .field-options input[type="date"][readonly]:focus,
+.slide-field-edit .field-options textarea[readonly]:focus {
+    background-color: #e6e6e6;
+    cursor: not-allowed;
+    box-shadow: 0 0 0 transparent;
+    border-color: #ddd;
+}
+
+
 /* End field edit mode */
 
 .slide .slide-navigation a.button {
