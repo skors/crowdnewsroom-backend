@@ -131,6 +131,16 @@
                                                :name="fieldName"
                                                type="file" accept="image/*" capture="environment">
 
+                                        <!-- Signature (string) -->
+                                        <input v-if="field.type == 'string' && getFieldWidget(fieldName) == 'signatureWidget'"
+                                               :name="fieldName"
+                                               :value="field.default"
+                                               :id="field.key"
+                                               :label="field.title"
+                                               :placeholder="field.placeholder"
+                                               readonly
+                                               type="text">
+
                                         <!-- Yes/No (boolean) -->
                                         <div class="checkboxes" v-if="field.type == 'boolean'">
                                           <div class="checkbox">
