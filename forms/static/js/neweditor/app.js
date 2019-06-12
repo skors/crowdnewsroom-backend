@@ -363,6 +363,12 @@ var vm = new Vue({
         title: "Date",
       });
     },
+    addSignatureField: function() {
+      this.addField("signature", {
+        type: "string",
+        title: "Your signature",
+      }, {'ui:widget': 'signatureWidget'});
+    },
 
     removeOption: function(field, idx) {
       if ('items' in field) {
