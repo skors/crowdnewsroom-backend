@@ -47,14 +47,14 @@
                                         v-bind:key="activeSlide.schema.title">
                                       ${ activeSlide.schema.title }
                                     </h1>
-                                    <a href="#" v-on:click="fillTitle()" v-if="!hasTitle">Add title</a>
+                                    <a class="button secondary small" href="#" v-on:click="fillTitle()" v-if="!hasTitle">Add a title</a>
                                     <p class="lead" contenteditable
                                     @blur="ceEdit($event, activeSlide.schema, 'description')" @keydown.enter="cePressEnter($event, activeSlide.schema, 'description')"
                                     v-bind:key="activeSlide.schema.description"
                                     >
                                       ${ activeSlide.schema.description }
                                     </p>
-                                    <a href="#" v-on:click="fillDescription()" v-if="!hasDescription">Add description</a>
+                                    <a class="button secondary small" href="#" v-on:click="fillDescription()" v-if="!hasDescription">Add a description</a>
                                   </div>
                                 </div>
                                 <draggable v-model="activeFieldKeys" handle=".drag-slide" @end="onFieldReorder">
@@ -249,7 +249,7 @@
                                     <p class="small-10 small-offset-1 medium-8 medium-offset-2 cell text-right">
                                         <a class="button hollow" href="#"
                                            contenteditable @blur="ceEdit($event, activeSlide.schema, 'nextButtonLabel')" @keydown.enter="cePressEnter($event, activeSlide.schema, 'nextButtonLabel')"
-                                                                 ><span>${ activeSlide.schema.nextButtonLabel }</span></a>
+                                                                 >${ activeSlide.schema.nextButtonLabel }</a>
 
                                     </p>
                                 </div>
