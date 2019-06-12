@@ -19,13 +19,6 @@
   <body>
         <div id="editor" class="grid-y medium-grid-frame">
 
-          <!--
-            <div id="campaign-nav" class="cell shrink header medium-cell-block-container">
-              <h2>${ model.title }</h2>
-              <h3>${ model.description }</h3>
-            </div>
-          -->
-
             <section id="slide-editor" class="cell medium-auto medium-cell-block-container">
                 <div class="grid-x grid-padding-x">
                     <div id="slide-nav" class="cell medium-2 medium-cell-block-y">
@@ -54,12 +47,14 @@
                                         v-bind:key="activeSlide.schema.title">
                                       ${ activeSlide.schema.title }
                                     </h1>
+                                    <a href="#" v-on:click="fillTitle()" v-if="!hasTitle">Add title</a>
                                     <p class="lead" contenteditable
                                     @blur="ceEdit($event, activeSlide.schema, 'description')" @keydown.enter="cePressEnter($event, activeSlide.schema, 'description')"
                                     v-bind:key="activeSlide.schema.description"
                                     >
                                       ${ activeSlide.schema.description }
                                     </p>
+                                    <a href="#" v-on:click="fillDescription()" v-if="!hasDescription">Add description</a>
                                   </div>
                                 </div>
                                 <draggable v-model="activeFieldKeys" handle=".drag-slide" @end="onFieldReorder">
@@ -198,6 +193,7 @@
                                               <input type="text" :name="fieldName + 'placeholder'" v-model="field.placeholder">
                                                 <span class="help-text" id="nameHelpText">Text to show in the field itself, which will be replaced when the user types something. Good to show an example of the expected input.</span>
                                             </p>
+                                            <!--
                                             <p class="small-12 medium-3 cell text-right">
                                                 <label class="middle" :for="fieldName + 'slug'">Slug</label>
                                             </p>
@@ -208,6 +204,7 @@
                                                        @change="updateFieldSlug($event, fieldName)">
                                                 <span class="help-text" id="nameHelpText">The column name for storing this field in the database.</span>
                                             </p>
+                                            -->
 
                                             <p class="small-12 medium-3 cell text-right"><!-- should be visible only for radio buttons and checkboxes -->
                                                 <label>Options</label>
@@ -314,7 +311,7 @@
                                     <img src="/static/img/field-icons/date-picker.png" alt="Date picker">
                                     <span>Date picker</span>
                                 </a></li>
-                                <li class="cell"><a class="button hollow disabled" href="#" draggable="false" ondragstart="return false;">
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addSignatureField()" draggable="false" ondragstart="return false;">
                                     <img src="/static/img/field-icons/e-signature.png" alt="E-signature">
                                     <span>E-signature</span>
                                 </a></li>
