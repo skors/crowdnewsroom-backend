@@ -19,13 +19,6 @@
   <body>
         <div id="editor" class="grid-y medium-grid-frame">
 
-          <!--
-            <div id="campaign-nav" class="cell shrink header medium-cell-block-container">
-              <h2>${ model.title }</h2>
-              <h3>${ model.description }</h3>
-            </div>
-          -->
-
             <section id="slide-editor" class="cell medium-auto medium-cell-block-container">
                 <div class="grid-x grid-padding-x">
                     <div id="slide-nav" class="cell medium-2 medium-cell-block-y">
@@ -54,12 +47,14 @@
                                         v-bind:key="activeSlide.schema.title">
                                       ${ activeSlide.schema.title }
                                     </h1>
+                                    <a href="#" v-on:click="fillTitle()" v-if="!hasTitle">Add title</a>
                                     <p class="lead" contenteditable
                                     @blur="ceEdit($event, activeSlide.schema, 'description')" @keydown.enter="cePressEnter($event, activeSlide.schema, 'description')"
                                     v-bind:key="activeSlide.schema.description"
                                     >
                                       ${ activeSlide.schema.description }
                                     </p>
+                                    <a href="#" v-on:click="fillDescription()" v-if="!hasDescription">Add description</a>
                                   </div>
                                 </div>
                                 <draggable v-model="activeFieldKeys" handle=".drag-slide" @end="onFieldReorder">

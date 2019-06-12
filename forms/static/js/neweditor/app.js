@@ -84,8 +84,32 @@ var vm = new Vue({
         }
       }
       return false;
+    },
+    hasDescription: function() {
+      // returns True if the active slide has a description
+      // used to check if the "Add description" button needs to be displayed
+      if (!this.activeSlide || !this.activeSlide.schema.description) {
+        return false;
+      }
+      if (this.activeSlide.schema.description.trim() === '' || typeof this.activeSlide.schema.description == 'undefined') {
+        return false;
+      }
+      return true;
+    },
+    hasTitle: function() {
+      // returns True if the active slide has a title
+      // used to check if the "Add title" button needs to be displayed
+      if (!this.activeSlide || !this.activeSlide.schema.title) {
+        return false;
+      }
+      if (this.activeSlide.schema.title.trim() === '' || typeof this.activeSlide.schema.title == 'undefined') {
+        return false;
+      }
+      return true;
     }
   },
+
+
   methods: {
     getFormData : function () {
       // form_slug is given in the HTML template, and set in a <script> tag there
@@ -385,12 +409,26 @@ var vm = new Vue({
       }
     },
 
+    fillTitle: function() {
+      this.$set(this.activeSlide.schema, 'title', "Click me to edit this title");
+      console.log(this.activeSlide.schema.title);
+    },
+    fillDescription: function() {
+      this.$set(this.activeSlide.schema, 'description', "Click me to edit this description");
+      console.log(this.activeSlide.schema.description);
+    },
+
+
     ceEdit: function(ev, target, property) {
       // edit ContentEditable element
-      this.$set(target, property, ev.target.innerText.replace(/\n/g, ' '));
+      var value = ev.target.innerText.replace(/\n/g, ' ');
+      // console.log(value);
+      this.$set(target, property, value);
+      // console.log(this.activeSlide.schema.nextButtonLabel);
     },
     cePressEnter: function(ev, target, property) {
       // press enter in ContentEditable element = save
+      console.log('enter pressed');
       ev.preventDefault();
       this.ceEdit(ev, target, property);
       ev.target.blur();
