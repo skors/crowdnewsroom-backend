@@ -363,22 +363,29 @@ p.oneline {
 
 .slide-field .slide-content input[readonly]::placeholder { color: #ccc !important; opacity: 1; }
 
-.slide-field .slide-content input[type="radio"],
-.slide-field .slide-content input[type="checkbox"],
-.slide-field .slide-content input[type="radio"]:focus,
-.slide-field .slide-content input[type="checkbox"]:focus {
+.slide-field .slide-content .radio-buttons input[type="radio"],
+.slide-field .slide-content .checkbox input[type="checkbox"],
+.slide-field .slide-content .radio-buttons input[type="radio"]:focus,
+.slide-field .slide-content .checkbox input[type="checkbox"]:focus {
     background-color: #efefef;
     cursor: not-allowed;
     box-shadow: 0 0 0 transparent;
     border-color: #ddd;
     color: transparent;
     opacity: 0.5;
+    pointer-events: none; /* disable clicking */
 }
 
 .slide-field .slide-content .checkbox label,
 .slide-field .slide-content .radio-buttons label {
     cursor: not-allowed;
     color: #ccc;
+    pointer-events: none; /* disable clicking */
+      -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;  /* disable text-selection */
 }
 
 

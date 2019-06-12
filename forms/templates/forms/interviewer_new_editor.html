@@ -130,10 +130,9 @@
                                                type="file" accept="image/*" capture="environment">
 
                                         <!-- Yes/No (boolean) -->
-                                        <div class="checkboxes" v-if="field.type == 'boolean'">
-                                          <div class="checkbox">
-                                            <input :name="fieldName" readonly type="checkbox">
-                                          </div>
+                                        <div class="expanded button-group" v-if="field.type == 'boolean'">
+                                          <button class="button yes-button" disabled :name="fieldName" type="button">Yes</button>
+                                          <button class="button no-button" disabled :name="fieldName" type="button">No</button>
                                         </div>
 
                                         <!-- Checkboxes -->
@@ -283,7 +282,7 @@
                                     <span>Comments box</span>
                                 </a></li>
                                 <li class="cell"><a class="button hollow" href="#" v-on:click="addBooleanField()" draggable="false" ondragstart="return false;">
-                                    <img src="/static/img/field-icons/comment-box.png" alt="Yes/No field">
+                                    <img src="/static/img/field-icons/yes-no.png" alt="Yes/No field">
                                     <span>Yes/No</span>
                                 </a></li>
                                 <li class="cell"><a class="button hollow" href="#" v-on:click="addCheckboxField()" draggable="false" ondragstart="return false;">
