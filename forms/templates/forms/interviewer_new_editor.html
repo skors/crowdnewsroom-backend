@@ -67,10 +67,10 @@
                                     </div>
                                     <div class="slide-content small-10 medium-8 cell">
                                         <label class="control-label" :for="fieldName" v-if="field.title && getFieldWidget(fieldName) != 'oneLineWidget'">
-                                          ${ field.title }
+                                          ${ field.title }<span v-if="activeSlide.schema.required.indexOf(fieldName) > -1">*</span>
                                         </label>
                                         <label class="control-label" :for="fieldName" v-if="!field.title">
-                                          ${ fieldName }
+                                          ${ fieldName }<span v-if="activeSlide.schema.required.indexOf(fieldName) > -1">*</span>
                                         </label>
 
                                         <!-- All field types -->
@@ -227,7 +227,7 @@
                                             </div>
 
                                             <p class="small-12 medium-9 medium-offset-3 cell">
-                                                <input type="checkbox" :value="fieldName" v-model="activeSlide.schema.required"><label :for="fieldName + 'required'">Required field?</label>
+                                              <input type="checkbox" :checked="activeSlide.schema.required.indexOf(fieldName) > -1" :name="fieldName + '-required'" v-on:change="setRequiredField($event)"><label :for="fieldName + '-required'">Required field?</label>
                                             </p>
                                             <p class="small-12 cell text-right">
                                                 <a class="button secondary" href="#" v-on:click="editingField = null" v-show="editingField == fieldName">Done</a>
