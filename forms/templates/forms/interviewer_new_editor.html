@@ -38,23 +38,20 @@
                     <main id="slide-builder" class="cell medium-7 medium-cell-block-y">
                             <div class="slide grid-container">
                                 <div class="slide-field slide-title grid-x grid-padding-x">
-                                  <div class="drag-slide small-1 medium-2 cell">
-                                    <span><i class="fi-list"></i></span><!-- drag slide -->
-                                  </div>
-                                  <div class="slide-content small-10 medium-8 text-center cell">
+                                  <div class="slide-content small-10 small-offset-1 medium-8 medium-offset-2 text-center cell">
                                     <h1 contenteditable
                                         @blur="ceEdit($event, activeSlide.schema, 'title')" @keydown.enter="cePressEnter($event, activeSlide.schema, 'title')"
                                         v-bind:key="activeSlide.schema.title">
                                       ${ activeSlide.schema.title }
                                     </h1>
-                                    <a href="#" v-on:click="fillTitle()" v-if="!hasTitle">Add title</a>
+                                    <a class="button secondary small" href="#" v-on:click="fillTitle()" v-if="!hasTitle">Add a title</a>
                                     <p class="lead" contenteditable
                                     @blur="ceEdit($event, activeSlide.schema, 'description')" @keydown.enter="cePressEnter($event, activeSlide.schema, 'description')"
                                     v-bind:key="activeSlide.schema.description"
                                     >
                                       ${ activeSlide.schema.description }
                                     </p>
-                                    <a href="#" v-on:click="fillDescription()" v-if="!hasDescription">Add description</a>
+                                    <a class="button secondary small" href="#" v-on:click="fillDescription()" v-if="!hasDescription">Add a description</a>
                                   </div>
                                 </div>
                                 <draggable v-model="activeFieldKeys" handle=".drag-slide" @end="onFieldReorder">
@@ -67,10 +64,10 @@
                                     </div>
                                     <div class="slide-content small-10 medium-8 cell">
                                         <label class="control-label" :for="fieldName" v-if="field.title && getFieldWidget(fieldName) != 'oneLineWidget'">
-                                          ${ field.title }
+                                          ${ field.title }<span v-if="activeSlide.schema.required.indexOf(fieldName) > -1">*</span>
                                         </label>
                                         <label class="control-label" :for="fieldName" v-if="!field.title">
-                                          ${ fieldName }
+                                          ${ fieldName }<span v-if="activeSlide.schema.required.indexOf(fieldName) > -1">*</span>
                                         </label>
 
                                         <!-- All field types -->
@@ -119,6 +116,7 @@
                                                :value="field.default"
                                                :id="field.key"
                                                :label="field.title"
+                                               readonly
                                                type="number">
 
                                         <!-- File upload -->
@@ -131,11 +129,20 @@
                                                :name="fieldName"
                                                type="file" accept="image/*" capture="environment">
 
+                                        <!-- Signature (string) -->
+                                        <input v-if="field.type == 'string' && getFieldWidget(fieldName) == 'signatureWidget'"
+                                               :name="fieldName"
+                                               :value="field.default"
+                                               :id="field.key"
+                                               :label="field.title"
+                                               :placeholder="field.placeholder"
+                                               readonly
+                                               type="text">
+
                                         <!-- Yes/No (boolean) -->
-                                        <div class="checkboxes" v-if="field.type == 'boolean'">
-                                          <div class="checkbox">
-                                            <input :name="fieldName" type="checkbox">
-                                          </div>
+                                        <div class="yes-no-buttons" v-if="field.type == 'boolean'">
+                                          <button class="button expanded" disabled :name="fieldName" type="button">Yes</button>
+                                          <button class="button expanded" disabled :name="fieldName" type="button">No</button>
                                         </div>
 
                                         <!-- Checkboxes -->
@@ -149,7 +156,7 @@
                                         <!-- Radio buttons -->
                                         <fieldset class="radio-buttons" v-if="field.type == 'string' && getFieldWidget(fieldName) == 'radio'">
                                           <div v-for="option in field.enum">
-                                            <input type="radio" :name="option" :value="option" :id="option"><label :for="option">${ option }</label>
+                                            <input type="radio" :name="fieldName" :value="option" :id="option"><label :for="option">${ option }</label>
                                           </div>
                                         </fieldset>
 
@@ -166,6 +173,7 @@
                                                :id="field.key"
                                                :label="field.title"
                                                :placeholder="field.placeholder"
+                                               readonly
                                                type="date">
 
 
@@ -227,7 +235,7 @@
                                             </div>
 
                                             <p class="small-12 medium-9 medium-offset-3 cell">
-                                                <input type="checkbox" :value="fieldName" v-model="activeSlide.schema.required"><label :for="fieldName + 'required'">Required field?</label>
+                                              <input type="checkbox" :checked="activeSlide.schema.required.indexOf(fieldName) > -1" :name="fieldName + '-required'" v-on:change="setRequiredField($event)"><label :for="fieldName + '-required'">Required field?</label>
                                             </p>
                                             <p class="small-12 cell text-right">
                                                 <a class="button secondary" href="#" v-on:click="editingField = null" v-show="editingField == fieldName">Done</a>
@@ -249,7 +257,7 @@
                                     <p class="small-10 small-offset-1 medium-8 medium-offset-2 cell text-right">
                                         <a class="button hollow" href="#"
                                            contenteditable @blur="ceEdit($event, activeSlide.schema, 'nextButtonLabel')" @keydown.enter="cePressEnter($event, activeSlide.schema, 'nextButtonLabel')"
-                                                                 ><span>${ activeSlide.schema.nextButtonLabel }</span></a>
+                                                                 >${ activeSlide.schema.nextButtonLabel }</a>
 
                                     </p>
                                 </div>
@@ -284,7 +292,7 @@
                                     <span>Comments box</span>
                                 </a></li>
                                 <li class="cell"><a class="button hollow" href="#" v-on:click="addBooleanField()" draggable="false" ondragstart="return false;">
-                                    <img src="/static/img/field-icons/comment-box.png" alt="Yes/No field">
+                                    <img src="/static/img/field-icons/yes-no.png" alt="Yes/No field">
                                     <span>Yes/No</span>
                                 </a></li>
                                 <li class="cell"><a class="button hollow" href="#" v-on:click="addCheckboxField()" draggable="false" ondragstart="return false;">

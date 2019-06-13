@@ -2,9 +2,6 @@ $(document).foundation();
 
 // Vue.http.options.emulateJSON = true;
 
-// TODO:
-// - required fields
-
 var defaultNewSlide = {
   schema: {
     title: "New slide",
@@ -214,9 +211,6 @@ var vm = new Vue({
       ev.preventDefault();
       Vue.delete(this.activeSlide.schema.properties, fieldName);
     },
-    updateRequiredField: function(ev, fieldName) {
-      console.log(ev);
-    },
     updateFieldSlug: function(ev, fieldName) {
       var oldSlug = fieldName;
       var newSlug = ev.target.value;
@@ -338,6 +332,8 @@ var vm = new Vue({
       this.addField("yes-no", {
         type: "boolean",
         title: "Here's a question, do you agree?",
+        enum: ["yes", "no"],
+        enumNames: ["Yes", "No"],
       }, {"ui:widget": "buttonWidget"});
     },
     addFileUploadField: function() {
@@ -418,6 +414,25 @@ var vm = new Vue({
       console.log(this.activeSlide.schema.description);
     },
 
+    setRequiredField: function(ev) {
+      // we already know the field being edited, so we just need to check the event state
+      var slug = ev.target.name.replace('-required', '');
+      if (ev.target.checked) {
+        // add this slug to required array
+        if (!('required' in this.activeSlide.schema)) {
+          // no required array yet, create it
+          this.activeSlide.schema.required = [];
+        }
+        if (!(this.activeSlide.schema.required.indexOf(slug) > -1)) {
+          this.activeSlide.schema.required.push(slug);
+        }
+      } else {
+        // remove slug from required array
+        if (this.activeSlide.schema.required.indexOf(slug) > -1) {
+          this.activeSlide.schema.required.splice(this.activeSlide.schema.required.indexOf(slug), 1);
+        }
+      }
+    },
 
     ceEdit: function(ev, target, property) {
       // edit ContentEditable element

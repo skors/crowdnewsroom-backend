@@ -10,51 +10,53 @@ Light blue: #d4e0e8;
 */
 
 @font-face {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-weight: 300;
   font-style: normal;
-  src: local('Roboto Light'), url('../assets/fonts/Robot/Roboto-Light.ttf') format('truetype');
+  src: local("Roboto Light"), url("../../../../theme/static/fonts/Roboto/Roboto-Light.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-weight: 400;
   font-style: normal;
-  src: local('Roboto Regular'), url('../assets/fonts/Robot/Roboto-Regular.ttf') format('truetype');
+  src: local("Roboto Regular"), url("../../../../theme/static/fonts/Roboto/Roboto-Regular.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-weight: 500;
   font-style: normal;
-  src: local('Roboto Medium'), url('../assets/fonts/Robot/Roboto-Medium.ttf') format('truetype');
+  src: local("Roboto Medium"), url("../../../../theme/static/fonts/Roboto/Roboto-Medium.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-weight: 700;
   font-style: normal;
-  src: local('Roboto Bold'), url('../assets/fonts/Robot/Roboto-Bold.ttf') format('truetype');
+  src: local("Roboto Bold"), url("../../../../theme/static/fonts/Roboto/Roboto-Bold.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-weight: 900;
   font-style: normal;
-  src: local('Roboto Black'), url('../assets/fonts/Robot/Roboto-Black.ttf') format('truetype');
+  src: local("Roboto Black"), url("../../../../theme/static/fonts/Roboto/Roboto-Black.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-weight: 400;
   font-style: italic;
-  src: local('Roboto Italic'), url('../assets/fonts/Robot/Roboto-Italic.ttf') format('truetype');
+  src: local("Roboto Italic"), url("../../../../theme/static/fonts/Roboto/Roboto-Italic.ttf") format("truetype");
 }
 
 body,
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
   font-family: "Roboto", DejaVu Sans, "Helvetica Neue", Helvetica, sans-serif;
+  font-weight: normal;
+  font-style: normal;
   color: #152934;
 }
 
@@ -243,6 +245,21 @@ p.oneline {
     outline: 0;
 }
 
+.slide-title .slide-content a.button.secondary {
+    background-color: #fff;
+    color: #ccc;
+    border: 0;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.slide-title .slide-content a.button.secondary:hover,
+.slide-title .slide-content a.button.secondary:focus {
+    background-color: #eee;
+    color: #bbb;
+    border: 0;
+}
+
 .slide-field {
     padding-top: 1.5em;
     padding-bottom: 1.5em;
@@ -321,6 +338,54 @@ p.oneline {
 .slide-field .radio-buttons input[type="radio"] {
     margin-bottom: 0;
     display: inline-block;
+}
+
+/* Styling readonly and faking readonly look
+*/
+
+.slide-field .slide-content input[type="text"][readonly],
+.slide-field .slide-content input[type="date"][readonly],
+.slide-field .slide-content input[type="number"][readonly],
+.slide-field .slide-content textarea[readonly] {
+    background-color: #efefef;
+}
+
+.slide-field .slide-content input[type="text"][readonly]:focus,
+.slide-field .slide-content input[type="date"][readonly]:focus,
+.slide-field .slide-content input[type="number"][readonly]:focus,
+.slide-field .slide-content textarea[readonly]:focus {
+    background-color: #efefef;
+    cursor: not-allowed;
+    box-shadow: 0 0 0 transparent;
+    border-color: #ddd;
+    color: transparent;
+}
+
+.slide-field .slide-content input[readonly]::placeholder { color: #ccc !important; opacity: 1; }
+
+.slide-field .slide-content .radio-buttons input[type="radio"],
+.slide-field .slide-content .checkbox input[type="checkbox"],
+.slide-field .slide-content .radio-buttons input[type="radio"]:focus,
+.slide-field .slide-content .checkbox input[type="checkbox"]:focus {
+    background-color: #efefef;
+    cursor: not-allowed;
+    box-shadow: 0 0 0 transparent;
+    border-color: #ddd;
+    color: transparent;
+    opacity: 0.5;
+    pointer-events: none; /* disable clicking */
+}
+
+.slide-field .slide-content .checkbox label,
+.slide-field .slide-content .radio-buttons label {
+    cursor: not-allowed;
+    color: #ccc;
+    pointer-events: none; /* disable clicking */
+      -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;  /* disable text-selection */
 }
 
 
@@ -414,10 +479,7 @@ p.oneline {
 .slide .slide-navigation a.button {
     cursor: text;
     min-height: 2.4375rem;
-}
-
-.slide .slide-navigation a.button > span {
-    display: block;
+    font-size: 0.9rem;
 }
 
 #slide-editor-menu ul {
