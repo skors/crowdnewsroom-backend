@@ -3,6 +3,7 @@
 Dark blue: #204763 or rgba(32, 71, 99, 0.6)
 Text color: #152934
 Light blue: #d4e0e8;
+Lighter blue: #eaf0f4;
 
 */
 
@@ -13,42 +14,42 @@ Light blue: #d4e0e8;
   font-family: "Roboto";
   font-weight: 300;
   font-style: normal;
-  src: local("Roboto Light"), url("../../../../theme/static/fonts/Roboto/Roboto-Light.ttf") format("truetype");
+  src: local("Roboto Light"), url("../../fonts/Roboto/Roboto/Roboto-Light.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "Roboto";
   font-weight: 400;
   font-style: normal;
-  src: local("Roboto Regular"), url("../../../../theme/static/fonts/Roboto/Roboto-Regular.ttf") format("truetype");
+  src: local("Roboto Regular"), url("../../fonts/Roboto/Roboto-Regular.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "Roboto";
   font-weight: 500;
   font-style: normal;
-  src: local("Roboto Medium"), url("../../../../theme/static/fonts/Roboto/Roboto-Medium.ttf") format("truetype");
+  src: local("Roboto Medium"), url("../../fonts/Roboto/Roboto/Roboto-Medium.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "Roboto";
   font-weight: 700;
   font-style: normal;
-  src: local("Roboto Bold"), url("../../../../theme/static/fonts/Roboto/Roboto-Bold.ttf") format("truetype");
+  src: local("Roboto Bold"), url("../../fonts/Roboto/Roboto/Roboto-Bold.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "Roboto";
   font-weight: 900;
   font-style: normal;
-  src: local("Roboto Black"), url("../../../../theme/static/fonts/Roboto/Roboto-Black.ttf") format("truetype");
+  src: local("Roboto Black"), url("../../fonts/Roboto/Roboto/Roboto-Black.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "Roboto";
   font-weight: 400;
   font-style: italic;
-  src: local("Roboto Italic"), url("../../../../theme/static/fonts/Roboto/Roboto-Italic.ttf") format("truetype");
+  src: local("Roboto Italic"), url("../../fonts/Roboto/Roboto/Roboto-Italic.ttf") format("truetype");
 }
 
 body,
@@ -63,7 +64,10 @@ h1, h2, h3, h4, h5, h6,
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 { font-weight: 300; }
 
-.slide .slide-title h1, h2 { font-weight: 900; }
+.slide .slide-title h1, h2 {
+    font-weight: 900;
+    line-height: 1.2;
+}
 
 button,
 .button { font-weight: 500; }
@@ -237,7 +241,7 @@ p.oneline {
 }
 
 #slide-builder .slide:not(:last-child) {
-    margin-bottom: 1em;
+    margin-bottom: 1rem;
 }
 
 .slide-title .slide-content > *:focus {
@@ -261,8 +265,11 @@ p.oneline {
 }
 
 .slide-field {
-    padding-top: 1.5em;
-    padding-bottom: 1.5em;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    -webkit-transition: background-color 0.25s ease-out, color 0.25s ease-out;
+    transition: background-color 0.25s ease-out, color 0.25s ease-out;
+}
 }
 
 .slide-field label {
@@ -276,11 +283,11 @@ p.oneline {
 }
 
 .slide .slide-field:first-child {
-    padding-top: 3em;
+    padding-top: 3rem;
 }
 
 .slide .slide-field:last-child {
-    padding-bottom: 3em;
+    padding-bottom: 3rem;
 }
 .slide-field:hover {
     background-color: #f0f0f0;
@@ -355,7 +362,6 @@ p.oneline {
 .slide-field .slide-content input[type="number"][readonly]:focus,
 .slide-field .slide-content textarea[readonly]:focus {
     background-color: #efefef;
-    cursor: not-allowed;
     box-shadow: 0 0 0 transparent;
     border-color: #ddd;
     color: transparent;
@@ -368,19 +374,36 @@ p.oneline {
 .slide-field .slide-content .radio-buttons input[type="radio"]:focus,
 .slide-field .slide-content .checkbox input[type="checkbox"]:focus {
     background-color: #efefef;
-    cursor: not-allowed;
     box-shadow: 0 0 0 transparent;
     border-color: #ddd;
     color: transparent;
     opacity: 0.5;
-    pointer-events: none; /* disable clicking */
 }
 
 .slide-field .slide-content .checkbox label,
 .slide-field .slide-content .radio-buttons label {
-    cursor: not-allowed;
     color: #ccc;
-    pointer-events: none; /* disable clicking */
+}
+
+.slide-field .slide-content label[for*="dropdown-"] + select,
+.slide-field .slide-content label[for*="dropdown-"] + select:focus {
+    cursor: not-allowed;
+    background-color: #efefef;
+    border-color: #ccc;
+}
+
+.slide-field .slide-content input[type="text"][readonly],
+.slide-field .slide-content input[type="date"][readonly],
+.slide-field .slide-content input[type="number"][readonly],
+.slide-field .slide-content textarea[readonly],
+.slide-field .slide-content .checkbox label,
+.slide-field .slide-content .radio-buttons label,
+.slide-field .slide-content .radio-buttons input[type="radio"],
+.slide-field .slide-content .checkbox input[type="checkbox"],
+.slide-field .slide-content label[for*="dropdown-"] + select {
+    color: #ccc;
+    cursor: not-allowed;
+    pointer-events: none;
       -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
        -moz-user-select: none; /* Firefox */
@@ -388,12 +411,38 @@ p.oneline {
             user-select: none;  /* disable text-selection */
 }
 
+.slide-field .slide-content input[type="file"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+      -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;  /* disable text-selection */
+}
+
+.slide-field .slide-content input[type="file"]:hover,
+.slide-field .slide-content input[type="file"]:focus,
+.slide-field .slide-content input[type="text"][readonly]:hover,
+.slide-field .slide-content input[type="text"][readonly]:focus,
+.slide-field .slide-content input[type="date"][readonly]:hover,
+.slide-field .slide-content input[type="date"][readonly]:focus,
+.slide-field .slide-content input[type="number"][readonly]:hover,
+.slide-field .slide-content input[type="number"][readonly]:focus,
+.slide-field .slide-content textarea[readonly]:hover,
+.slide-field .slide-content textarea[readonly]:focus,
+.slide-field .slide-content .checkbox,
+.slide-field .slide-content .radio-buttons div {
+    cursor: not-allowed;
+}
+
 
 /* Field edit mode */
 
 .slide-field-edit,
 .slide-field-edit:hover {
-    background-color: #eee;
+    background-color: #eaf0f4;
     cursor: default;
 }
 
@@ -475,6 +524,15 @@ p.oneline {
 }
 
 /* End field edit mode */
+
+.slide .slide-navigation {
+    padding-top: 1rem;
+    padding-bottom: 0.5rem;
+}
+
+.slide .slide-navigation p {
+    margin-bottom: 0;
+}
 
 .slide .slide-navigation a.button {
     cursor: text;
