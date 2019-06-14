@@ -298,6 +298,7 @@ var vm = new Vue({
       // TODO: check if slug exists, change if it does
       slug = slug + '-' + (Math.floor(Math.random() * 900) + 100);
       this.$set(this.activeSlide.schema.properties, slug, data);
+      this.activeSlide.schema.ordering.push(slug);
 
       if (uischema) {
         if (!(this.activeSlide.schema.slug in this.uischema)) {
