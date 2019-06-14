@@ -41,7 +41,7 @@
                                   <div class="slide-content small-10 small-offset-1 medium-8 medium-offset-2 text-center cell">
                                     <h1 contenteditable
                                         @blur="ceEdit($event, activeSlide.schema, 'title')" @keydown.enter="cePressEnter($event, activeSlide.schema, 'title')"
-                                        v-bind:key="activeSlide.schema.title">
+                                        v-bind:key="activeSlide.schema.slug">
                                       ${ activeSlide.schema.title }
                                     </h1>
                                     <a class="button secondary small" href="#" v-on:click="fillTitle()" v-if="!hasTitle">Add a title</a>
