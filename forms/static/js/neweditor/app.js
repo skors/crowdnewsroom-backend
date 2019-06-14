@@ -123,12 +123,10 @@ var vm = new Vue({
               vm.$set(vm.$data, 'uischema', response.data.results[0].ui_schema_json);
               vm.activeSlide = vm.slides[0];
               vm.$set(vm.$data, 'activeFieldKeys', Object.keys(vm.activeSlide.schema.properties));
-              this.correctSchema();
-              console.log(vm.activeSlide);
-              console.log(vm.activeFieldKeys);
+              vm.correctSchema();
             })
             .catch(function (error) {
-              this.message = "getFormData - I get null";
+              console.log("getFormData - I get null");
             });
           });
         },
