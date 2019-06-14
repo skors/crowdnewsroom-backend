@@ -103,6 +103,17 @@ var vm = new Vue({
         return false;
       }
       return true;
+    },
+    orderedFields: function() {
+      var fields = [];
+      for (var idx in this.activeSlide.schema.ordering) {
+        slug = this.activeSlide.schema.ordering[idx];
+        var field = this.activeSlide.schema.properties[slug];
+        field.slug = slug;
+        fields.push(field);
+      }
+      console.log(fields);
+      return fields;
     }
   },
 
@@ -191,9 +202,21 @@ var vm = new Vue({
         }
       }
     },
+    correctMissingProperties: function() {
+      // ensure the schema has the "ordering" property
+      // TODO: deal with "required" as well
+      for (var idx in this.slides) {
+        var slide = this.slides[idx];
+        if (!('ordering' in slide.schema)) {
+          this.$set(slide.schema, 'ordering', Object.keys(slide.schema.properties));
+          console.log(slide.schema.ordering);
+        }
+      }
+    },
     correctSchema: function() {
       this.correctFinalSlide();
       this.correctConditions();
+      this.correctMissingProperties();
     },
     /*
     addFieldToSlide: function(ev, idx) {
@@ -239,13 +262,15 @@ var vm = new Vue({
     },
 
     onFieldReorder: function(ev) {
+      /*
       var updatedProperties = {};
       for (var prop in this.activeFieldKeys) {
         var value = this.activeSlide.schema.properties[this.activeFieldKeys[prop]];
         updatedProperties[this.activeFieldKeys[prop]] = value;
       }
       this.$set(this.activeSlide.schema, 'properties', updatedProperties);
-      console.log(JSON.stringify(this.slides));
+      */
+      console.log(this.activeSlide.schema.ordering);
     },
     selectSlide: function(slide) {
       this.$set(this.$data, 'activeSlide', slide);
