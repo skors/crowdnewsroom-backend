@@ -54,7 +54,7 @@
                                     <a class="button secondary small" href="#" v-on:click="fillDescription()" v-if="!hasDescription">Add a description</a>
                                   </div>
                                 </div>
-                                <draggable v-model="activeSlide.schema.ordering" handle=".drag-slide" @end="onFieldReorder">
+                                <draggable v-model="uischema[activeSlide.schema.slug]['ui:order']" handle=".drag-slide" @end="onFieldReorder">
                                 <div class="slide-field grid-x grid-padding-x"
                                      v-for="field in orderedFields"
                                      v-bind:class="{'slide-field-edit': editingField == field.slug}"

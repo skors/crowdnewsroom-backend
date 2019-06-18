@@ -96,13 +96,26 @@ var vm = new Vue({
     },
     orderedFields: function() {
       var fields = [];
+
+      if (this.activeSlide.schema.slug in this.uischema) {
+        console.log(this.uischema);
+        for (var idx in this.uischema[this.activeSlide.schema.slug]['ui:order']) {
+          var slug = this.uischema[this.activeSlide.schema.slug]['ui:order'][idx];
+          var field = this.activeSlide.schema.properties[slug];
+          field.slug = slug;
+          fields.push(field);
+        }
+      } else {
+        return Object.keys(this.activeSlide.schema.properties);
+      }
+      /*
       for (var idx in this.activeSlide.schema.ordering) {
         slug = this.activeSlide.schema.ordering[idx];
         var field = this.activeSlide.schema.properties[slug];
         field.slug = slug;
         fields.push(field);
       }
-      console.log(fields);
+      */
       return fields;
     }
   },
@@ -121,13 +134,28 @@ var vm = new Vue({
             .then(function (response) {
               formjson = response.data.results[0].form_json;
               vm.$set(vm.$data, 'slides', response.data.results[0].form_json);
-              vm.$set(vm.$data, 'uischema', response.data.results[0].ui_schema_json);
+
+              if (response.data.results[0].ui_schema_json) {
+                vm.$set(vm.$data, 'uischema', response.data.results[0].ui_schema_json);
+                console.log('uischema included, updated');
+              } else {
+                vm.$set(vm.$data, 'uischema', response.data.results[0].ui_schema_json);
+                console.log('No uischema here, good');
+              }
+              for (var idx in vm.slides) {
+                var slide = vm.slides[idx];
+                if (!(slide.schema.slug in vm.uischema)) {
+                  vm.$set(vm.$data.uischema, slide.schema.slug, {'ui:order': Object.keys(slide.schema.properties)});
+                }
+              }
+
               vm.activeSlide = vm.slides[0];
               vm.$set(vm.$data, 'activeFieldKeys', Object.keys(vm.activeSlide.schema.properties));
               vm.correctSchema();
             })
             .catch(function (error) {
               console.log("getFormData - I get null");
+              console.log(error);
             });
           });
         },
@@ -150,6 +178,7 @@ var vm = new Vue({
 
     removeSlide: function(ev, idx) {
       ev.preventDefault();
+      delete this.uischema[this.slides[idx].schema.slug];
       this.slides.splice(idx, 1);
       this.correctSchema();
     },
@@ -160,6 +189,7 @@ var vm = new Vue({
       var slideSlug = 'slide-' + (Math.floor(Math.random() * 900) + 100);
       newSlide.schema.slug = slideSlug;
       this.slides.push(newSlide);
+      this.$set(this.uischema, slideSlug, {'ui:order': Object.keys(newSlide.schema.properties)});
       this.selectSlide(newSlide);
       this.correctSchema();
     },
@@ -193,14 +223,18 @@ var vm = new Vue({
       }
     },
     correctMissingProperties: function() {
-      // ensure the schema has the "ordering" property
-      // TODO: deal with "required" as well
       for (var idx in this.slides) {
         var slide = this.slides[idx];
+        if (this.activeSlide.schema.slug in this.uischema && !('ui:order' in this.uischema[this.activeSlide.schema.slug])) {
+          this.$set(this.uischema[this.activeSlide.schema.slug], 'ui:order', Object.keys(slide.schema.properties));
+          console.log(this.uischema[this.activeSlide.schema.slug]);
+        }
+        /*
         if (!('ordering' in slide.schema)) {
           this.$set(slide.schema, 'ordering', Object.keys(slide.schema.properties));
           console.log(slide.schema.ordering);
         }
+        */
       }
     },
     correctSchema: function() {
@@ -260,7 +294,7 @@ var vm = new Vue({
       }
       this.$set(this.activeSlide.schema, 'properties', updatedProperties);
       */
-      console.log(this.activeSlide.schema.ordering);
+      console.log(this.uischema[this.activeSlide.schema.slug]['ui:order']);
     },
     selectSlide: function(slide) {
       this.$set(this.$data, 'activeSlide', slide);
@@ -298,7 +332,8 @@ var vm = new Vue({
       // TODO: check if slug exists, change if it does
       slug = slug + '-' + (Math.floor(Math.random() * 900) + 100);
       this.$set(this.activeSlide.schema.properties, slug, data);
-      this.activeSlide.schema.ordering.push(slug);
+      this.uischema[this.activeSlide.schema.slug]['ui:order'].push(slug);
+      // this.activeSlide.schema.ordering.push(slug);
 
       if (uischema) {
         if (!(this.activeSlide.schema.slug in this.uischema)) {
