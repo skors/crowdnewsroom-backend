@@ -102,8 +102,10 @@ var vm = new Vue({
         for (var idx in this.uischema[this.activeSlide.schema.slug]['ui:order']) {
           var slug = this.uischema[this.activeSlide.schema.slug]['ui:order'][idx];
           var field = this.activeSlide.schema.properties[slug];
-          field.slug = slug;
-          fields.push(field);
+          if (field) {
+            field.slug = slug;
+            fields.push(field);
+          }
         }
       } else {
         return Object.keys(this.activeSlide.schema.properties);
