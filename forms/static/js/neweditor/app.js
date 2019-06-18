@@ -438,7 +438,11 @@ var vm = new Vue({
         title: "Your signature",
       }, {'ui:widget': 'signatureWidget'});
     },
-
+    addLocationField: function() {
+      this.addField("location", {
+        type: "string",
+      }, {'ui:widget': 'locationWidget'});
+    },
     removeOption: function(field, idx) {
       if ('items' in field) {
         field.items.enum.splice(idx, 1);

@@ -145,6 +145,18 @@
                                           <button class="button expanded" disabled :name="field.slug" type="button">No</button>
                                         </div>
 
+                                        <!-- Location -->
+                                        <div class="location" v-if="field.type == 'string' && getFieldWidget(field.slug) == 'locationWidget'">
+                                          <input 
+                                               :name="field.slug"
+                                               :value="field.default"
+                                               :id="field.key"
+                                               :label="field.title"
+                                               :placeholder="field.placeholder"
+                                               readonly
+                                               type="text">
+                                        </div>
+
                                         <!-- Checkboxes -->
                                         <div class="checkboxes" v-if="field.type == 'array' && getFieldWidget(field.slug) == 'checkboxes'">
                                           <div class="checkbox" v-for="option in field.items.enum">
@@ -322,6 +334,10 @@
                                 <li class="cell"><a class="button hollow" href="#" v-on:click="addSignatureField()" draggable="false" ondragstart="return false;">
                                     <img src="/static/img/field-icons/e-signature.png" alt="E-signature">
                                     <span>E-signature</span>
+                                </a></li>
+                                <li class="cell"><a class="button hollow" href="#" v-on:click="addLocationField()" draggable="false" ondragstart="return false;">
+                                    <img src="/static/img/field-icons/location.png" alt="Location">
+                                    <span>Location</span>
                                 </a></li>
                             </ul>
                         </div>
