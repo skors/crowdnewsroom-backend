@@ -147,14 +147,23 @@
 
                                         <!-- Location -->
                                         <div class="location" v-if="field.type == 'string' && getFieldWidget(field.slug) == 'locationWidget'">
-                                          <input 
+                                          <!-- <input 
                                                :name="field.slug"
                                                :value="field.default"
                                                :id="field.key"
                                                :label="field.title"
                                                :placeholder="field.placeholder"
                                                readonly
-                                               type="text">
+                                               type="text">-->
+                                          <button class="button"
+                                                disabled
+                                               :name="field.slug"
+                                               :value="field.default"
+                                               :id="field.key"
+                                               :placeholder="field.placeholder">
+                                            <i class="fi-marker"></i>
+                                            <span>"Share your location". Edit me to change text!</span>
+                                          </button>
                                         </div>
 
                                         <!-- Checkboxes -->
