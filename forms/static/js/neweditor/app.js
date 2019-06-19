@@ -140,6 +140,7 @@ var vm = new Vue({
               if (response.data.results[0].ui_schema_json) {
                 vm.$set(vm.$data, 'uischema', response.data.results[0].ui_schema_json);
                 console.log('uischema included, updated');
+                console.log(response.data.results[0].ui_schema_json);
               } else {
                 vm.$set(vm.$data, 'uischema', response.data.results[0].ui_schema_json);
                 console.log('No uischema here, good');
