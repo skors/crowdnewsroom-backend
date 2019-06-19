@@ -258,7 +258,12 @@ var vm = new Vue({
     removeField: function(ev, fieldName) {
       ev.preventDefault();
       Vue.delete(this.activeSlide.schema.properties, fieldName);
-      Vue.delete(this.uischema[this.activeSlide.slug]['ui:order'], fieldName);
+      if (fieldName in this.uischema[this.activeSlide.slug]['ui:order']) {
+        Vue.delete(this.uischema[this.activeSlide.slug]['ui:order'], fieldName);
+      }
+      if (fieldName in this.uischema[this.activeSlide.slug]) {
+        Vue.delete(this.uischema[this.activeSlide.slug][fieldName]);
+      }
     },
     updateFieldSlug: function(ev, fieldName) {
       var oldSlug = fieldName;
