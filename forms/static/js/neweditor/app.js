@@ -289,9 +289,12 @@ var vm = new Vue({
       }
     },
 
-    updateBooleanField: function(ev, fieldName) {
-      console.log(fieldName);
-      console.log(ev.target.value);
+    updateBooleanField: function(ev, fieldName, idx) {
+      // save enumName, but make slug version for enum property
+      // by making it lowercase and replacing spaces with hyphens
+      var value = ev.target.value.toLowerCase().replace(/ /g,"-");
+      var field = this.activeSlide.schema.properties[fieldName];
+      field.enum.splice(idx, 1, value);
     },
 
     onFieldReorder: function(ev) {

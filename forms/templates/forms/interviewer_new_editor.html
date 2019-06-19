@@ -262,8 +262,8 @@
                                             <!-- Boolean -->
                                             <div class="small-12 medium-9 cell" v-if="field.type == 'boolean'">
                                               <p class="multiple-fields">
-                                                <input :name="field.enumNames[0]" type="text" v-model="field.enumNames[0]">
-                                                <input :name="field.enumNames[1]" type="text" v-model="field.enumNames[1]">
+                                                <input :name="field.enumNames[0]" type="text" v-model="field.enumNames[0]" v-on:change="updateBooleanField($event, field.slug, 0)">
+                                                <input :name="field.enumNames[1]" type="text" v-model="field.enumNames[1]" v-on:change="updateBooleanField($event, field.slug, 1)">
                                               </p>
                                             </div>
 
