@@ -28,7 +28,7 @@
                                 v-bind:class="{ active: slide == activeSlide }">
                                 <ul class="slide-options text-center cell small-3 medium-2">
                                     <li><span class="slide-list-handle" aria-hidden="true"><i class="fi-list"></i> <em class="show-for-sr">move</em></span></li>
-                                    <li><a href="#" aria-hidden="true" v-on:click="removeSlide($event, slideIdx)"><i class="fi-trash"></i> <em class="show-for-sr">delete</em></a></li>
+                                    <li><a href="#" aria-hidden="true" v-if="slides.length > 1" v-on:click="removeSlide($event, slideIdx)"><i class="fi-trash"></i> <em class="show-for-sr">delete</em></a></li>
                                 </ul>
                                 <a class="slide-thumbnail cell small-9 medium-10" href="#" v-on:click="selectSlide(slide)" draggable="false" ondragstart="return false;"><strong>${slide.schema.title}</strong></a>
                             </li>

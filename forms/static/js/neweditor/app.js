@@ -181,7 +181,16 @@ var vm = new Vue({
 
     removeSlide: function(ev, idx) {
       ev.preventDefault();
-      delete this.uischema[this.slides[idx].schema.slug];
+      if (idx === 0) {
+        this.activeSlide = this.slides[1];
+      } else {
+        this.activeSlide = this.slides[idx - 1];
+      }
+      var slug = this.slides[idx].schema.slug;
+      delete this.uischema[slug];
+      if ('ui:order' in this.uischema && slug in this.uischema['ui:order']) {
+        delete this.uischema['ui:order'][slug];
+      }
       this.slides.splice(idx, 1);
       this.correctSchema();
     },
