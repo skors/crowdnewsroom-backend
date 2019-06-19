@@ -289,6 +289,11 @@ var vm = new Vue({
       }
     },
 
+    updateBooleanField: function(ev, fieldName) {
+      console.log(fieldName);
+      console.log(ev.target.value);
+    },
+
     onFieldReorder: function(ev) {
       /*
       var updatedProperties = {};

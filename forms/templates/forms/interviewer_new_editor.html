@@ -126,7 +126,7 @@
 
                                         <!-- Image upload -->
                                         <input v-if="field.type == 'string' && field.format == 'data-url' && getFieldWidget(field.slug) == 'imageUpload'"
-                                               :name="field.slug"
+                                               :name="field.slug" readonly
                                                type="file" accept="image/*" capture="environment">
 
                                         <!-- Signature (string) -->
@@ -141,8 +141,8 @@
 
                                         <!-- Yes/No (boolean) -->
                                         <div class="yes-no-buttons" v-if="field.type == 'boolean'">
-                                          <button class="button expanded" disabled :name="field.slug" type="button">Yes</button>
-                                          <button class="button expanded" disabled :name="field.slug" type="button">No</button>
+                                          <button class="button expanded" disabled :name="field.slug" type="button">${ field.enumNames[0] }</button>
+                                          <button class="button expanded" disabled :name="field.slug" type="button">${ field.enumNames[1] }</button>
                                         </div>
 
                                         <!-- Location -->
@@ -229,6 +229,8 @@
                                             <p class="small-12 medium-3 cell text-right"><!-- should be visible only for radio buttons and checkboxes -->
                                                 <label>Options</label>
                                             </p>
+
+                                            <!-- Checkboxes -->
                                             <div class="small-12 medium-9 cell" v-if="field.type == 'array'">
                                                 <p class="multiple-fields" v-for="(option, idx) in field.items.enum">
                                                     <input :name="option" type="text" v-model="field.items.enum[idx]">
@@ -237,6 +239,8 @@
                                                 <p><a href="#" class="button hollow small" v-on:click="addOption(field)"><i class="fi-plus"></i> Add option</a></p>
                                                 </p>
                                             </div>
+
+                                            <!-- Radio -->
                                             <div class="small-12 medium-9 cell" v-if="getFieldWidget(field.slug) == 'radio' || (field.type == 'string' && field.enum && !getFieldWidget(field.slug))">
                                                 <p class="multiple-fields" v-for="(option, idx) in field.enum">
                                                     <input :name="option" type="text" v-model="field.enum[idx]">
@@ -244,6 +248,14 @@
                                                 </p>
                                                 <p><a href="#" class="button hollow small" v-on:click="addOption(field)"><i class="fi-plus"></i> Add option</a></p>
                                                 </p>
+                                            </div>
+
+                                            <!-- Boolean -->
+                                            <div class="small-12 medium-9 cell" v-if="field.type == 'boolean'">
+                                              <p class="multiple-fields">
+                                                <input :name="field.enumNames[0]" type="text" v-model="field.enumNames[0]">
+                                                <input :name="field.enumNames[1]" type="text" v-model="field.enumNames[1]">
+                                              </p>
                                             </div>
 
                                             <p class="small-12 medium-9 medium-offset-3 cell">
