@@ -63,11 +63,9 @@
                                         <span><i class="fi-list" v-show="editingField != field.slug"></i></span><!-- drag slide -->
                                     </div>
                                     <div class="slide-content small-10 medium-8 cell">
-                                        <label class="control-label" :for="field.slug" v-if="field.title && getFieldWidget(field.slug) != 'oneLineWidget'">
+                                        <label class="control-label" :for="field.slug" 
+                                               v-if="field.title && (getFieldWidget(field.slug) != 'oneLineWidget' || getFieldWidget(field.slug) != 'locationWidget')">
                                           ${ field.title }<span v-if="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1">*</span>
-                                        </label>
-                                        <label class="control-label" :for="field.slug" v-if="!field.title">
-                                          ${ field.slug }<span v-if="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1">*</span>
                                         </label>
 
                                         <!-- All field types -->
