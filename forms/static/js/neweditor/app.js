@@ -160,6 +160,7 @@ var vm = new Vue({
         },
     sendFormData: function(close) {
       this.editingField = null;
+      vm.correctSchema();  // make sure everything is correct -.-
       var formData = new FormData(document.getElementById('editor-hidden-form'));
       axios.post(this.postUrl, formData)
         .then(function (response) {
@@ -233,9 +234,20 @@ var vm = new Vue({
     correctMissingProperties: function() {
       for (var idx in this.slides) {
         var slide = this.slides[idx];
-        if (this.activeSlide.schema.slug in this.uischema && !('ui:order' in this.uischema[this.activeSlide.schema.slug])) {
-          this.$set(this.uischema[this.activeSlide.schema.slug], 'ui:order', Object.keys(slide.schema.properties));
-          console.log(this.uischema[this.activeSlide.schema.slug]);
+        if (!slide.schema.slug in this.uischema) {
+          this.$set(this.uischema, slide.schema.slug, {});
+        }
+        if (!'ui:order' in this.uischema[slide.schema.slug]) {
+          this.$set(this.uischema[slide.schema.slug], 'ui:order', Object.keys(slide.schema.properties));
+        }
+        for (var slug in slide.schema.properties) {
+          var field = slide.schema.properties[slug];
+          if ('placeholder' in field) {
+            if (!this.uischema[slide.schema.slug][slug]) {
+              this.$set(this.uischema[slide.schema.slug], slug, {});
+            }
+            this.$set(this.uischema[slide.schema.slug][slug], 'ui:placeholder', field.placeholder);
+          }
         }
         /*
         if (!('ordering' in slide.schema)) {
@@ -318,7 +330,7 @@ var vm = new Vue({
       }
       this.$set(this.activeSlide.schema, 'properties', updatedProperties);
       */
-      console.log(this.uischema[this.activeSlide.schema.slug]['ui:order']);
+      // console.log(this.uischema[this.activeSlide.schema.slug]['ui:order']);
     },
     selectSlide: function(slide) {
       this.$set(this.$data, 'activeSlide', slide);
@@ -359,19 +371,20 @@ var vm = new Vue({
       this.uischema[this.activeSlide.schema.slug]['ui:order'].push(slug);
       // this.activeSlide.schema.ordering.push(slug);
 
-      if (uischema) {
-        if (!(this.activeSlide.schema.slug in this.uischema)) {
-          // slide is not in uischema
-          this.uischema[this.activeSlide.schema.slug] = {};
-        }
+      // create uischema anyways
+      if (!(this.activeSlide.schema.slug in this.uischema)) {
+        // slide is not in uischema
+        this.uischema[this.activeSlide.schema.slug] = {};
+      }
 
-        if (!(slug in this.uischema[this.activeSlide.schema.slug])) {
-          // field is not yet in uischema
-          this.$set(this.uischema[this.activeSlide.schema.slug], slug, uischema);
-        } else {
-          // field is in uischema, merge objects
-          Object.assign(this.uischema[this.activeSlide.schema.slug][slug], uischema);
-        }
+      if (!(slug in this.uischema[this.activeSlide.schema.slug])) {
+        // field is not yet in uischema
+        this.$set(this.uischema[this.activeSlide.schema.slug], slug, uischema || {});
+      }
+
+      if (uischema) {
+        // field is in uischema, merge objects
+        Object.assign(this.uischema[this.activeSlide.schema.slug][slug], uischema);
       }
     },
     addTextInputField: function() {
@@ -484,11 +497,11 @@ var vm = new Vue({
 
     fillTitle: function() {
       this.$set(this.activeSlide.schema, 'title', "Click me to edit this title");
-      console.log(this.activeSlide.schema.title);
+      // console.log(this.activeSlide.schema.title);
     },
     fillDescription: function() {
       this.$set(this.activeSlide.schema, 'description', "Click me to edit this description");
-      console.log(this.activeSlide.schema.description);
+      // console.log(this.activeSlide.schema.description);
     },
 
     setRequiredField: function(ev) {
