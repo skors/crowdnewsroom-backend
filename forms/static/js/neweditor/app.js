@@ -98,7 +98,6 @@ var vm = new Vue({
       var fields = [];
 
       if (this.activeSlide.schema.slug in this.uischema) {
-        console.log(this.uischema);
         for (var idx in this.uischema[this.activeSlide.schema.slug]['ui:order']) {
           var slug = this.uischema[this.activeSlide.schema.slug]['ui:order'][idx];
           var field = this.activeSlide.schema.properties[slug];
@@ -139,11 +138,8 @@ var vm = new Vue({
 
               if (response.data.results[0].ui_schema_json) {
                 vm.$set(vm.$data, 'uischema', response.data.results[0].ui_schema_json);
-                console.log('uischema included, updated');
-                console.log(response.data.results[0].ui_schema_json);
               } else {
                 vm.$set(vm.$data, 'uischema', response.data.results[0].ui_schema_json);
-                console.log('No uischema here, good');
               }
               for (var idx in vm.slides) {
                 var slide = vm.slides[idx];
@@ -266,12 +262,14 @@ var vm = new Vue({
     */
     removeField: function(ev, fieldName) {
       ev.preventDefault();
+      var slug = this.activeSlide.schema.slug;
       Vue.delete(this.activeSlide.schema.properties, fieldName);
-      if (fieldName in this.uischema[this.activeSlide.slug]['ui:order']) {
-        Vue.delete(this.uischema[this.activeSlide.slug]['ui:order'], fieldName);
+      if (this.uischema[slug]['ui:order'].indexOf(fieldName) > -1) {
+        var idx = this.uischema[slug]['ui:order'].indexOf(fieldName);
+        this.uischema[slug]['ui:order'].splice(idx, 1);
       }
-      if (fieldName in this.uischema[this.activeSlide.slug]) {
-        Vue.delete(this.uischema[this.activeSlide.slug][fieldName]);
+      if (this.uischema[slug].hasOwnProperty(fieldName)) {
+        Vue.delete(this.uischema[slug][fieldName]);
       }
     },
     updateFieldSlug: function(ev, fieldName) {
