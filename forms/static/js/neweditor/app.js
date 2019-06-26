@@ -150,7 +150,7 @@ var vm = new Vue({
 
               vm.activeSlide = vm.slides[0];
               vm.$set(vm.$data, 'activeFieldKeys', Object.keys(vm.activeSlide.schema.properties));
-              vm.correctSchema();
+              vm.cleanup();
             })
             .catch(function (error) {
               console.log("getFormData - I get null");
@@ -160,7 +160,7 @@ var vm = new Vue({
         },
     sendFormData: function(close) {
       this.editingField = null;
-      vm.correctSchema();  // make sure everything is correct -.-
+      vm.cleanup();  // make sure everything is correct -.-
       var formData = new FormData(document.getElementById('editor-hidden-form'));
       axios.post(this.postUrl, formData)
         .then(function (response) {
@@ -189,7 +189,7 @@ var vm = new Vue({
         delete this.uischema['ui:order'][slug];
       }
       this.slides.splice(idx, 1);
-      this.correctSchema();
+      this.cleanup();
     },
     addSlide: function(ev) {
       ev.preventDefault();
@@ -200,7 +200,7 @@ var vm = new Vue({
       this.slides.push(newSlide);
       this.$set(this.uischema, slideSlug, {'ui:order': Object.keys(newSlide.schema.properties)});
       this.selectSlide(newSlide);
-      this.correctSchema();
+      this.cleanup();
     },
     correctFinalSlide: function() {
       for (var idx in this.slides) {
@@ -257,7 +257,7 @@ var vm = new Vue({
         */
       }
     },
-    correctSchema: function() {
+    cleanup: function() {
       this.correctFinalSlide();
       this.correctConditions();
       this.correctMissingProperties();
