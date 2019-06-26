@@ -313,13 +313,13 @@ var vm = new Vue({
       }
     },
 
-    updateBooleanField: function(ev, fieldName, idx) {
-      // save enumName, but make slug version for enum property
-      // by making it lowercase and replacing spaces with hyphens
-      var value = ev.target.value.toLowerCase().replace(/ /g,"-");
-      var field = this.activeSlide.schema.properties[fieldName];
-      field.enum.splice(idx, 1, value);
-    },
+    // updateBooleanField: function(ev, fieldName, idx) {
+    //   // save enumName, but make slug version for enum property
+    //   // by making it lowercase and replacing spaces with hyphens
+    //   var value = ev.target.value.toLowerCase().replace(/ /g,"-");
+    //   var field = this.activeSlide.schema.properties[fieldName];
+    //   field.enum.splice(idx, 1, value);
+    // },
 
     onFieldReorder: function(ev) {
       /*
@@ -418,7 +418,7 @@ var vm = new Vue({
       this.addField("yes-no", {
         type: "boolean",
         title: "Here's a question, do you agree?",
-        enum: ["yes", "no"],
+        // enum: ["yes", "no"],
         enumNames: ["Yes", "No"],
       }, {"ui:widget": "buttonWidget"});
     },
