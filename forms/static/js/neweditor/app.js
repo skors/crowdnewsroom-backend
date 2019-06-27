@@ -263,14 +263,23 @@ var vm = new Vue({
     removeField: function(ev, fieldName) {
       ev.preventDefault();
       var slug = this.activeSlide.schema.slug;
+      // remove the actual field from the schema
       Vue.delete(this.activeSlide.schema.properties, fieldName);
       if (this.uischema[slug]['ui:order'].indexOf(fieldName) > -1) {
+        // remove this field from the ordering array
         var idx = this.uischema[slug]['ui:order'].indexOf(fieldName);
         this.uischema[slug]['ui:order'].splice(idx, 1);
       }
       if (this.uischema[slug].hasOwnProperty(fieldName)) {
+        // remove all UI properties of this field
         Vue.delete(this.uischema[slug][fieldName]);
       }
+      if (this.activeSlide.schema.required && this.activeSlide.schema.required.indexOf(fieldName) > -1) {
+        // remove it from the required array
+        var idx = this.activeSlide.schema.required.indexOf(fieldName);
+        this.activeSlide.schema.required.splice(idx, 1);
+      }
+
     },
     updateFieldSlug: function(ev, fieldName) {
       var oldSlug = fieldName;
