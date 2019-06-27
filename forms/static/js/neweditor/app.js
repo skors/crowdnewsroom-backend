@@ -197,6 +197,10 @@ var vm = new Vue({
       var newSlide = JSON.parse(JSON.stringify( defaultNewSlide ));
       var slideSlug = 'slide-' + (Math.floor(Math.random() * 900) + 100);
       newSlide.schema.slug = slideSlug;
+      for (var prop in newSlide.schema.properties) {
+        newSlide.schema.properties[newSlide.schema.slug + '-' + prop] = newSlide.schema.properties[prop];
+        delete newSlide.schema.properties[prop];
+      }
       this.slides.push(newSlide);
       this.$set(this.uischema, slideSlug, {'ui:order': Object.keys(newSlide.schema.properties)});
       this.selectSlide(newSlide);
@@ -375,7 +379,7 @@ var vm = new Vue({
 
     addField: function(slug, data, uischema) {
       // TODO: check if slug exists, change if it does
-      slug = slug + '-' + (Math.floor(Math.random() * 900) + 100);
+      slug = this.activeSlide.schema.slug + '-' + slug + '-' + (Math.floor(Math.random() * 900) + 100);
       this.$set(this.activeSlide.schema.properties, slug, data);
       this.uischema[this.activeSlide.schema.slug]['ui:order'].push(slug);
       // this.activeSlide.schema.ordering.push(slug);
