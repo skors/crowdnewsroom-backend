@@ -62,211 +62,267 @@
                                     <div class="drag-slide small-1 medium-2 cell">
                                         <span><i class="fi-list" v-show="editingField != field.slug"></i></span><!-- drag slide -->
                                     </div>
-                                    <div class="slide-content small-10 medium-8 cell">
-                                        <label class="control-label" :for="field.slug" 
-                                               v-if="field.title && (getFieldWidget(field.slug) != 'oneLineWidget' || getFieldWidget(field.slug) != 'locationWidget')">
-                                          ${ field.title }<span v-if="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1">*</span>
-                                        </label>
 
-                                        <!-- All field types -->
+                                    <!-- Oneline (only text) -->
+                                    <div class="slide-content small-10 medium-8 cell" v-if="getFieldType(field) == 'oneline'">
+                                      <p class="oneline">${ field.title }</p>
 
-                                        <!-- Oneline (only text) -->
-                                        <p class="oneline"
-                                           v-if="getFieldWidget(field.slug) == 'oneLineWidget'"
-                                           >${ field.title }
+                                      <div class="field-options grid-x grid-margin-x" v-show="field.slug == editingField">
+                                        <h5 class="small-12 cell">Edit field</h5>
+                                        <p class="small-12 medium-3 cell text-right">
+                                          <label class="middle" :for="field.slug + 'label'">Label</label>
+                                        </p>
+                                        <p class="small-12 medium-9 cell">
+                                          <input type="text" :name="field.slug + 'label'" v-model="field.title">
+                                          <span class="help-text" id="nameHelpText">The text to be shown.</span>
+                                        </p>
+                                        <p class="small-12 cell text-right">
+                                            <a class="button secondary" href="#" v-on:click="editingField = null" v-show="editingField == field.slug">Done</a>
+                                        </p><!-- save slide-->
+                                      </div>
+                                    </div>
+
+                                    <!-- Text-based fields (text, longtext, email, number) -->
+                                    <div class="slide-content small-10 medium-8 cell" v-if="['text', 'longtext', 'email', 'number'].includes(getFieldType(field))">
+                                      <label class="control-label" :for="field.slug"> 
+                                        ${ field.title }<span v-if="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1">*</span>
+                                      </label>
+
+                                      <!-- Email field (string) -->
+                                      <input :name="field.slug" :value="field.default" :id="field.key" :label="field.title" :placeholder="field.placeholder" readonly type="text"
+                                             v-if="getFieldType(field) == 'email'">
+                                      <!-- Long text field -->
+                                      <textarea :name="field.slug" :value="field.default" :id="field.key" :label="field.title" :placeholder="field.placeholder" readonly type="text" style="height: auto;"
+                                                v-if="getFieldType(field) == 'longtext'"></textarea>
+                                      <!-- Simple text field (string) -->
+                                      <input :name="field.slug" :value="field.default" :id="field.key" :label="field.title" :placeholder="field.placeholder" readonly type="text"
+                                             v-if="getFieldType(field) == 'text'">
+                                      <!-- Numeric field (string) -->
+                                      <input v-if="field.type == 'integer' || field.type == 'number'" :name="field.slug" :value="field.default" :id="field.key" :label="field.title" readonly type="number"
+                                             v-if="getFieldType(field) == 'number'">
+
+                                      <div class="field-options grid-x grid-margin-x" v-show="field.slug == editingField">
+                                        <h5 class="small-12 cell">Edit field</h5>
+                                        <p class="small-12 medium-3 cell text-right">
+                                            <label class="middle" :for="field.slug + 'label'">Label</label>
+                                        </p>
+                                        <p class="small-12 medium-9 cell">
+                                            <input type="text" :name="field.slug + 'label'" v-model="field.title">
+                                            <span class="help-text" id="nameHelpText">The label to be shown next to this field.</span>
+                                        </p>
+                                        <p class="small-12 medium-3 cell text-right">
+                                            <label class="middle" :for="field.slug + 'default'">Default value</label>
+                                        </p>
+                                        <p class="small-12 medium-9 cell">
+                                            <input type="text" :name="field.slug + 'default'" v-model="field.default">
+                                            <span class="help-text" id="nameHelpText">If specified, the field will have this value when the form is opened.</span>
+                                        </p>
+                                        <p class="small-12 medium-3 cell text-right">
+                                            <label class="middle" :for="field.slug + 'default'">Placeholder</label>
+                                        </p>
+                                        <p class="small-12 medium-9 cell">
+                                          <input type="text" :name="field.slug + 'placeholder'" v-model="field.placeholder">
+                                            <span class="help-text" id="nameHelpText">Text to show in the field itself, which will be replaced when the user types something. Good to show an example of the expected input. Won't be shown if "default value" is set.</span>
+                                        </p>
+                                        <p class="small-12 medium-9 medium-offset-3 cell">
+                                          <input type="checkbox" :checked="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1" :name="field.slug + '-required'" v-on:change="setRequiredField($event)"><label :for="field.slug + '-required'">Required field?</label>
+                                        </p>
+                                        <p class="small-12 cell text-right">
+                                          <a class="button secondary" href="#" v-on:click="editingField = null" v-show="editingField == field.slug">Done</a>
+                                        </p>
+                                      </div>
+                                    </div>
+
+
+                                    <!-- File-based fields (fileupload, imageupload) -->
+                                    <div class="slide-content small-10 medium-8 cell" v-if="['fileupload', 'imageupload'].includes(getFieldType(field))">
+                                      <label class="control-label" :for="field.slug"> 
+                                        ${ field.title }<span v-if="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1">*</span>
+                                      </label>
+
+                                      <!-- File upload -->
+                                      <input v-if="getFieldType(field) == 'fileupload'" :name="field.slug" type="file" readonly>
+                                      <!-- Image upload -->
+                                      <input v-if="getFieldType(field) == 'imageupload'" :name="field.slug" type="file" accept="image/*" capture="environment">
+
+                                      <div class="field-options grid-x grid-margin-x" v-show="field.slug == editingField">
+                                        <h5 class="small-12 cell">Edit field</h5>
+                                        <p class="small-12 medium-3 cell text-right">
+                                            <label class="middle" :for="field.slug + 'label'">Label</label>
+                                        </p>
+                                        <p class="small-12 medium-9 cell">
+                                            <input type="text" :name="field.slug + 'label'" v-model="field.title">
+                                            <span class="help-text" id="nameHelpText">The label to be shown next to this field.</span>
+                                        </p>
+                                        <p class="small-12 medium-9 medium-offset-3 cell">
+                                          <input type="checkbox" :checked="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1" :name="field.slug + '-required'" v-on:change="setRequiredField($event)"><label :for="field.slug + '-required'">Required field?</label>
+                                        </p>
+                                        <p class="small-12 cell text-right">
+                                          <a class="button secondary" href="#" v-on:click="editingField = null" v-show="editingField == field.slug">Done</a>
+                                        </p>
+                                      </div>
+                                    </div>
+
+                                    <!-- Signature  -->
+                                    <div class="slide-content small-10 medium-8 cell" v-if="getFieldType(field) == 'signature'">
+                                      <label class="control-label" :for="field.slug"> 
+                                        ${ field.title }<span v-if="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1">*</span>
+                                      </label>
+
+                                      <input :name="field.slug" :value="field.default" :id="field.key" :label="field.title" :placeholder="field.placeholder" readonly type="text">
+
+                                      <div class="field-options grid-x grid-margin-x" v-show="field.slug == editingField">
+                                        <h5 class="small-12 cell">Edit field</h5>
+                                        <p class="small-12 medium-3 cell text-right">
+                                          <label class="middle" :for="field.slug + 'label'">Label</label>
+                                        </p>
+                                        <p class="small-12 medium-9 cell">
+                                          <input type="text" :name="field.slug + 'label'" v-model="field.title">
+                                          <span class="help-text" id="nameHelpText">The text to show next to the field.</span>
+                                        </p>
+                                        <p class="small-12 medium-9 medium-offset-3 cell">
+                                          <input type="checkbox" :checked="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1" :name="field.slug + '-required'" v-on:change="setRequiredField($event)"><label :for="field.slug + '-required'">Required field?</label>
+                                        </p>
+                                        <p class="small-12 cell text-right">
+                                            <a class="button secondary" href="#" v-on:click="editingField = null" v-show="editingField == field.slug">Done</a>
+                                        </p>
+                                      </div>
+                                    </div>
+
+                                    <!-- Location  -->
+                                    <div class="slide-content small-10 medium-8 cell" v-if="getFieldType(field) == 'location'">
+                                      <label class="control-label" :for="field.slug"> 
+                                        ${ field.title }<span v-if="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1">*</span>
+                                      </label>
+
+                                      <div class="location">
+                                        <button class="button" disabled :id="field.key">
+                                          <i class="fi-marker"></i>
+                                          <span>${ field.title }</span>
+                                        </button>
+                                      </div>
+
+                                      <div class="field-options grid-x grid-margin-x" v-show="field.slug == editingField">
+                                        <h5 class="small-12 cell">Edit field</h5>
+                                        <p class="small-12 medium-3 cell text-right">
+                                          <label class="middle" :for="field.slug + 'label'">Label</label>
+                                        </p>
+                                        <p class="small-12 medium-9 cell">
+                                          <input type="text" :name="field.slug + 'label'" v-model="field.title">
+                                          <span class="help-text" id="nameHelpText">The text to show next to the field.</span>
+                                        </p>
+                                        <p class="small-12 medium-9 medium-offset-3 cell">
+                                          <input type="checkbox" :checked="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1" :name="field.slug + '-required'" v-on:change="setRequiredField($event)"><label :for="field.slug + '-required'">Required field?</label>
+                                        </p>
+                                        <p class="small-12 cell text-right">
+                                            <a class="button secondary" href="#" v-on:click="editingField = null" v-show="editingField == field.slug">Done</a>
+                                        </p>
+                                      </div>
+                                    </div>
+
+                                    <!-- Date -->
+                                    <div class="slide-content small-10 medium-8 cell" v-if="getFieldType(field) == 'date'">
+                                      <label class="control-label" :for="field.slug"> 
+                                        ${ field.title }<span v-if="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1">*</span>
+                                      </label>
+
+                                      <input :name="field.slug" :value="field.default" :id="field.key" :label="field.title" :placeholder="field.placeholder" readonly type="date">
+
+                                      <div class="field-options grid-x grid-margin-x" v-show="field.slug == editingField">
+                                        <h5 class="small-12 cell">Edit field</h5>
+                                        <p class="small-12 medium-3 cell text-right">
+                                          <label class="middle" :for="field.slug + 'label'">Label</label>
+                                        </p>
+                                        <p class="small-12 medium-9 cell">
+                                          <input type="text" :name="field.slug + 'label'" v-model="field.title">
+                                          <span class="help-text" id="nameHelpText">The text to show next to the field.</span>
+                                        </p>
+                                        <p class="small-12 medium-9 medium-offset-3 cell">
+                                          <input type="checkbox" :checked="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1" :name="field.slug + '-required'" v-on:change="setRequiredField($event)"><label :for="field.slug + '-required'">Required field?</label>
+                                        </p>
+                                        <p class="small-12 cell text-right">
+                                            <a class="button secondary" href="#" v-on:click="editingField = null" v-show="editingField == field.slug">Done</a>
+                                        </p>
+                                      </div>
+                                    </div>
+
+                                    <!-- Choice fields (boolean, checkbox, dropdown, radio) -->
+                                    <div class="slide-content small-10 medium-8 cell" v-if="['boolean', 'checkboxes', 'dropdown', 'radio'].includes(getFieldType(field))">
+                                      <label class="control-label" :for="field.slug"> 
+                                        ${ field.title }<span v-if="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1">*</span>
+                                      </label>
+
+                                      <!-- Yes/No (boolean) -->
+                                      <div class="yes-no-buttons" v-if="getFieldType(field) == 'boolean'">
+                                        <button class="button expanded" disabled :name="field.slug" type="button">${ field.enumNames[0] }</button>
+                                        <button class="button expanded" disabled :name="field.slug" type="button">${ field.enumNames[1] }</button>
+                                      </div>
+                                      <!-- Checkboxes -->
+                                      <div class="checkboxes" v-if="getFieldType(field) == 'checkboxes'">
+                                        <div class="checkbox" v-for="option in field.items.enum">
+                                          <input :name="field.slug" type="checkbox">
+                                          <label>${ option }</label>
+                                        </div>
+                                      </div>
+                                      <!-- Radio buttons -->
+                                      <fieldset class="radio-buttons" v-if="getFieldType(field) == 'radio'">
+                                        <div v-for="option in field.enum">
+                                          <input type="radio" :name="field.slug" :value="option" :id="option"><label :for="option">${ option }</label>
+                                        </div>
+                                      </fieldset>
+                                      <!-- Dropdown -->
+                                      <select v-if="getFieldType(field) == 'dropdown'">
+                                        <option value="">Select one...</option>
+                                        <option v-for="option in field.enum" value="option">${ option }</option>
+                                      </select>
+
+                                      <!-- Field options -->
+                                      <div class="field-options grid-x grid-margin-x" v-show="field.slug == editingField">
+                                        <h5 class="small-12 cell">Edit field</h5>
+                                        <p class="small-12 medium-3 cell text-right">
+                                            <label class="middle" :for="field.slug + 'label'">Label</label>
+                                        </p>
+                                        <p class="small-12 medium-9 cell">
+                                            <input type="text" :name="field.slug + 'label'" v-model="field.title">
+                                            <span class="help-text" id="nameHelpText">The label to be shown next to this field.</span>
                                         </p>
 
-                                        <!-- Text input (string) -->
-                                        <input v-if="field.type == 'string' && !getFieldWidget(field.slug) && !field.enum && !field.format"
-                                               :name="field.slug"
-                                               :value="field.default"
-                                               :id="field.key"
-                                               :label="field.title"
-                                               :placeholder="field.placeholder"
-                                               readonly
-                                               type="text">
-
-                                        <!-- Email -->
-                                        <input v-if="field.type == 'string' && !getFieldWidget(field.slug) && field.format == 'email'"
-                                               :name="field.slug"
-                                               :value="field.default"
-                                               :id="field.key"
-                                               :label="field.title"
-                                               :placeholder="field.placeholder"
-                                               readonly
-                                               type="text">
-
-                                        <!-- Long text input (string) -->
-                                        <textarea v-if="field.type == 'string' && getFieldWidget(field.slug) == 'textarea'"
-                                               :name="field.slug"
-                                               :value="field.default"
-                                               :id="field.key"
-                                               :label="field.title"
-                                               :placeholder="field.placeholder"
-                                               readonly
-                                               type="text"
-                                               style="height: auto;">
-                                        </textarea>
-
-                                        <!-- Numeric input (integer) -->
-                                        <input v-if="field.type == 'integer' || field.type == 'number'"
-                                               :name="field.slug"
-                                               :value="field.default"
-                                               :id="field.key"
-                                               :label="field.title"
-                                               readonly
-                                               type="number">
-
-                                        <!-- File upload -->
-                                        <input v-if="field.type == 'string' && field.format == 'data-url' && !getFieldWidget(field.slug)"
-                                               :name="field.slug"
-                                               type="file">
-
-                                        <!-- Image upload -->
-                                        <input v-if="field.type == 'string' && field.format == 'data-url' && getFieldWidget(field.slug) == 'imageUpload'"
-                                               :name="field.slug" readonly
-                                               type="file" accept="image/*" capture="environment">
-
-                                        <!-- Signature (string) -->
-                                        <input v-if="field.type == 'string' && getFieldWidget(field.slug) == 'signatureWidget'"
-                                               :name="field.slug"
-                                               :value="field.default"
-                                               :id="field.key"
-                                               :label="field.title"
-                                               :placeholder="field.placeholder"
-                                               readonly
-                                               type="text">
-
-                                        <!-- Yes/No (boolean) -->
-                                        <div class="yes-no-buttons" v-if="field.type == 'boolean'">
-                                          <button class="button expanded" disabled :name="field.slug" type="button">${ field.enumNames[0] }</button>
-                                          <button class="button expanded" disabled :name="field.slug" type="button">${ field.enumNames[1] }</button>
-                                        </div>
-
-                                        <!-- Location -->
-                                        <div class="location" v-if="field.type == 'string' && getFieldWidget(field.slug) == 'locationWidget'">
-                                          <!-- <input 
-                                               :name="field.slug"
-                                               :value="field.default"
-                                               :id="field.key"
-                                               :label="field.title"
-                                               :placeholder="field.placeholder"
-                                               readonly
-                                               type="text">-->
-                                          <button class="button"
-                                                disabled
-                                               :name="field.slug"
-                                               :value="field.default"
-                                               :id="field.key"
-                                               :placeholder="field.placeholder">
-                                            <i class="fi-marker"></i>
-                                            <span>${ field.title }</span>
-                                          </button>
-                                        </div>
-
+                                        <p class="small-12 medium-3 cell text-right">
+                                            <label>Options</label>
+                                        </p>
                                         <!-- Checkboxes -->
-                                        <div class="checkboxes" v-if="field.type == 'array' && getFieldWidget(field.slug) == 'checkboxes'">
-                                          <div class="checkbox" v-for="option in field.items.enum">
-                                            <input :name="field.slug" type="checkbox">
-                                            <label>${ option }</label>
-                                          </div>
+                                        <div class="small-12 medium-9 cell" v-if="getFieldType(field) == 'checkboxes'">
+                                            <p class="multiple-fields" v-for="(option, idx) in field.items.enum">
+                                                <input :name="option" type="text" v-model="field.items.enum[idx]">
+                                                <i class="fi-x remove-field-option" v-on:click="removeOption(field, idx)"></i>
+                                            </p>
+                                            <p><a href="#" class="button hollow small" v-on:click="addOption(field)"><i class="fi-plus"></i> Add option</a></p>
+                                            </p>
+                                        </div>
+                                        <!-- Radio / Dropdown-->
+                                        <div class="small-12 medium-9 cell" v-if="getFieldType(field) == 'radio' || getFieldType(field) == 'dropdown'">
+                                            <p class="multiple-fields" v-for="(option, idx) in field.enum">
+                                                <input :name="option" type="text" v-model="field.enum[idx]">
+                                                <i class="fi-x remove-field-option" v-on:click="removeOption(field, idx)"></i>
+                                            </p>
+                                            <p><a href="#" class="button hollow small" v-on:click="addOption(field)"><i class="fi-plus"></i> Add option</a></p>
+                                            </p>
+                                        </div>
+                                        <!-- Boolean -->
+                                        <div class="small-12 medium-9 cell" v-if="getFieldType(field) == 'boolean'">
+                                          <p class="multiple-fields">
+                                            <input :name="field.enumNames[0]" type="text" v-model="field.enumNames[0]" v-on:change="updateBooleanField($event, field.slug, 0)">
+                                            <input :name="field.enumNames[1]" type="text" v-model="field.enumNames[1]" v-on:change="updateBooleanField($event, field.slug, 1)">
+                                          </p>
                                         </div>
 
-                                        <!-- Radio buttons -->
-                                        <fieldset class="radio-buttons" v-if="field.type == 'string' && getFieldWidget(field.slug) == 'radio'">
-                                          <div v-for="option in field.enum">
-                                            <input type="radio" :name="field.slug" :value="option" :id="option"><label :for="option">${ option }</label>
-                                          </div>
-                                        </fieldset>
-
-                                        <!-- Dropdown -->
-                                        <select v-if="field.type == 'string' && field.enum && !getFieldWidget(field.slug)">
-                                          <option value="">Select one...</option>
-                                          <option v-for="option in field.enum" value="option">${ option }</option>
-                                        </select>
-
-                                        <!-- Date picker -->
-                                        <input v-if="field.type == 'string' && field.format == 'date'"
-                                               :name="field.slug"
-                                               :value="field.default"
-                                               :id="field.key"
-                                               :label="field.title"
-                                               :placeholder="field.placeholder"
-                                               readonly
-                                               type="date">
-
-
-                                        <!-- Field options -->
-                                        <div class="field-options grid-x grid-margin-x" v-show="field.slug == editingField">
-                                            <h5 class="small-12 cell">Edit field</h5>
-                                            <p class="small-12 medium-3 cell text-right">
-                                                <label class="middle" :for="field.slug + 'label'">Label</label>
-                                            </p>
-                                            <p class="small-12 medium-9 cell">
-                                                <input type="text" :name="field.slug + 'label'" v-model="field.title">
-                                                <span class="help-text" id="nameHelpText">The label to be shown next to this field.</span>
-                                            </p>
-                                            <p class="small-12 medium-3 cell text-right">
-                                                <label class="middle" :for="field.slug + 'default'">Default value</label>
-                                            </p>
-                                            <p class="small-12 medium-9 cell">
-                                                <input type="text" :name="field.slug + 'default'" v-model="field.default">
-                                                <span class="help-text" id="nameHelpText">If specified, the field will have this value when the form is opened.</span>
-                                            </p>
-                                            <p class="small-12 medium-3 cell text-right">
-                                                <label class="middle" :for="field.slug + 'default'">Placeholder</label>
-                                            </p>
-                                            <p class="small-12 medium-9 cell">
-                                              <input type="text" :name="field.slug + 'placeholder'" v-model="field.placeholder">
-                                                <span class="help-text" id="nameHelpText">Text to show in the field itself, which will be replaced when the user types something. Good to show an example of the expected input. Won't be shown if "default value" is set.</span>
-                                            </p>
-
-                                            <p class="small-12 medium-3 cell text-right"><!-- should be visible only for radio buttons and checkboxes -->
-                                                <label>Options</label>
-                                            </p>
-
-                                            <!-- Checkboxes -->
-                                            <div class="small-12 medium-9 cell" v-if="field.type == 'array'">
-                                                <p class="multiple-fields" v-for="(option, idx) in field.items.enum">
-                                                    <input :name="option" type="text" v-model="field.items.enum[idx]">
-                                                    <i class="fi-x remove-field-option" v-on:click="removeOption(field, idx)"></i>
-                                                </p>
-                                                <p><a href="#" class="button hollow small" v-on:click="addOption(field)"><i class="fi-plus"></i> Add option</a></p>
-                                                </p>
-                                            </div>
-
-                                            <!-- Radio -->
-                                            <div class="small-12 medium-9 cell" v-if="getFieldWidget(field.slug) == 'radio' || (field.type == 'string' && field.enum && !getFieldWidget(field.slug))">
-                                                <p class="multiple-fields" v-for="(option, idx) in field.enum">
-                                                    <input :name="option" type="text" v-model="field.enum[idx]">
-                                                    <i class="fi-x remove-field-option" v-on:click="removeOption(field, idx)"></i>
-                                                </p>
-                                                <p><a href="#" class="button hollow small" v-on:click="addOption(field)"><i class="fi-plus"></i> Add option</a></p>
-                                                </p>
-                                            </div>
-
-                                            <!-- Boolean -->
-                                            <div class="small-12 medium-9 cell" v-if="field.type == 'boolean'">
-                                              <p class="multiple-fields">
-                                                <input :name="field.enumNames[0]" type="text" v-model="field.enumNames[0]" v-on:change="updateBooleanField($event, field.slug, 0)">
-                                                <input :name="field.enumNames[1]" type="text" v-model="field.enumNames[1]" v-on:change="updateBooleanField($event, field.slug, 1)">
-                                              </p>
-                                            </div>
-
-
-
-
-
-
-
-
-                                            <p class="small-12 medium-9 medium-offset-3 cell">
-                                              <input type="checkbox" :checked="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1" :name="field.slug + '-required'" v-on:change="setRequiredField($event)"><label :for="field.slug + '-required'">Required field?</label>
-                                            </p>
-                                            <p class="small-12 cell text-right">
-                                                <a class="button secondary" href="#" v-on:click="editingField = null" v-show="editingField == field.slug">Done</a>
-                                            </p><!-- save slide-->
-                                        </div><!-- /.field-options -->
+                                        <p class="small-12 medium-9 medium-offset-3 cell">
+                                          <input type="checkbox" :checked="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1" :name="field.slug + '-required'" v-on:change="setRequiredField($event)"><label :for="field.slug + '-required'">Required field?</label>
+                                        </p>
+                                        <p class="small-12 cell text-right">
+                                            <a class="button secondary" href="#" v-on:click="editingField = null" v-show="editingField == field.slug">Done</a>
+                                        </p><!-- save slide-->
+                                      </div><!-- /.field-options -->
 
                                     </div><!-- /.slide-content -->
 
