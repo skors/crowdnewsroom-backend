@@ -420,7 +420,13 @@ class FormResponse(models.Model):
 
     @property
     def json_email(self):
-        return self.json.get("email", "")
+        try:
+            return self.json["email"]
+        except KeyError:
+            for key in sorted(self.json.keys()):
+                if "email" in key:
+                    return self.json[key]
+        return ""
 
     def belongs_to_investigation(self, investigation_slug):
         return self.form_instance.form.investigation.slug == investigation_slug
