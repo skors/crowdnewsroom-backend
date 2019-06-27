@@ -160,7 +160,7 @@
                                                :id="field.key"
                                                :placeholder="field.placeholder">
                                             <i class="fi-marker"></i>
-                                            <span>"Share your location". Edit me to change text!</span>
+                                            <span>${ field.title }</span>
                                           </button>
                                         </div>
 
@@ -220,18 +220,6 @@
                                               <input type="text" :name="field.slug + 'placeholder'" v-model="field.placeholder">
                                                 <span class="help-text" id="nameHelpText">Text to show in the field itself, which will be replaced when the user types something. Good to show an example of the expected input. Won't be shown if "default value" is set.</span>
                                             </p>
-                                            <!--
-                                            <p class="small-12 medium-3 cell text-right">
-                                                <label class="middle" :for="field.slug + 'slug'">Slug</label>
-                                            </p>
-                                            <p class="small-12 medium-9 cell">
-                                                <input type="text"
-                                                       :name="field.slug + 'slug'"
-                                                       :value="field.slug"
-                                                       @change="updateFieldSlug($event, field.slug)">
-                                                <span class="help-text" id="nameHelpText">The column name for storing this field in the database.</span>
-                                            </p>
-                                            -->
 
                                             <p class="small-12 medium-3 cell text-right"><!-- should be visible only for radio buttons and checkboxes -->
                                                 <label>Options</label>
@@ -265,14 +253,23 @@
                                               </p>
                                             </div>
 
+
+
+
+
+
+
+
                                             <p class="small-12 medium-9 medium-offset-3 cell">
                                               <input type="checkbox" :checked="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1" :name="field.slug + '-required'" v-on:change="setRequiredField($event)"><label :for="field.slug + '-required'">Required field?</label>
                                             </p>
                                             <p class="small-12 cell text-right">
                                                 <a class="button secondary" href="#" v-on:click="editingField = null" v-show="editingField == field.slug">Done</a>
                                             </p><!-- save slide-->
-                                        </div>
+                                        </div><!-- /.field-options -->
+
                                     </div><!-- /.slide-content -->
+
                                     <div class="field-actions small-1 medium-2 cell">
                                         <ul class="menu simple">
                                             <li><i class="fi-pencil" v-on:click="editingField = field.slug" v-show="editingField != field.slug"></i></li><!-- edit slide-->
