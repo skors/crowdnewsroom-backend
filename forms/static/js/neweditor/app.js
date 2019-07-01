@@ -150,7 +150,7 @@ var vm = new Vue({
 
               vm.activeSlide = vm.slides[0];
               vm.$set(vm.$data, 'activeFieldKeys', Object.keys(vm.activeSlide.schema.properties));
-              vm.correctSchema();
+              vm.cleanup();
             })
             .catch(function (error) {
               console.log("getFormData - I get null");
@@ -160,6 +160,7 @@ var vm = new Vue({
         },
     sendFormData: function(close) {
       this.editingField = null;
+      vm.cleanup();  // make sure everything is correct -.-
       var formData = new FormData(document.getElementById('editor-hidden-form'));
       axios.post(this.postUrl, formData)
         .then(function (response) {
@@ -188,7 +189,7 @@ var vm = new Vue({
         delete this.uischema['ui:order'][slug];
       }
       this.slides.splice(idx, 1);
-      this.correctSchema();
+      this.cleanup();
     },
     addSlide: function(ev) {
       ev.preventDefault();
@@ -196,10 +197,14 @@ var vm = new Vue({
       var newSlide = JSON.parse(JSON.stringify( defaultNewSlide ));
       var slideSlug = 'slide-' + (Math.floor(Math.random() * 900) + 100);
       newSlide.schema.slug = slideSlug;
+      for (var prop in newSlide.schema.properties) {
+        newSlide.schema.properties[newSlide.schema.slug + '-' + prop] = newSlide.schema.properties[prop];
+        delete newSlide.schema.properties[prop];
+      }
       this.slides.push(newSlide);
       this.$set(this.uischema, slideSlug, {'ui:order': Object.keys(newSlide.schema.properties)});
       this.selectSlide(newSlide);
-      this.correctSchema();
+      this.cleanup();
     },
     correctFinalSlide: function() {
       for (var idx in this.slides) {
@@ -233,9 +238,20 @@ var vm = new Vue({
     correctMissingProperties: function() {
       for (var idx in this.slides) {
         var slide = this.slides[idx];
-        if (this.activeSlide.schema.slug in this.uischema && !('ui:order' in this.uischema[this.activeSlide.schema.slug])) {
-          this.$set(this.uischema[this.activeSlide.schema.slug], 'ui:order', Object.keys(slide.schema.properties));
-          console.log(this.uischema[this.activeSlide.schema.slug]);
+        if (!slide.schema.slug in this.uischema) {
+          this.$set(this.uischema, slide.schema.slug, {});
+        }
+        if (!'ui:order' in this.uischema[slide.schema.slug]) {
+          this.$set(this.uischema[slide.schema.slug], 'ui:order', Object.keys(slide.schema.properties));
+        }
+        for (var slug in slide.schema.properties) {
+          var field = slide.schema.properties[slug];
+          if ('placeholder' in field) {
+            if (!this.uischema[slide.schema.slug][slug]) {
+              this.$set(this.uischema[slide.schema.slug], slug, {});
+            }
+            this.$set(this.uischema[slide.schema.slug][slug], 'ui:placeholder', field.placeholder);
+          }
         }
         /*
         if (!('ordering' in slide.schema)) {
@@ -245,7 +261,7 @@ var vm = new Vue({
         */
       }
     },
-    correctSchema: function() {
+    cleanup: function() {
       this.correctFinalSlide();
       this.correctConditions();
       this.correctMissingProperties();
@@ -310,13 +326,13 @@ var vm = new Vue({
       }
     },
 
-    updateBooleanField: function(ev, fieldName, idx) {
-      // save enumName, but make slug version for enum property
-      // by making it lowercase and replacing spaces with hyphens
-      var value = ev.target.value.toLowerCase().replace(/ /g,"-");
-      var field = this.activeSlide.schema.properties[fieldName];
-      field.enum.splice(idx, 1, value);
-    },
+    // updateBooleanField: function(ev, fieldName, idx) {
+    //   // save enumName, but make slug version for enum property
+    //   // by making it lowercase and replacing spaces with hyphens
+    //   var value = ev.target.value.toLowerCase().replace(/ /g,"-");
+    //   var field = this.activeSlide.schema.properties[fieldName];
+    //   field.enum.splice(idx, 1, value);
+    // },
 
     onFieldReorder: function(ev) {
       /*
@@ -327,7 +343,7 @@ var vm = new Vue({
       }
       this.$set(this.activeSlide.schema, 'properties', updatedProperties);
       */
-      console.log(this.uischema[this.activeSlide.schema.slug]['ui:order']);
+      // console.log(this.uischema[this.activeSlide.schema.slug]['ui:order']);
     },
     selectSlide: function(slide) {
       this.$set(this.$data, 'activeSlide', slide);
@@ -363,24 +379,25 @@ var vm = new Vue({
 
     addField: function(slug, data, uischema) {
       // TODO: check if slug exists, change if it does
-      slug = slug + '-' + (Math.floor(Math.random() * 900) + 100);
+      slug = this.activeSlide.schema.slug + '-' + slug + '-' + (Math.floor(Math.random() * 900) + 100);
       this.$set(this.activeSlide.schema.properties, slug, data);
       this.uischema[this.activeSlide.schema.slug]['ui:order'].push(slug);
       // this.activeSlide.schema.ordering.push(slug);
 
-      if (uischema) {
-        if (!(this.activeSlide.schema.slug in this.uischema)) {
-          // slide is not in uischema
-          this.uischema[this.activeSlide.schema.slug] = {};
-        }
+      // create uischema anyways
+      if (!(this.activeSlide.schema.slug in this.uischema)) {
+        // slide is not in uischema
+        this.uischema[this.activeSlide.schema.slug] = {};
+      }
 
-        if (!(slug in this.uischema[this.activeSlide.schema.slug])) {
-          // field is not yet in uischema
-          this.$set(this.uischema[this.activeSlide.schema.slug], slug, uischema);
-        } else {
-          // field is in uischema, merge objects
-          Object.assign(this.uischema[this.activeSlide.schema.slug][slug], uischema);
-        }
+      if (!(slug in this.uischema[this.activeSlide.schema.slug])) {
+        // field is not yet in uischema
+        this.$set(this.uischema[this.activeSlide.schema.slug], slug, uischema || {});
+      }
+
+      if (uischema) {
+        // field is in uischema, merge objects
+        Object.assign(this.uischema[this.activeSlide.schema.slug][slug], uischema);
       }
     },
     addTextInputField: function() {
@@ -414,7 +431,7 @@ var vm = new Vue({
       this.addField("yes-no", {
         type: "boolean",
         title: "Here's a question, do you agree?",
-        enum: ["yes", "no"],
+        // enum: ["yes", "no"],
         enumNames: ["Yes", "No"],
       }, {"ui:widget": "buttonWidget"});
     },
@@ -493,11 +510,11 @@ var vm = new Vue({
 
     fillTitle: function() {
       this.$set(this.activeSlide.schema, 'title', "Click me to edit this title");
-      console.log(this.activeSlide.schema.title);
+      // console.log(this.activeSlide.schema.title);
     },
     fillDescription: function() {
       this.$set(this.activeSlide.schema, 'description', "Click me to edit this description");
-      console.log(this.activeSlide.schema.description);
+      // console.log(this.activeSlide.schema.description);
     },
 
     setRequiredField: function(ev) {

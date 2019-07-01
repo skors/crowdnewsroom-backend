@@ -23,7 +23,7 @@
                 <div class="grid-x grid-padding-x">
                     <div id="slide-nav" class="cell medium-2 medium-cell-block-y">
                         <ul>
-                            <draggable v-model="slides" handle=".slide-list-handle" @update="correctSchema()">
+                            <draggable v-model="slides" handle=".slide-list-handle" @update="cleanup()">
                             <li class="slide-list-item grid-x" v-for="(slide, slideIdx) in slides"
                                 v-bind:class="{ active: slide == activeSlide }">
                                 <ul class="slide-options text-center cell small-3 medium-2">
@@ -81,6 +81,7 @@
                                         </p><!-- save slide-->
                                       </div>
                                     </div>
+
 
                                     <!-- Text-based fields (text, longtext, email, number) -->
                                     <div class="slide-content small-10 medium-8 cell" v-if="['text', 'longtext', 'email', 'number'].includes(getFieldType(field))">
@@ -168,6 +169,7 @@
                                       <label class="control-label" :for="field.slug"> 
                                         ${ field.title }<span v-if="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1">*</span>
                                       </label>
+
 
                                       <input :name="field.slug" :value="field.default" :id="field.key" :label="field.title" :placeholder="field.placeholder" readonly type="text">
 
