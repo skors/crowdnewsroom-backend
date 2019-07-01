@@ -537,6 +537,31 @@ var vm = new Vue({
       }
     },
 
+    getFieldType: function(field) {
+      if (this.getFieldWidget(field) == 'oneLineWidget') { return 'oneline'; }
+      if (field.type == 'boolean') { return 'boolean'; }
+      if (field.type == 'integer' || field.type == 'number') { return 'number'; }
+      if (field.type == 'array') { return 'checkboxes'; }
+
+      if (field.type == 'string') {
+        if (field.format == 'email') { return 'email'; }
+        if (field.format == 'date') { return 'date'; }
+        if (this.getFieldWidget(field.slug) == 'textarea') { return 'longtext'; }
+        if (this.getFieldWidget(field.slug) == 'signatureWidget') { return 'signature'; }
+        if (this.getFieldWidget(field.slug) == 'locationWidget') { return 'location'; }
+        if (this.getFieldWidget(field.slug) == 'radio') { return 'radio'; }
+        if (field.format == 'data-url') {
+          if (this.getFieldWidget(field.slug) == 'imageUpload') { return 'imageupload'; }
+          return 'fileupload';
+        }
+        if (field.enum && !this.getFieldWidget(field.slug)) { return 'dropdown'; }
+        return 'text';
+      }
+      console.log('Unrecognized field');
+      console.log(field);
+      return '';
+    },
+
     ceEdit: function(ev, target, property) {
       // edit ContentEditable element
       var value = ev.target.innerText.replace(/\n/g, ' ');
