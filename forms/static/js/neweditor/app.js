@@ -36,6 +36,14 @@ var loadingSlide = {
   }]
 };
 
+var locationSafariHelp = `
+You may need to allow location access on your system settings before you can turn them on for Safari. To do this:
+
+1. Open **System Preferences > Security & Privacy Preferences > Privacy > Location Services**.
+2. To allow for changes, click the lock in the bottom left.
+3. Check "Enable Location Services".
+`;
+
 
 var vm = new Vue({
   el: '#editor',
@@ -491,7 +499,14 @@ var vm = new Vue({
     addLocationField: function() {
       this.addField("location", {
         type: "string",
-      }, {'ui:widget': 'locationWidget'});
+        title: "Your location",
+      }, {'ui:widget': 'locationWidget',
+          'ui:location_button': 'Click to send your location',
+          'ui:location_load': 'Determining your location...',
+          'ui:location_success': 'Location found!',
+          'ui:location_error': 'Error finding your location! Click to try again.',
+          'ui:location_safari_help': locationSafariHelp}
+      );
     },
     removeOption: function(field, idx) {
       if ('items' in field) {
