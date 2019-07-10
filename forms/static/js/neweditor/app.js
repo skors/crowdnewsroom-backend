@@ -274,16 +274,6 @@ var vm = new Vue({
       this.correctConditions();
       this.correctMissingProperties();
     },
-    /*
-    addFieldToSlide: function(ev, idx) {
-      ev.preventDefault();
-      var fieldSlug = 'field-' + Math.floor(Math.random() * 100) + 100;
-      // make a deep copy of the default new field
-      var newField = Object.assign({}, defaultNewField);
-      this.model.properties[fieldSlug] = newField;
-      this.model.slides[idx].fields.push(fieldSlug);
-    },
-    */
     removeField: function(ev, fieldName) {
       ev.preventDefault();
       var slug = this.activeSlide.schema.slug;
@@ -334,25 +324,6 @@ var vm = new Vue({
       }
     },
 
-    // updateBooleanField: function(ev, fieldName, idx) {
-    //   // save enumName, but make slug version for enum property
-    //   // by making it lowercase and replacing spaces with hyphens
-    //   var value = ev.target.value.toLowerCase().replace(/ /g,"-");
-    //   var field = this.activeSlide.schema.properties[fieldName];
-    //   field.enum.splice(idx, 1, value);
-    // },
-
-    onFieldReorder: function(ev) {
-      /*
-      var updatedProperties = {};
-      for (var prop in this.activeFieldKeys) {
-        var value = this.activeSlide.schema.properties[this.activeFieldKeys[prop]];
-        updatedProperties[this.activeFieldKeys[prop]] = value;
-      }
-      this.$set(this.activeSlide.schema, 'properties', updatedProperties);
-      */
-      // console.log(this.uischema[this.activeSlide.schema.slug]['ui:order']);
-    },
     selectSlide: function(slide) {
       this.$set(this.$data, 'activeSlide', slide);
     },
