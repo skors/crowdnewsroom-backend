@@ -388,7 +388,8 @@ var vm = new Vue({
     addOneLineField: function() {
       this.addField("one-line", {
         type: "string",
-        title: "Edit this field's label to change its text.",
+        placeholder: "Edit this field's label to change its text.",
+        title: "",
       }, {classNames: 'hidden-title',
           'ui:widget': 'oneLineWidget'});
     },

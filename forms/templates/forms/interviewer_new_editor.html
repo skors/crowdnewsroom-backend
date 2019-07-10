@@ -65,15 +65,15 @@
 
                                     <!-- Oneline (only text) -->
                                     <div class="slide-content small-10 medium-8 cell" v-if="getFieldType(field) == 'oneline'">
-                                      <p class="oneline">${ field.title }</p>
+                                      <p class="oneline">${ field.placeholder }</p>
 
                                       <div class="field-options grid-x grid-margin-x" v-show="field.slug == editingField">
                                         <h5 class="small-12 cell">Edit field</h5>
                                         <p class="small-12 medium-3 cell text-right">
-                                          <label class="middle" :for="field.slug + 'label'">Label</label>
+                                          <label class="middle" :for="field.slug + 'placeholder'">Label</label>
                                         </p>
                                         <p class="small-12 medium-9 cell">
-                                          <input type="text" :name="field.slug + 'label'" v-model="field.title">
+                                          <input type="text" :name="field.slug + 'placeholder'" v-model="field.placeholder">
                                           <span class="help-text" id="nameHelpText">The text to be shown.</span>
                                         </p>
                                         <p class="small-12 cell text-right">
