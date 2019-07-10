@@ -381,7 +381,7 @@ class FormResponse(models.Model):
                 else:
                     row["type"] = "text"
                     row["value"] = ""
-            elif props.get("type") == "array" and props["items"]["format"] == "data-url":
+            elif props.get("type") == "array" and props["items"].get("format") == "data-url":
                 for index, part in enumerate(form_data.get(name, [])):
                     row = {"title": "{} {}".format(title, index),
                            "json_name": "{}-{}".format(name, index)}
