@@ -388,7 +388,7 @@ var vm = new Vue({
     addOneLineField: function() {
       this.addField("one-line", {
         type: "string",
-        title: "Edit this field's title to change this text.",
+        title: "Edit this field's label to change its text.",
       }, {classNames: 'hidden-title',
           'ui:widget': 'oneLineWidget'});
     },
@@ -524,7 +524,7 @@ var vm = new Vue({
     },
 
     getFieldType: function(field) {
-      if (this.getFieldWidget(field) == 'oneLineWidget') { return 'oneline'; }
+      if (this.getFieldWidget(field.slug) == 'oneLineWidget') { return 'oneline'; }
       if (field.type == 'boolean') { return 'boolean'; }
       if (field.type == 'integer' || field.type == 'number') { return 'number'; }
       if (field.type == 'array') { return 'checkboxes'; }
