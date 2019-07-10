@@ -391,7 +391,9 @@ var vm = new Vue({
         placeholder: "Edit this field's label to change its text.",
         title: "",
       }, {classNames: 'hidden-title',
-          'ui:widget': 'oneLineWidget'});
+          'ui:widget': 'oneLineWidget',
+          'ui:options': { label: false }
+      });
     },
     addTextAreaField: function() {
       var slug = "text-area";
