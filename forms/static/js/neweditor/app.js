@@ -479,7 +479,7 @@ var vm = new Vue({
           'ui:location_load': 'Determining your location...',
           'ui:location_success': 'Location found!',
           'ui:location_error': 'Error finding your location! Click to try again.',
-          'ui:location_safari_help': locationSafariHelp}
+          'ui:location_help_url': 'http://example.com'}
       );
     },
     removeOption: function(field, idx) {

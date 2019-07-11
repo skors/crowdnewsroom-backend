@@ -247,6 +247,14 @@
                                           <span class="help-text" id="nameHelpText">The button text when location couldn't be determined.</span>
                                         </p>
 
+                                        <p class="small-12 medium-3 cell text-right">
+                                          <label class="middle" :for="field.slug + 'help'">Troubleshooting URL</label>
+                                        </p>
+                                        <p class="small-12 medium-9 cell">
+                                          <input type="text" :name="field.slug + 'help'" v-model="uischema[activeSlide.schema.slug][field.slug]['ui:location_help_url']">
+                                          <span class="help-text" id="nameHelpText">The link to include when there's permission errors getting the user's location. This page should mention how to activate location detection in the user's operating system.</span>
+                                        </p>
+
 
                                         <!-- 
                                         <p class="small-12 medium-9 medium-offset-3 cell">
