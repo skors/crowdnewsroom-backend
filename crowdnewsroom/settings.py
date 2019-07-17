@@ -114,6 +114,7 @@ LANGUAGE_CODE = 'de'
 LANGUAGES = [
     ('de', _('German')),
     ('en', _('English')),
+    ('it', _('Italian')),
 ]
 
 TIME_ZONE = 'UTC'
@@ -174,7 +175,7 @@ WEBPACK_LOADER = {
         'STATS_FILE': os.path.join(BASE_DIR, 'theme', 'webpack-stats.json'),
         'POLL_INTERVAL': 0.1,
         'TIMEOUT': None,
-        'IGNORE': ['.+\.hot-update.js', '.+\.map']
+        'IGNORE': ['.+\.hot-update.js', '.+\.map']  # noqa
     }
 }
 

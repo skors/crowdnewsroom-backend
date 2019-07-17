@@ -242,6 +242,7 @@ class Form(models.Model, UniqueSlugMixin):
     status = models.CharField(max_length=1, choices=STATUSES, default='D')
     investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
     is_simple = models.BooleanField(default=False)  # if `True`, this form is editable via the frontend form builder
+    language = models.CharField(max_length=2, default='de', choices=settings.LANGUAGES)
 
     def __str__(self):
         return self.name
@@ -312,6 +313,14 @@ class FormInstance(models.Model):
     @property
     def is_simple(self):
         return self.form.is_simple
+
+    @property
+    def language(self):
+        return self.form.language
+
+    @property
+    def language_choices(self):
+        return dict(settings.LANGUAGES)
 
 
 class FormResponse(models.Model):
