@@ -45,4 +45,5 @@ class InvestigationAPITest(APITestCase):
                                          "priority_fields": [],
                                          "email_template": template.email_template,
                                          "email_template_html": template.email_template_html,
+                                         "is_simple": False,
                                          "redirect_url_template": template.redirect_url_template})

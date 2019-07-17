@@ -252,10 +252,10 @@ class Form(models.Model, UniqueSlugMixin):
 
     @property
     def instance_properties(self):
-        keys = set()
+        props = {}
         for instance in FormInstance.objects.filter(form=self).all():
-            keys |= instance.json_properties
-        return keys
+            props.update(instance.json_properties)
+        return props
 
     def submissions_by_date(self):
         return FormResponse.objects \
@@ -307,7 +307,7 @@ class FormInstance(models.Model):
 
     @property
     def json_properties(self):
-        return set(self.flat_schema["properties"].keys())
+        return {k: v.get('title', k.title()) for k, v in self.flat_schema["properties"].items()}
 
     @property
     def is_simple(self):

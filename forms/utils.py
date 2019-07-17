@@ -18,7 +18,7 @@ def create_form_csv(form, investigation_slug, build_absolute_uri, io_object, fil
                     "submission_date", "id", "tags"}
     fields = {"meta_{}".format(field) for field in extra_fields}
     for instance in form_instances:
-        fields |= instance.json_properties
+        fields |= set(instance.json_properties.keys())
 
     writer = csv.DictWriter(io_object, fieldnames=sorted(
         fields), extrasaction='ignore')

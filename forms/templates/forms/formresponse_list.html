@@ -60,11 +60,11 @@
           <div class="bx--select">
               <select id="has_filter" name="has" class="bx--select-input" onChange="this.form.submit()">
                   <option value="" class="bx--select-option">{% trans "Field" %}</option>
-                  {% for property in form.instance_properties %}
+                  {% for property, label in form.instance_properties.items %}
                   <option value="{{property}}"
                           class="bx--select-option"
                           {% if has_param == property %} selected {% endif %}
-                  >{{property}}</option>
+                  >{{label}}</option>
                   {% endfor %}
               </select>
               <svg class="bx--select__arrow" width="10" height="5" viewBox="0 0 10 5" fill-rule="evenodd">
