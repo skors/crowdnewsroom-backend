@@ -242,6 +242,7 @@ class Form(models.Model, UniqueSlugMixin):
     status = models.CharField(max_length=1, choices=STATUSES, default='D')
     investigation = models.ForeignKey(Investigation, on_delete=models.CASCADE)
     is_simple = models.BooleanField(default=False)  # if `True`, this form is editable via the frontend form builder
+    language = models.CharField(max_length=2, default='de', choices=settings.LANGUAGES)
 
     def __str__(self):
         return self.name
@@ -252,10 +253,10 @@ class Form(models.Model, UniqueSlugMixin):
 
     @property
     def instance_properties(self):
-        keys = set()
+        props = {}
         for instance in FormInstance.objects.filter(form=self).all():
-            keys |= instance.json_properties
-        return keys
+            props.update(instance.json_properties)
+        return props
 
     def submissions_by_date(self):
         return FormResponse.objects \
@@ -307,11 +308,19 @@ class FormInstance(models.Model):
 
     @property
     def json_properties(self):
-        return set(self.flat_schema["properties"].keys())
+        return {k: v.get('title', k.title()) for k, v in self.flat_schema["properties"].items()}
 
     @property
     def is_simple(self):
         return self.form.is_simple
+
+    @property
+    def language(self):
+        return self.form.language
+
+    @property
+    def language_choices(self):
+        return dict(settings.LANGUAGES)
 
 
 class FormResponse(models.Model):

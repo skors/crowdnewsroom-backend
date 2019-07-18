@@ -70,9 +70,11 @@ class FormInstanceSerializer(ModelSerializer):
             "email_template",
             "email_template_html",
             "is_simple",
+            "language",
+            "language_choices",
             "redirect_url_template"
         )
-        read_only_fields = ("form", "version", "is_simple")
+        read_only_fields = ("form", "version")
 
     def create(self, validated_data, *args, **kwargs):
         view = self.context.get("view")
@@ -90,6 +92,15 @@ class FormInstanceSerializer(ModelSerializer):
         form_instance.save()
 
         return form_instance
+
+    def save(self, *args, **kwargs):
+        view = self.context['view']
+        data = self.context['request'].data
+        form = get_object_or_404(Form, id=view.kwargs.get("form_id"))
+        if 'language' in data:
+            form.language = data['language']
+            form.save()
+        return super().save(*args, **kwargs)
 
 
 class FormInstanceDetail(generics.RetrieveAPIView):

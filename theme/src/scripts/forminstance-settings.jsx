@@ -5,7 +5,10 @@ import {
   TextInput,
   TextArea,
   Button,
-  SkeletonText
+  SkeletonText,
+  Select,
+  SelectItem,
+  SelectItemGroup
 } from 'carbon-components-react'
 import _ from 'lodash'
 import { authorizedFetch, authorizedPATCH, authorizedPOST } from './api'
@@ -58,6 +61,19 @@ class FormInstanceSettingsEditor extends Component {
             value={this.state.redirect_url_template}
             onChange={this.handleChange}
           />
+        </FormGroup>
+
+        <FormGroup legendText={gettext('Internationalization')}>
+          <Select
+            id="language"
+            labelText={gettext('Language')}
+            value={this.state.language}
+            onChange={this.handleChange}
+          >
+            {Object.keys(this.state.language_choices).map(k => {
+              return <SelectItem value={ k } text={ this.state.language_choices[k] } />
+            })}
+          </Select>
         </FormGroup>
 
         <Button type="submit">{gettext('Save')}</Button>
