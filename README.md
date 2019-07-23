@@ -90,6 +90,10 @@ do not currently have those you can skip those test by running:
 python manage.py test --exclude-tag browsertest
 ```
 
+## Check in the frontend build for deployment
+
+For CORRECTIV deployment, there is currently no frontend build task on the server. So when working on the `/theme/` js & css, build it with `yarn build` and check in the bundles.
+
 ## About
 This project uses [BrowserStack](https://www.browserstack.com/) for cross-browser testing and [Crowdin](https://crowdin.com) for translations. Cheers to these tools to support non-profit and Open Source initiatives.
 
