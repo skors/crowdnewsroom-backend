@@ -35,7 +35,7 @@
                             </draggable>
                         </ul>
                     </div><!-- /#slide-nav-->
-                    <main id="slide-builder" class="cell medium-7 medium-cell-block-y">
+                    <main id="slide-builder" class="cell medium-7 medium-cell-block-y" v-if="activeSlide">
                             <div class="slide grid-container">
                                 <div class="slide-field slide-title grid-x grid-padding-x">
                                   <div class="slide-content small-10 small-offset-1 medium-8 medium-offset-2 text-center cell">
@@ -397,9 +397,13 @@
                     <div id="slide-editor-menu" class="cell medium-3 medium-cell-block-y">
                         <div class="grid-container">
                             <p>
+
+
                                 <label for="activeSlideSlug">Slide slug
-                                    <input type="text" name="activeSlideSlug" v-model="activeSlide.schema.slug">
+                                  <input type="text" v-if="activeSlide" name="activeSlideSlug" :value="activeSlide.schema.slug" @keyup="updateSlideSlug($event, activeSlide.schema.slug)">
                                 </label>
+
+
                             </p>
                             <hr>
                             <p><a class="button expanded" href="#" v-on:click="addSlide($event)" draggable="false" ondragstart="return false;"><i class="fi-plus"></i> Add new slide</a></p>
