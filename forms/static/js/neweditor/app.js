@@ -214,6 +214,9 @@ var vm = new Vue({
       this.selectSlide(newSlide);
       this.cleanup();
     },
+
+
+
     correctFinalSlide: function() {
       for (var idx in this.slides) {
         var slide = this.slides[idx];
@@ -322,6 +325,26 @@ var vm = new Vue({
       if (this.activeSlide.schema.required && oldSlug in this.activeSlide.schema.required) {
         this.activeSlide.schema.required.splice(this.activeSlide.schema.required.indexOf(oldSlug), 1, newSlug);
       }
+    },
+    updateSlideSlug: function(ev, slug) {
+      var newSlug = ev.target.value;
+      this.activeSlide.schema.slug = newSlug;
+
+      // update the uischema with the new slug
+      var o = this.uischema;
+      var new_o = {};
+      // go through properties and replace the key/value pair
+      // https://stackoverflow.com/a/54959591/122400
+      for (var i in o) {
+          if (i == slug) {
+            console.log(i + ' matches ' + slug);
+            new_o[newSlug] = o[slug];
+          } else {
+            console.log(i + ' does not match ' + slug);
+            new_o[i] = o[i];
+          }
+      }
+      this.$set(this.$data, 'uischema', new_o);
     },
 
     selectSlide: function(slide) {
