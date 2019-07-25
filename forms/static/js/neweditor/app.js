@@ -344,6 +344,16 @@ var vm = new Vue({
             new_o[i] = o[i];
           }
       }
+
+      // ensure all event properties point to the new slug
+      for (var idx in this.slides) {
+        var slide = this.slides[idx];
+        if (slide.rules[0].event == slug) {
+          console.log('caught relevant event')
+          slide.rules[0].event = newSlug;
+        }
+      }
+
       this.$set(this.$data, 'uischema', new_o);
     },
 
