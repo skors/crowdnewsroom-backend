@@ -9,3 +9,4 @@ theme/node_modules/
 .coverage
 coverage.xml
 sent_emails/*
+/node_modules/.yarn-integrity

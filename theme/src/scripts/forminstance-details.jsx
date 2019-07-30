@@ -78,6 +78,19 @@ class FormInstance extends Component {
   constructor(props) {
     super(props)
     this.state = { ...props.formInstance }
+    this.state.previewMode = 'form';
+    this.switchPreview = this.switchPreview.bind(this);
+
+    // build the conversation UI URL by manipulating frontendURL
+    var pieces = this.props.frontendURL.split('/', 3);
+    this.conversationURL = 
+                  pieces[0] + '//' + pieces[2] + 
+                  '/conversation/?investigation=' + 
+                  this.urlParams.investigationSlug +
+                  "&interviewer=" +
+                  this.urlParams.formSlug;
+
+    console.log(this.conversationURL);
   }
 
   get urlParams() {
@@ -86,6 +99,25 @@ class FormInstance extends Component {
       pattern
     )
     return { investigationSlug, formSlug }
+  }
+
+  get switchButtonText() {
+    if (this.state.previewMode == 'form') {
+      return 'Switch to conversational UI';
+    } else {
+      return 'Switch to form UI';
+    }
+  }
+
+  switchPreview() {
+    console.log(this.state.previewMode);
+    if (this.state.previewMode == 'form') { 
+      this.setState({ previewMode: 'conversation'}); 
+    } else { 
+      this.setState({ previewMode: 'form'}); 
+    }
+    console.log(this.state.previewMode);
+    console.log(this.props.frontendURL);
   }
 
   render() {
@@ -100,6 +132,13 @@ class FormInstance extends Component {
       helpText = gettext('As this is a complex form, it can only be edited in the Expert mode editor. If you run into problems, contact Correctiv for help with customising your interviewer.');
     }
 
+    var iframeURL;
+    if (this.state.previewMode == 'form') {
+      iframeURL = this.props.frontendURL;
+    } else {
+      iframeURL = this.conversationURL;
+    }
+
     return (
       <div>
         <h2>{gettext('Your Interviewer')}</h2>
@@ -107,6 +146,9 @@ class FormInstance extends Component {
           <a target="_blank" href={this.props.frontendURL} className="bx--btn bx--btn--primary">
             {gettext('See your interviewer in action')}
           </a>
+          <Button onClick={this.switchPreview} className="bx--btn bx--btn--secondary">
+            {gettext(this.switchButtonText)}
+          </Button>
         </p>
         <p>
           {gettext(
@@ -114,7 +156,7 @@ class FormInstance extends Component {
           )}
         </p>
 
-        <iframe src={this.props.frontendURL} width="100%" height="600" />
+        <iframe src={iframeURL} width="100%" height="600" />
 
         <p>
           {gettext(helpText)}
