@@ -558,6 +558,16 @@ var vm = new Vue({
         }
       }
     },
+    setQuestion: function(ev) {
+      var val = ev.target.value;
+      var slideSlug = this.activeSlide.schema.slug;
+      var slug = ev.target.name.replace('question', '');
+      // create the 'ui:question' property for this field in uischema if needed
+      if (!(slug in this.uischema[slideSlug])) {
+        this.$set(this.uischema[slideSlug], slug, {});
+      }
+      this.$set(this.uischema[slideSlug][slug], 'ui:question', val);
+    },
 
     getFieldType: function(field) {
       if (this.getFieldWidget(field.slug) == 'oneLineWidget') { return 'oneline'; }
