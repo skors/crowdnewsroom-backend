@@ -52,15 +52,15 @@ class Utils(TestCase):
         lines = buffer.getvalue().split('\n')
 
         header = lines[0].strip()
-        expected_header = "email,meta_id,meta_status,meta_submission_date,meta_tags,meta_url,meta_version,name"
+        expected_header = "email,meta_comments,meta_id,meta_status,meta_submission_date,meta_tags,meta_url,meta_version,name"
         self.assertEquals(header, expected_header)
 
         first = lines[1].strip()
-        expected_first = "peter@example.com,{},Submitted,2018-01-01 00:00:00+00:00,,http://example.com,0,Peter".format(response_1.id)
+        expected_first = "peter@example.com,,{},Inbox,2018-01-01 00:00:00+00:00,,http://example.com,0,Peter".format(response_1.id)
         self.assertEquals(first, expected_first)
 
         second = lines[2].strip()
-        expected_second = "katharina@example.com,{},Submitted,2018-01-02 00:00:00+00:00,,http://example.com,0,Katharina".format(response_2.id)
+        expected_second = "katharina@example.com,,{},Inbox,2018-01-02 00:00:00+00:00,,http://example.com,0,Katharina".format(response_2.id)
         self.assertEquals(second, expected_second)
 
     def test_create_form_csv_file(self):
@@ -89,12 +89,12 @@ class Utils(TestCase):
         lines = buffer.getvalue().split('\n')
 
         header = lines[0].strip()
-        expected_header = "meta_id,meta_status,meta_submission_date,meta_tags,meta_url,meta_version,name,picture"
+        expected_header = "meta_comments,meta_id,meta_status,meta_submission_date,meta_tags,meta_url,meta_version,name,picture"
         self.assertEquals(header, expected_header)
 
         first = lines[1].strip()
-        expected_first = ",".join([str(response.id),
-                                   "Submitted",
+        expected_first = ",".join(["",str(response.id),
+                                   "Inbox",
                                    "2018-01-02 00:00:00+00:00",
                                    "",  # no tags
                                    "https://example.com/forms/admin/investigations/first-investigation/forms/first-form/responses/{}".format(
@@ -210,15 +210,15 @@ class Utils(TestCase):
         lines = buffer.getvalue().split('\n')
 
         header = lines[0].strip()
-        expected_header = "email,meta_id,meta_status,meta_submission_date,meta_tags,meta_url,meta_version,name"
+        expected_header = "email,meta_comments,meta_id,meta_status,meta_submission_date,meta_tags,meta_url,meta_version,name"
         self.assertEquals(header, expected_header)
 
         first = lines[1].strip()
-        expected_first = 'peter@example.com,{},Submitted,2018-01-01 00:00:00+00:00,"First Tag, Second Tag  with  commas",http://example.com,0,Peter'.format(
+        expected_first = 'peter@example.com,,{},Inbox,2018-01-01 00:00:00+00:00,"First Tag, Second Tag  with  commas",http://example.com,0,Peter'.format(
             response_1.id)
         self.assertEquals(first, expected_first)
 
         second = lines[2].strip()
-        expected_second = "katharina@example.com,{},Submitted,2018-01-02 00:00:00+00:00,,http://example.com,0,Katharina".format(
+        expected_second = "katharina@example.com,,{},Inbox,2018-01-02 00:00:00+00:00,,http://example.com,0,Katharina".format(
             response_2.id)
         self.assertEquals(second, expected_second)
