@@ -76,7 +76,7 @@ class InvestigationListView(LoginRequiredMixin, BreadCrumbMixin, ListView):
 
 class InvestigationAuthMixin(PermissionRequiredMixin, LoginRequiredMixin):
     permission_required = 'view_investigation'
-    return_403 = True
+    return_403 = False
 
     def get_permission_object(self):
         return get_object_or_404(Investigation, slug=self.kwargs.get("investigation_slug"))
