@@ -71,11 +71,11 @@ class InvestigationListView(LoginRequiredMixin, BreadCrumbMixin, ListView):
         ]
 
     def get_queryset(self):
-        return get_objects_for_user(self.request.user, 'view_investigation', Investigation)
+        return get_objects_for_user(self.request.user, 'watch_investigation', Investigation)
 
 
 class InvestigationAuthMixin(PermissionRequiredMixin, LoginRequiredMixin):
-    permission_required = 'view_investigation'
+    permission_required = 'watch_investigation'
     return_403 = False
 
     def get_permission_object(self):
@@ -388,7 +388,7 @@ def _get_file_data(file):
 
 
 @login_required(login_url="/admin/login")
-@permission_required('forms.view_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
+@permission_required('forms.watch_investigation', (Investigation, 'slug', 'investigation_slug'), return_403=True)
 def form_response_file_view(request, *args, **kwargs):
     form_slug = kwargs.get("form_slug")
     investigation_slug = kwargs.get("investigation_slug")
