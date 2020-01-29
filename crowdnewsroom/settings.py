@@ -166,7 +166,9 @@ EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 25))
 EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS') == 'true'
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Crowdnewsroom <noreply@crowdnewsroom.org>')
 
-SESSION_COOKIE_AGE = 60*60*2  # 2 hrs
+SESSION_COOKIE_AGE = 60*15  # 15min
+PASSWORD_RESET_TIMEOUT_DAYS = 1
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 WEBPACK_LOADER = {
     'DEFAULT': {
