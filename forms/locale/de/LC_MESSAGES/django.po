@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-09 15:57+0200\n"
+"POT-Creation-Date: 2020-01-30 10:41+0000\n"
 "PO-Revision-Date: 2018-08-09 15:45+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,54 +18,54 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.1.1\n"
 
-#: forms/admin.py:16
+#: forms/admin.py:17
 msgid "Personal info"
 msgstr "Persönliche Informationen"
 
-#: forms/admin.py:17
+#: forms/admin.py:18
 msgid "Permissions"
 msgstr "Zugriffsrechte"
 
-#: forms/admin.py:19
+#: forms/admin.py:20
 msgid "Important dates"
 msgstr "Wichtige Termine"
 
-#: forms/admin_views.py:68 forms/admin_views.py:90 forms/admin_views.py:121
-#: forms/admin_views.py:221 forms/admin_views.py:450 forms/admin_views.py:463
-#: forms/admin_views.py:482
+#: forms/admin_views.py:70 forms/admin_views.py:92 forms/admin_views.py:126
+#: forms/admin_views.py:230 forms/admin_views.py:470 forms/admin_views.py:483
+#: forms/admin_views.py:503
 msgid "Investigations"
 msgstr "Recherchen"
 
-#: forms/admin_views.py:147
+#: forms/admin_views.py:154
 msgid "No one contributed to your investigation yet. Time to advertise!"
 msgstr ""
 "Es gibt noch keine Antworten für diese Recherche. Zeit sie zu bewerben!"
 
-#: forms/admin_views.py:153
+#: forms/admin_views.py:162
 msgid ""
 "There are no results using your current filters. Maybe try something else?"
 msgstr ""
 "Mit den aktuellen Filtereinstellungen gibt es keine Antworten. Sie können "
 "einen anderen Filter probieren."
 
-#: forms/admin_views.py:156
+#: forms/admin_views.py:165
 msgid ""
 "There are no results in this bucket yet. Start moving some from the inbox."
 msgstr ""
 "In der aktuellen Ansicht gibt es keine Antworten. Starten Sie, indem Sie "
 "Antworten aus dem Eingang bewegen."
 
-#: forms/admin_views.py:159
+#: forms/admin_views.py:168
 msgid "Looks like you verified or deleted all contributions. Good work!"
 msgstr ""
 "Sie haben alle Antworten gelöscht oder also verifiziert markiert. Gute "
 "Arbeit!"
 
-#: forms/admin_views.py:464
+#: forms/admin_views.py:484
 msgid "New Investigation"
 msgstr "Neue Recherche"
 
-#: forms/admin_views.py:475
+#: forms/admin_views.py:496
 msgid "New Form"
 msgstr "Neuer Fragebogen"
 
@@ -73,20 +73,20 @@ msgstr "Neuer Fragebogen"
 msgid "Add a comment"
 msgstr "Kommentar hinzufügen"
 
-#: forms/models.py:32 forms/models.py:217
+#: forms/models.py:30 forms/models.py:233
 msgid "Draft"
 msgstr "Entwurf"
 
-#: forms/models.py:33 forms/models.py:219
+#: forms/models.py:31 forms/models.py:235
 msgid "Published"
 msgstr "Veröffentlicht"
 
-#: forms/models.py:34 forms/models.py:221
+#: forms/models.py:32 forms/models.py:237
 msgid "Archived"
 msgstr "Archiviert"
 
 #: forms/models.py:62
-msgid "View investigation"
+msgid "Watch investigation"
 msgstr "Recherche ansehen"
 
 #: forms/models.py:63
@@ -94,94 +94,98 @@ msgid "Manage investigation"
 msgstr "Recherche bearbeiten"
 
 #: forms/models.py:64
+msgid "Admin investigation"
+msgstr ""
+
+#: forms/models.py:65
 msgid "Delete investigation and manage owners"
 msgstr "Recherche Löschen und Besitzer bearbeiten"
 
-#: forms/models.py:112
+#: forms/models.py:126
 msgid "Owner"
 msgstr "Manager"
 
-#: forms/models.py:113
+#: forms/models.py:127
 msgid "Admin"
 msgstr "Administrator"
 
-#: forms/models.py:114
+#: forms/models.py:128
 msgid "Editor"
 msgstr "Redakteur"
 
-#: forms/models.py:115
+#: forms/models.py:129
 msgid "Viewer"
 msgstr "Leser"
 
-#: forms/models.py:189
+#: forms/models.py:205
 msgid "email address"
 msgstr "E-Mail-Adresse"
 
-#: forms/models.py:218
+#: forms/models.py:234
 msgid "Unlisted"
 msgstr "Ungelistet"
 
-#: forms/models.py:220
+#: forms/models.py:236
 msgid "Closed"
 msgstr "Beendet"
 
-#: forms/models.py:265 forms/models.py:266 forms/models.py:482
-#: forms/models.py:483
+#: forms/models.py:285 forms/models.py:287 forms/models.py:524
+#: forms/models.py:526
 msgid "Thank you for participating in a crowdnewsroom investigation!"
 msgstr ""
 "Vielen Dank, dass Sie an dieser Crowdnewsroom-Recherche teilgenommen haben!"
 
-#: forms/models.py:293
+#: forms/models.py:328
 msgid "Submitted"
 msgstr "Eingang"
 
-#: forms/models.py:294 forms/templates/forms/formresponse_list.html:27
+#: forms/models.py:329 forms/templates/forms/formresponse_list.html:27
 #: forms/templates/forms/formresponse_list.html:165
 msgid "Verified"
 msgstr "Verifiziert"
 
-#: forms/models.py:295
+#: forms/models.py:330
 msgid "Invalid"
 msgstr "Papierkorb"
 
-#: forms/models.py:308
+#: forms/models.py:343
 msgid "Edit response"
 msgstr "Antwort bearbeiten"
 
-#: forms/models.py:371
+#: forms/models.py:409
 msgid "Yes"
 msgstr "Ja"
 
-#: forms/models.py:371
+#: forms/models.py:409
 msgid "No"
 msgstr "Nein"
 
-#: forms/models.py:388
+#: forms/models.py:426
 msgid "<File>"
 msgstr "<Datei>"
 
-#: forms/models.py:429
+#: forms/models.py:474
 msgid "Thank you for your submission!"
 msgstr "Vielen Dank für Ihre Teilnahme!"
 
-#: forms/models.py:458
+#: forms/models.py:501
 msgid "You have been invited to join the {} investigation"
 msgstr "Sie wurden zu der {} Recherche eingeladen"
 
-#: forms/templates/forms/form_list.html:5
+#: forms/templates/forms/form_list.html:6
 msgid "Forms for investigation"
 msgstr "Formulare für diese Recherche"
 
-#: forms/templates/forms/form_list.html:11
+#: forms/templates/forms/form_list.html:14
 msgid "Add a new interviewer"
 msgstr "Einen neuen Fragebogen hinzufügen"
 
-#: forms/templates/forms/form_list.html:27
-#: forms/templates/forms/investigation_list.html:34
+#: forms/templates/forms/form_list.html:31
+#: forms/templates/forms/investigation_list.html:27
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: forms/templates/forms/form_list.html:30
+#: forms/templates/forms/form_list.html:34
 #: forms/templates/forms/formresponse_list.html:8
 #: forms/templates/forms/formresponse_list.html:182
 msgid "Responses"
@@ -192,52 +196,52 @@ msgstr "Antworten"
 msgid "Submission Details"
 msgstr "Antwortdetails"
 
-#: forms/templates/forms/formresponse_detail.html:19
+#: forms/templates/forms/formresponse_detail.html:20
 msgid "Manage Tags"
 msgstr "Markierungen"
 
-#: forms/templates/forms/formresponse_detail.html:23
+#: forms/templates/forms/formresponse_detail.html:24
 msgid "Manage Ownership"
 msgstr "Manager"
 
-#: forms/templates/forms/formresponse_detail.html:27
+#: forms/templates/forms/formresponse_detail.html:28
 msgid "Manage Bucket"
 msgstr "Status"
 
-#: forms/templates/forms/formresponse_detail.html:35
+#: forms/templates/forms/formresponse_detail.html:36
 msgid "View details"
 msgstr "Details ansehen"
 
-#: forms/templates/forms/formresponse_detail.html:40
+#: forms/templates/forms/formresponse_detail.html:41
 msgid "Question"
 msgstr "Frage"
 
-#: forms/templates/forms/formresponse_detail.html:41
+#: forms/templates/forms/formresponse_detail.html:42
 msgid "Answer"
 msgstr "Antwort"
 
-#: forms/templates/forms/formresponse_detail.html:79
+#: forms/templates/forms/formresponse_detail.html:80
 #: forms/templates/forms/formresponse_list.html:195
 msgid "Comments"
 msgstr "Kommentare"
 
-#: forms/templates/forms/formresponse_detail.html:89
+#: forms/templates/forms/formresponse_detail.html:90
 msgid "edit"
 msgstr "bearbeiten"
 
-#: forms/templates/forms/formresponse_detail.html:91
+#: forms/templates/forms/formresponse_detail.html:92
 msgid "delete"
 msgstr "löschen"
 
-#: forms/templates/forms/formresponse_detail.html:96
+#: forms/templates/forms/formresponse_detail.html:97
 msgid "Delete comment"
 msgstr "Kommentar löschen"
 
-#: forms/templates/forms/formresponse_detail.html:120
+#: forms/templates/forms/formresponse_detail.html:121
 msgid "edit comment"
 msgstr "Kommentar bearbeiten"
 
-#: forms/templates/forms/formresponse_detail.html:138
+#: forms/templates/forms/formresponse_detail.html:139
 msgid "add comment"
 msgstr "Kommentar hinzufügen"
 
@@ -362,7 +366,7 @@ msgstr "Anzahl von Elementen pro Seite"
 msgid "Forward button"
 msgstr "Weiter Knopf"
 
-#: forms/templates/forms/formresponse_list.html:294
+#: forms/templates/forms/formresponse_list.html:295
 msgid "Download data as csv"
 msgstr "Als CSV herunterladen"
 
@@ -383,15 +387,11 @@ msgstr "Recherche bearbeiten"
 msgid "Your Investigations"
 msgstr "Ihre Recherchen"
 
-#: forms/templates/forms/investigation_list.html:16
-msgid "Create a new investigation"
-msgstr "Eine neue Recherche erstellen"
-
-#: forms/templates/forms/investigation_list.html:37
+#: forms/templates/forms/investigation_list.html:30
 msgid "Interviewers"
 msgstr "Fragebögen"
 
-#: forms/templates/forms/investigation_list.html:44
+#: forms/templates/forms/investigation_list.html:37
 #, python-format
 msgid ""
 "\n"
@@ -410,7 +410,7 @@ msgstr[1] ""
 "                                %(counter)s Antworten insgesamt\n"
 "                            "
 
-#: forms/templates/forms/investigation_list.html:51
+#: forms/templates/forms/investigation_list.html:44
 #, python-format
 msgid ""
 "\n"
@@ -431,7 +431,7 @@ msgstr[1] ""
 "Stunden\n"
 "                                "
 
-#: forms/templates/forms/investigation_list.html:58
+#: forms/templates/forms/investigation_list.html:51
 #, python-format
 msgid ""
 "\n"
@@ -452,7 +452,7 @@ msgstr[1] ""
 "werden müssen\n"
 "                                "
 
-#: forms/templates/forms/investigation_list.html:74
+#: forms/templates/forms/investigation_list.html:67
 msgid "Leave investigation"
 msgstr "Recherche verlassen"
 
@@ -506,10 +506,12 @@ msgstr "Das Team des Crowdnewsroom"
 #: forms/templates/registration/login.html:4
 #: forms/templates/registration/login.html:5
 #: forms/templates/registration/login.html:41
+#: forms/templates/registration/password_reset_complete.html:10
 msgid "Login"
 msgstr "Anmelden"
 
 #: forms/templates/registration/login.html:26
+#: forms/templates/registration/password_reset_form.html:27
 msgid "E-mail address"
 msgstr "E-Mail-Adresse"
 
@@ -520,6 +522,99 @@ msgstr "Passwort"
 #: forms/templates/registration/login.html:45
 msgid "Lost your password?"
 msgstr "Passwort vergessen?"
+
+#: forms/templates/registration/password_change_done.html:9
+msgid "Your password was changed."
+msgstr ""
+
+#: forms/templates/registration/password_change_form.html:16
+#: forms/templates/registration/password_reset_confirm.html:13
+msgid "Please enter and confirm your password."
+msgstr ""
+
+#: forms/templates/registration/password_change_form.html:18
+#: forms/templates/registration/password_reset_confirm.html:15
+msgid "Please enter and confirm your new password."
+msgstr "Bitte besuchen Sie die folgende Seite und wählen ein neues Passwort:"
+
+#: forms/templates/registration/password_change_form.html:42
+msgid "Old password"
+msgstr "Altes Passwort"
+
+#: forms/templates/registration/password_change_form.html:51
+#: forms/templates/registration/password_reset_confirm.html:36
+msgid "New password"
+msgstr "Neues Passwort"
+
+#: forms/templates/registration/password_change_form.html:60
+#: forms/templates/registration/password_reset_confirm.html:45
+msgid "New password confirmation"
+msgstr ""
+
+#: forms/templates/registration/password_change_form.html:72
+#: forms/templates/registration/password_reset_confirm.html:57
+#: forms/templates/registration/password_reset_form.html:38
+msgid "Submit"
+msgstr "Absenden"
+
+#: forms/templates/registration/password_change_form.html:78
+#: forms/templates/registration/password_reset_confirm.html:63
+msgid "Your password can't be too similar to your other personal information."
+msgstr ""
+
+#: forms/templates/registration/password_change_form.html:79
+#: forms/templates/registration/password_reset_confirm.html:64
+msgid "Your password must contain at least 8 characters."
+msgstr ""
+
+#: forms/templates/registration/password_change_form.html:80
+#: forms/templates/registration/password_reset_confirm.html:65
+msgid "Your password can't be a commonly used password."
+msgstr ""
+
+#: forms/templates/registration/password_change_form.html:81
+#: forms/templates/registration/password_reset_confirm.html:66
+msgid "Your password can't be entirely numeric."
+msgstr ""
+
+#: forms/templates/registration/password_reset_complete.html:4
+#: forms/templates/registration/password_reset_complete.html:5
+msgid "Account created"
+msgstr ""
+
+#: forms/templates/registration/password_reset_complete.html:9
+msgid ""
+"Your account has been created successfully. Login to access to your "
+"investigations."
+msgstr ""
+
+#: forms/templates/registration/password_reset_confirm.html:76
+msgid "Your password token is expired."
+msgstr "Ihre Passwortschlüssel ist abgelaufen."
+
+#: forms/templates/registration/password_reset_confirm.html:81
+msgid "Please reset your password again"
+msgstr "Bitte setzen Sie ihr Passwort erneut"
+
+#: forms/templates/registration/password_reset_done.html:4
+#: forms/templates/registration/password_reset_done.html:5
+msgid "Password Reset Done"
+msgstr "Passwort zurücksetzen erfolgreich"
+
+#: forms/templates/registration/password_reset_done.html:9
+msgid ""
+"Check your email inbox. We've emailed you instructions for setting your "
+"password. You should receive the email shortly!"
+msgstr ""
+
+#: forms/templates/registration/password_reset_form.html:4
+#: forms/templates/registration/password_reset_form.html:5
+msgid "Password Reset"
+msgstr "Passwort zurücksetzen"
+
+#: forms/templates/registration/password_reset_form.html:42
+msgid "Instructions to change your password will be sent to you."
+msgstr ""
 
 #: forms/templates/registration/set_initial_password_email.html:2
 #, python-format
@@ -545,10 +640,11 @@ msgid "The %(site_name)s team"
 msgstr "Das %(site_name)s Team"
 
 #: forms/templates/registration/set_initial_password_subject.txt:1
-#, fuzzy
-#| msgid "You have been invited to join the {} investigation"
 msgid "You have been invited to join the Crowdnewsroom"
 msgstr "Sie wurden in den Crowdnewsroom eingeladen"
+
+#~ msgid "Create a new investigation"
+#~ msgstr "Eine neue Recherche erstellen"
 
 #~ msgid "Edit"
 #~ msgstr "Bearbeiten"
