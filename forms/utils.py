@@ -45,7 +45,7 @@ def create_form_csv(form, investigation_slug, build_absolute_uri, io_object, fil
                             "meta_tags": ", ".join([tag.name.replace(",", " ")
                                                     for tag
                                                     in form_response.tags.all()]),
-                            "meta_comments": ", ".join([comment.author.first_name + ' ' + comment.author.last_name + ': ' 
+                            "meta_comments": ", ".join([comment.author.first_name + ' ' + comment.author.last_name + ' (' +  comment.date.strftime('%d.%m.%Y %H:%M') + '): ' 
                                                         + comment.text.replace(",", " ")
                                                     for comment
                                                     in form_response.visible_comments])}
