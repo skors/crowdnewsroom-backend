@@ -59,7 +59,7 @@ class Investigation(models.Model, UniqueSlugMixin):
 
     class Meta:
         permissions = (
-            ('watch_investigation', _('Watch investigation')),
+            ('view_investigation', _('Watch investigation')),
             ('manage_investigation', _('Manage investigation')),
             ('admin_investigation', _('Admin investigation')),
             ('master_investigation', _('Delete investigation and manage owners')),
@@ -100,7 +100,7 @@ class Investigation(models.Model, UniqueSlugMixin):
     def all_users(self):
         user_perms = get_users_with_perms(
             self, with_superusers=True, attach_perms=True)
-        return [user for (user, perms) in user_perms.items() if "watch_investigation" in perms]
+        return [user for (user, perms) in user_perms.items() if "view_investigation" in perms]
 
     def add_user(self, user, role):
         try:
@@ -141,7 +141,7 @@ class UserGroup(models.Model):
         self.group.user_set.add(user)
 
     def assign_permissions(self):
-        assign_perm("watch_investigation", self.group, self.investigation)
+        assign_perm("view_investigation", self.group, self.investigation)
         if self.role in [INVESTIGATION_ROLES.EDITOR, INVESTIGATION_ROLES.OWNER, INVESTIGATION_ROLES.ADMIN]:
             assign_perm("manage_investigation", self.group, self.investigation)
         if self.role in [INVESTIGATION_ROLES.OWNER, INVESTIGATION_ROLES.ADMIN]:

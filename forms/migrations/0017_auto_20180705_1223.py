@@ -12,6 +12,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='investigation',
-            options={'permissions': (('watch_investigation', 'View investigation'), ('manage_investigation', 'Manage investigation'), ('master_investigation', 'Delete investigation and manage owners'))},
+            options={'permissions': (('view_investigation', 'View investigation'), ('manage_investigation', 'Manage investigation'), ('master_investigation', 'Delete investigation and manage owners'))},
         ),
     ]
