@@ -214,7 +214,7 @@ class InvestigationObjectPermissions(DjangoObjectPermissions):
 
 
 class InvestigationObjectViewPermissions(InvestigationObjectPermissions):
-    permission = "watch_investigation"
+    permission = "view_investigation"
 
 
 class InvestigationObjectManagePermissions(InvestigationObjectPermissions):
