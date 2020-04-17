@@ -101,7 +101,7 @@ class Migration(migrations.Migration):
                 ('faq', models.TextField()),
             ],
             options={
-                'permissions': (('view_investigation', 'View investigation'), ('manage_investigation', 'Manage investigation')),
+                'permissions': (('manage_investigation', 'Manage investigation')),
             },
         ),
         migrations.CreateModel(
