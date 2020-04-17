@@ -59,7 +59,6 @@ class Investigation(models.Model, UniqueSlugMixin):
 
     class Meta:
         permissions = (
-            ('view_investigation', _('Watch investigation')),
             ('manage_investigation', _('Manage investigation')),
             ('admin_investigation', _('Admin investigation')),
             ('master_investigation', _('Delete investigation and manage owners')),

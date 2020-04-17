@@ -319,7 +319,7 @@ def form_response_batch_edit(request, *args, **kwargs):
         if email == "clear_assignees":
             for form_response in form_responses:
                 form_response.assignees.clear()
-        else:
+        elif email != '':
             user = User.objects.get(email=email)
             if user.has_perm("manage_investigation", investigation):
                 for form_response in form_responses:

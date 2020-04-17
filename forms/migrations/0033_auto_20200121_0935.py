@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='investigation',
-            options={'permissions': (('view_investigation', 'Watch investigation'), ('manage_investigation', 'Manage investigation'), ('admin_investigation', 'Admin investigation'), ('master_investigation', 'Delete investigation and manage owners'))},
+            options={'permissions': (('manage_investigation', 'Manage investigation'), ('admin_investigation', 'Admin investigation'), ('master_investigation', 'Delete investigation and manage owners'))},
         ),
         migrations.AlterField(
             model_name='form',
