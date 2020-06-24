@@ -54,9 +54,13 @@ class FormInstanceTemplateAdmin(admin.ModelAdmin):
     }
 
 
+class FormResponseAdmin(admin.ModelAdmin):
+    list_filter = ('form_instance',)
+
+
 admin.site.register(FormInstance, FormInstanceAdmin)
 admin.site.register(Investigation, InvestigationAdmin)
-admin.site.register(FormResponse)
+admin.site.register(FormResponse, FormResponseAdmin)
 admin.site.register(Partner)
 admin.site.register(Form)
 admin.site.register(Tag)

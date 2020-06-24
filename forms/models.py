@@ -450,6 +450,13 @@ class FormResponse(models.Model):
             .filter(form_instance__form=form) \
             .order_by(Coalesce('last_status_changed_date', 'submission_date').desc())
 
+    def __str__(self):
+        try:
+            return "{} - {}".format(self.json['email'], self.form_instance)
+        except:
+            return "Form Response {}".format(self.pk)
+
+
 
 def generate_emails(form_response: FormResponse):
     plaintext_template = Engine().from_string(

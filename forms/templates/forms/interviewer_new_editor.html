@@ -160,7 +160,7 @@
                                       <!-- File upload -->
                                       <input v-if="getFieldType(field) == 'fileupload'" :name="field.slug" type="file" readonly>
                                       <!-- Image upload -->
-                                      <input v-if="getFieldType(field) == 'imageupload'" :name="field.slug" type="file" accept="image/*" capture="environment">
+                                      <input v-if="getFieldType(field) == 'imageupload'" :name="field.slug" type="file" accept="image/*">
 
                                       <div class="field-options grid-x grid-margin-x" v-show="field.slug == editingField">
                                         <h5 class="small-12 cell">Edit field</h5>
