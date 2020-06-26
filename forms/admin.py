@@ -55,7 +55,7 @@ class FormInstanceTemplateAdmin(admin.ModelAdmin):
 
 
 class FormResponseAdmin(admin.ModelAdmin):
-    list_filter = ('form_instance',)
+    list_filter = ('form_instance__form',)
 
 
 admin.site.register(FormInstance, FormInstanceAdmin)
