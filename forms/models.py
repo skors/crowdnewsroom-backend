@@ -452,7 +452,7 @@ class FormResponse(models.Model):
 
     def __str__(self):
         try:
-            return "{} - {}".format(self.json['email'], self.form_instance)
+            return "{} - {}".format(self.json['email'], self.form_instance.form)
         except:
             return "Form Response {}".format(self.pk)
 
