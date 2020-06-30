@@ -112,6 +112,15 @@
                                             <span class="help-text" id="nameHelpText">The label to be shown next to this field.</span>
                                         </p>
                                         <p class="small-12 medium-3 cell text-right">
+                                          <label class="middle" :for="field.slug + 'question'">Question</label>
+                                        </p>
+                                        <p class="small-12 medium-9 cell">
+                                          <input type="text" :name="field.slug + 'question'" 
+                                                 :value="field.slug in uischema[activeSlide.schema.slug] && 'ui:question' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:question'] : '' "
+                                                 v-on:change="setQuestion($event)">
+                                            <span class="help-text" id="nameHelpText">The question text to show in the conversational UI. If left blank, the label will be used as a question. Has no effect on simple forms. </span>
+                                        </p>
+                                        <p class="small-12 medium-3 cell text-right">
                                             <label class="middle" :for="field.slug + 'default'">Default value</label>
                                         </p>
                                         <p class="small-12 medium-9 cell">
@@ -132,17 +141,6 @@
                                                  v-on:change="setRequiredField($event)">
                                           <label :for="field.slug + '-required'">Required field?</label>
                                         </p>
-
-                                        <p class="small-12 medium-3 cell text-right">
-                                          <label class="middle" :for="field.slug + 'question'">Question</label>
-                                        </p>
-                                        <p class="small-12 medium-9 cell">
-                                          <input type="text" :name="field.slug + 'question'" 
-                                                 :value="field.slug in uischema[activeSlide.schema.slug] && 'ui:question' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:question'] : '' "
-                                                 v-on:change="setQuestion($event)">
-                                            <span class="help-text" id="nameHelpText">The question text to show in the conversational UI. If left blank, the label will be used as a question. Has no effect on simple forms. </span>
-                                        </p>
-
 
                                         <p class="small-12 cell text-right">
                                           <a class="button secondary" href="#" v-on:click="editingField = null" v-show="editingField == field.slug">Done</a>
