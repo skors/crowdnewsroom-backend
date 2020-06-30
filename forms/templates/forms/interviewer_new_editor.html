@@ -90,16 +90,16 @@
                                       </label>
 
                                       <!-- Email field (string) -->
-                                      <input :name="field.slug" :value="field.default" :id="field.key" :label="field.title" :placeholder="field.placeholder" readonly type="text"
+                                      <input :name="field.slug" :value="field.default" :id="field.key" :label="field.title" :pattern="field.pattern" :placeholder="field.placeholder" readonly type="text"
                                              v-if="getFieldType(field) == 'email'">
                                       <!-- Long text field -->
                                       <textarea :name="field.slug" :value="field.default" :id="field.key" :label="field.title" :placeholder="field.placeholder" readonly type="text" style="height: auto;"
                                                 v-if="getFieldType(field) == 'longtext'"></textarea>
                                       <!-- Simple text field (string) -->
-                                      <input :name="field.slug" :value="field.default" :id="field.key" :label="field.title" :placeholder="field.placeholder" readonly type="text"
+                                      <input :name="field.slug" :value="field.default" :id="field.key" :label="field.title" :pattern="field.pattern" :placeholder="field.placeholder" readonly :type="field.field_type ? field.field_type : 'text' "
                                              v-if="getFieldType(field) == 'text'">
                                       <!-- Numeric field (string) -->
-                                      <input v-if="field.type == 'integer' || field.type == 'number'" :name="field.slug" :value="field.default" :id="field.key" :label="field.title" readonly type="number"
+                                      <input v-if="field.type == 'integer' || field.type == 'number'" :name="field.slug" :pattern="field.pattern" :value="field.default" :id="field.key" :label="field.title" readonly type="number"
                                              v-if="getFieldType(field) == 'number'">
 
                                       <div class="field-options grid-x grid-margin-x" v-show="field.slug == editingField">
@@ -133,6 +133,44 @@
                                         <p class="small-12 medium-9 cell">
                                           <input type="text" :name="field.slug + 'placeholder'" v-model="field.placeholder">
                                             <span class="help-text" id="nameHelpText">Text to show in the field itself, which will be replaced when the user types something. Good to show an example of the expected input. Won't be shown if "default value" is set.</span>
+                                        </p>
+                                        <p class="small-12 medium-3 cell text-right">
+                                          <label class="middle" :for="field.slug + 'pattern'">Pattern</label>
+                                        </p>
+                                        <p class="small-12 medium-9 cell">
+                                          <input type="text" :name="field.slug + 'pattern'" v-model="field.pattern">
+                                            <span class="help-text" id="nameHelpText"> HTML attribute to specify the possible expressions that the &lt;input&gt; element's value is checked against on form submission.</span>
+                                        </p>
+                                        <p v-if="getFieldType(field) == 'text'" class="small-12 medium-3 cell text-right">
+                                          <label class="middle" :for="field.slug + 'field_type'">Type</label>
+                                        </p>
+                                        <p v-if="getFieldType(field) == 'text'" class="small-12 medium-9 cell">
+                                          <select :name="field.slug + 'field_type'" v-model="field.field_type">
+                                            <option value="">Select one...</option>
+                                            <option value="button">button</option>
+                                            <option value="checkbox">checkbox</option>
+                                            <option value="color">color</option>
+                                            <option value="date">date</option>
+                                            <option value="datetime-local">datetime-local</option>
+                                            <option value="email">email</option>
+                                            <option value="file">file</option>
+                                            <option value="hidden">hidden</option>
+                                            <option value="image">image</option>
+                                            <option value="month">month</option>
+                                            <option value="number">number</option>
+                                            <option value="password">password</option>
+                                            <option value="radio">radio</option>
+                                            <option value="range">range</option>
+                                            <option value="reset">reset</option>
+                                            <option value="search">search</option>
+                                            <option value="submit">submit</option>
+                                            <option value="tel">tel</option>
+                                            <option value="text">text</option>
+                                            <option value="time">time</option>
+                                            <option value="url">url</option>
+                                            <option value="week">week</option>
+                                          </select>
+                                          <span class="help-text" id="nameHelpText">HTML attribute to specify the kind of the &lt;input&gt; element and the expectable virtual keyboard on mobile devices. </span>
                                         </p>
                                         <p class="small-12 medium-9 medium-offset-3 cell">
                                           <input type="checkbox" 
