@@ -567,6 +567,7 @@ var vm = new Vue({
         this.$set(this.uischema[slideSlug], slug, {});
       }
       this.$set(this.uischema[slideSlug][slug], 'ui:question', val);
+      this.$set(this.uischema[slideSlug][slug], 'ui:title', val);
     },
 
     getFieldType: function(field) {

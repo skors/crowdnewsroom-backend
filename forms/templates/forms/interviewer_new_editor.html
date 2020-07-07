@@ -85,8 +85,8 @@
 
                                     <!-- Text-based fields (text, longtext, email, number) -->
                                     <div class="slide-content small-10 medium-8 cell" v-if="['text', 'longtext', 'email', 'number'].includes(getFieldType(field))">
-                                      <label class="control-label" :for="field.question"> 
-                                        ${field.question ? field.question : field.title}
+                                      <label class="control-label" :for="field.slug"> 
+                                        ${ field.slug in uischema[activeSlide.schema.slug] && 'ui:question' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:question'] : field.title }
                                         <span v-if="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1">*</span>
                                       </label>
 
@@ -113,12 +113,12 @@
                                             <span class="help-text" id="nameHelpText">The label to be shown next to this field.</span>
                                         </p>
                                         <p class="small-12 medium-3 cell text-right">
-                                          <label class="middle" :for="field.question">Question</label>
+                                          <label class="middle" :for="field.slug + 'question'">Question</label>
                                         </p>
                                         <p class="small-12 medium-9 cell">
-                                          <input type="text" v-model="field.question" :name="field.slug + 'question'" 
-                                          :value="field.slug in uischema[activeSlide.schema.slug] && 'ui:question' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:question'] : '' "
-                                          v-on:change="setQuestion($event)">
+                                          <input type="text" :name="field.slug + 'question'" 
+                                                 :value="field.slug in uischema[activeSlide.schema.slug] && 'ui:question' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:question'] : '' "
+                                                 v-on:change="setQuestion($event)">
                                             <span class="help-text" id="nameHelpText">The question text to show in the conversational UI. If left blank, the label will be used as a question. Has no effect on simple forms. </span>
                                         </p>
                                         <p class="small-12 medium-3 cell text-right">
@@ -194,7 +194,7 @@
                                     <!-- File-based fields (fileupload, imageupload) -->
                                     <div class="slide-content small-10 medium-8 cell" v-if="['fileupload', 'imageupload'].includes(getFieldType(field))">
                                       <label class="control-label" :for="field.slug"> 
-                                        ${field.question ? field.question : field.title}<span v-if="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1">*</span>
+                                        ${ field.slug in uischema[activeSlide.schema.slug] && 'ui:question' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:question'] : field.title }<span v-if="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1">*</span>
                                       </label>
 
                                       <!-- File upload -->
@@ -215,12 +215,12 @@
                                           <input type="checkbox" :checked="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1" :name="field.slug + '-required'" v-on:change="setRequiredField($event)"><label :for="field.slug + '-required'">Required field?</label>
                                         </p>
                                         <p class="small-12 medium-3 cell text-right">
-                                            <label class="middle" :for="field.question">Question</label>
+                                            <label class="middle" :for="field.slug + 'question'">Question</label>
                                         </p>
                                         <p class="small-12 medium-9 cell">
-                                          <input type="text" v-model="field.question" :name="field.slug + 'question'" 
-                                          :value="field.slug in uischema[activeSlide.schema.slug] && 'ui:question' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:question'] : '' "
-                                          v-on:change="setQuestion($event)">
+                                          <input type="text" :name="field.slug + 'question'" 
+                                                 :value="field.slug in uischema[activeSlide.schema.slug] && 'ui:question' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:question'] : '' "
+                                                 v-on:change="setQuestion($event)">
                                             <span class="help-text" id="nameHelpText">The question text to show in the conversational UI. If left blank, the label will be used as a question. Has no effect on simple forms. </span>
                                         </p>
                                         <p class="small-12 cell text-right">
@@ -259,7 +259,7 @@
                                     <!-- Location  -->
                                     <div class="slide-content small-10 medium-8 cell" v-if="getFieldType(field) == 'location'">
                                       <label class="control-label" :for="field.slug"> 
-                                        ${ field.title }<span v-if="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1">*</span>
+                                        ${ field.slug in uischema[activeSlide.schema.slug] && 'ui:question' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:question'] : field.title }<span v-if="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1">*</span>
                                       </label>
 
                                       <div class="location">
@@ -282,9 +282,9 @@
                                             <label class="middle" :for="field.slug + 'question'">Question</label>
                                         </p>
                                         <p class="small-12 medium-9 cell">
-                                          <input type="text" v-model="field.question" :name="field.slug + 'question'" 
-                                          :value="field.slug in uischema[activeSlide.schema.slug] && 'ui:question' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:question'] : '' "
-                                          v-on:change="setQuestion($event)">
+                                          <input type="text" :name="field.slug + 'question'" 
+                                                 :value="field.slug in uischema[activeSlide.schema.slug] && 'ui:question' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:question'] : '' "
+                                                 v-on:change="setQuestion($event)">
                                             <span class="help-text" id="nameHelpText">The question text to show in the conversational UI. If left blank, the label will be used as a question. Has no effect on simple forms. </span>
                                         </p>
 
@@ -344,7 +344,7 @@
                                     <!-- Date -->
                                     <div class="slide-content small-10 medium-8 cell" v-if="getFieldType(field) == 'date'">
                                       <label class="control-label" :for="field.slug"> 
-                                        ${ field.title }<span v-if="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1">*</span>
+                                        ${ field.slug in uischema[activeSlide.schema.slug] && 'ui:question' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:question'] : field.title }<span v-if="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1">*</span>
                                       </label>
 
                                       <input :name="field.slug" :value="field.default" :id="field.key" :label="field.title" :placeholder="field.placeholder" readonly type="date">
@@ -362,9 +362,9 @@
                                             <label class="middle" :for="field.slug + 'question'">Question</label>
                                         </p>
                                         <p class="small-12 medium-9 cell">
-                                          <input type="text" v-model="field.question" :name="field.slug + 'question'" 
-                                          :value="field.slug in uischema[activeSlide.schema.slug] && 'ui:question' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:question'] : '' "
-                                          v-on:change="setQuestion($event)">
+                                          <input type="text" :name="field.slug + 'question'" 
+                                                 :value="field.slug in uischema[activeSlide.schema.slug] && 'ui:question' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:question'] : '' "
+                                                 v-on:change="setQuestion($event)">
                                             <span class="help-text" id="nameHelpText">The question text to show in the conversational UI. If left blank, the label will be used as a question. Has no effect on simple forms. </span>
                                         </p>
                                         <p class="small-12 medium-9 medium-offset-3 cell">
@@ -379,7 +379,7 @@
                                     <!-- Choice fields (boolean, checkbox, dropdown, radio) -->
                                     <div class="slide-content small-10 medium-8 cell" v-if="['boolean', 'checkboxes', 'dropdown', 'radio'].includes(getFieldType(field))">
                                       <label class="control-label" :for="field.slug"> 
-                                        ${ field.title }<span v-if="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1">*</span>
+                                        ${ field.slug in uischema[activeSlide.schema.slug] && 'ui:question' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:question'] : field.title }<span v-if="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1">*</span>
                                       </label>
 
                                       <!-- Yes/No (boolean) -->
@@ -420,9 +420,9 @@
                                             <label class="middle" :for="field.slug + 'question'">Question</label>
                                         </p>
                                         <p class="small-12 medium-9 cell">
-                                          <input type="text" v-model="field.question" :name="field.slug + 'question'" 
-                                          :value="field.slug in uischema[activeSlide.schema.slug] && 'ui:question' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:question'] : '' "
-                                          v-on:change="setQuestion($event)">
+                                          <input type="text" :name="field.slug + 'question'" 
+                                                 :value="field.slug in uischema[activeSlide.schema.slug] && 'ui:question' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:question'] : '' "
+                                                 v-on:change="setQuestion($event)">
                                             <span class="help-text" id="nameHelpText">The question text to show in the conversational UI. If left blank, the label will be used as a question. Has no effect on simple forms. </span>
                                         </p>
 
