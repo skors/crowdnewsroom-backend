@@ -559,6 +559,7 @@ var vm = new Vue({
       }
     },
     setQuestion: function(ev) {
+      console.log('YUhu');
       var val = ev.target.value;
       var slideSlug = this.activeSlide.schema.slug;
       var slug = ev.target.name.replace('question', '');
@@ -566,6 +567,7 @@ var vm = new Vue({
       if (!(slug in this.uischema[slideSlug])) {
         this.$set(this.uischema[slideSlug], slug, {});
       }
+      
       this.$set(this.uischema[slideSlug][slug], 'ui:question', val);
       this.$set(this.uischema[slideSlug][slug], 'ui:title', val);
     },
