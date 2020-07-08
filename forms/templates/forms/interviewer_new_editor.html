@@ -139,7 +139,7 @@
                                           <label class="middle" :for="field.slug + 'pattern'">Pattern</label>
                                         </p>
                                         <p class="small-12 medium-9 cell">
-                                          <input type="text" :name="field.slug + 'pattern'" v-model="field.pattern" :value="field.slug in uischema[activeSlide.schema.slug] && 'ui:pattern' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:pattern'] : '' "
+                                          <input type="text" :name="field.slug + 'pattern'" :value="field.slug in uischema[activeSlide.schema.slug] && 'ui:pattern' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:pattern'] : '' "
                                           v-on:change="setPattern($event)">
                                             <span class="help-text" id="nameHelpText">HTML attribute to specify the possible expressions that the &lt;input&gt; element's value is checked against on form submission.</span>
                                         </p>
