@@ -559,7 +559,6 @@ var vm = new Vue({
       }
     },
     setQuestion: function(ev) {
-      console.log('YUhu');
       var val = ev.target.value;
       var slideSlug = this.activeSlide.schema.slug;
       var slug = ev.target.name.replace('question', '');
