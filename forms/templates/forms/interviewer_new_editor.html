@@ -135,19 +135,19 @@
                                           <input type="text" :name="field.slug + 'placeholder'" v-model="field.placeholder">
                                             <span class="help-text" id="nameHelpText">Text to show in the field itself, which will be replaced when the user types something. Good to show an example of the expected input. Won't be shown if "default value" is set.</span>
                                         </p>
-                                        {% comment %}
                                         <p class="small-12 medium-3 cell text-right">
                                           <label class="middle" :for="field.slug + 'pattern'">Pattern</label>
                                         </p>
                                         <p class="small-12 medium-9 cell">
-                                          <input type="text" :name="field.slug + 'pattern'" v-model="field.pattern">
-                                            <span class="help-text" id="nameHelpText"> HTML attribute to specify the possible expressions that the &lt;input&gt; element's value is checked against on form submission.</span>
+                                          <input type="text" :name="field.slug + 'pattern'" v-model="field.pattern" :value="field.slug in uischema[activeSlide.schema.slug] && 'ui:pattern' in uischema[activeSlide.schema.slug][field.slug] ? uischema[activeSlide.schema.slug][field.slug]['ui:pattern'] : '' "
+                                          v-on:change="setPattern($event)">
+                                            <span class="help-text" id="nameHelpText">HTML attribute to specify the possible expressions that the &lt;input&gt; element's value is checked against on form submission.</span>
                                         </p>
                                         <p v-if="getFieldType(field) == 'text'" class="small-12 medium-3 cell text-right">
                                           <label class="middle" :for="field.slug + 'field_type'">Type</label>
                                         </p>
                                         <p v-if="getFieldType(field) == 'text'" class="small-12 medium-9 cell">
-                                          <select :name="field.slug + 'field_type'" v-model="field.field_type">
+                                          <select v-on:change="setPattern($event)" :name="field.slug + 'field_type'" v-model="field.field_type">
                                             <option value="">Select one...</option>
                                             <option value="button">button</option>
                                             <option value="checkbox">checkbox</option>
@@ -175,7 +175,6 @@
                                           <span class="help-text" id="nameHelpText">HTML attribute to specify the kind of the &lt;input&gt; element and the expectable virtual keyboard on mobile devices. </span>
                                         </p>
 
-                                        {% endcomment %}
                                         <p class="small-12 medium-9 medium-offset-3 cell">
                                           <input type="checkbox" 
                                                  :checked="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1" 
