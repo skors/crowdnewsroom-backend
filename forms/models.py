@@ -373,7 +373,11 @@ class FormResponse(models.Model):
                                    key=self._priority_order)
 
         for name, props in sorted_properties:
-            title = props.get("title") or flat_ui_schema.get(name, {}).get("ui:title", name)
+            title = props.get("question") or flat_ui_schema.get("ui:question", None)
+            if not title:
+                title = props.get("title") or flat_ui_schema.get(name, {}).get("ui:title", name)
+            if not title:
+                title = name
             row = {"title": title, "json_name": name,
                    "data_type": props.get("type")}
             if (flat_ui_schema.get(name, dict()).get("ui:widget") ==
