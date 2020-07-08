@@ -110,7 +110,7 @@
                                         </p>
                                         <p class="small-12 medium-9 cell">
                                             <input type="text" :name="field.slug + 'label'" v-model="field.title">
-                                            <span class="help-text" id="nameHelpText">The label to be shown next to this field.</span>
+                                            <span class="help-text" id="nameHelpText">The label to be shown next to this field and in the CSV.</span>
                                         </p>
                                         <p class="small-12 medium-3 cell text-right">
                                           <label class="middle" :for="field.slug + 'question'">Question</label>
@@ -209,7 +209,7 @@
                                         </p>
                                         <p class="small-12 medium-9 cell">
                                             <input type="text" :name="field.slug + 'label'" v-model="field.title">
-                                            <span class="help-text" id="nameHelpText">The label to be shown next to this field.</span>
+                                            <span class="help-text" id="nameHelpText">The label to be shown next to this field and in the CSV.</span>
                                         </p>
                                         <p class="small-12 medium-9 medium-offset-3 cell">
                                           <input type="checkbox" :checked="'required' in activeSlide.schema && activeSlide.schema.required.indexOf(field.slug) > -1" :name="field.slug + '-required'" v-on:change="setRequiredField($event)"><label :for="field.slug + '-required'">Required field?</label>
@@ -414,7 +414,7 @@
                                         </p>
                                         <p class="small-12 medium-9 cell">
                                             <input type="text" :name="field.slug + 'label'" v-model="field.title">
-                                            <span class="help-text" id="nameHelpText">The label to be shown next to this field.</span>
+                                            <span class="help-text" id="nameHelpText">The label to be shown next to this field and in the CSV.</span>
                                         </p>
                                         <p class="small-12 medium-3 cell text-right">
                                             <label class="middle" :for="field.slug + 'question'">Question</label>
