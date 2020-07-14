@@ -21,7 +21,10 @@ def create_form_csv(form, investigation_slug, build_absolute_uri, io_object, fil
 
     for form_response in responses:
         for field in form_response.rendered_fields():
-            fields.add(field['title'])
+            if field['label']:
+                fields.add(field['label'])
+            else:
+                fields.add(field['title'])
 
     writer = csv.DictWriter(io_object, fieldnames=sorted(
         fields), extrasaction='ignore')
@@ -35,7 +38,10 @@ def create_form_csv(form, investigation_slug, build_absolute_uri, io_object, fil
                     row[field["json_name"]] = build_absolute_uri(
                         field["value"])
                 else:
-                    row[field["title"]] = field["value"]
+                    if field["label"]:
+                        row[field["label"]] = field["value"]
+                    else:
+                        row[field["title"]] = field["value"]
 
             path = reverse("response_details", kwargs={"investigation_slug": investigation_slug,
                                                         "form_slug": form.slug,
