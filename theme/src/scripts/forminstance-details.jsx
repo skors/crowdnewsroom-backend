@@ -146,9 +146,9 @@ class FormInstance extends Component {
           <a target="_blank" href={this.props.frontendURL} className="bx--btn bx--btn--primary">
             {gettext('See your interviewer in action')}
           </a>
-          <Button onClick={this.switchPreview} className="bx--btn bx--btn--secondary">
+          {/* <Button onClick={this.switchPreview} className="bx--btn bx--btn--secondary">
             {gettext(this.switchButtonText)}
-          </Button>
+          </Button> */}
         </p>
         <p>
           {gettext(
