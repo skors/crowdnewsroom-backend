@@ -416,7 +416,7 @@ var vm = new Vue({
       this.addField("text-input", {
         type: "string",
         title: "Text",
-      }, {'ui:widget': 'patternTypeTextInputWidget'});
+      });
     },
     addOneLineField: function() {
       this.addField("one-line", {
