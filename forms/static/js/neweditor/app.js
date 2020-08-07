@@ -594,6 +594,7 @@ var vm = new Vue({
         if (this.getFieldWidget(field.slug) == 'signatureWidget') { return 'signature'; }
         if (this.getFieldWidget(field.slug) == 'locationWidget') { return 'location'; }
         if (this.getFieldWidget(field.slug) == 'radio') { return 'radio'; }
+        if (this.getFieldWidget(field.slug) == 'patternTypeTextInputWidget') { return 'text'; }
         if (field.format == 'data-url') {
           if (this.getFieldWidget(field.slug) == 'imageUpload') { return 'imageupload'; }
           return 'fileupload';
