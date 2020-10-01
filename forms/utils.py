@@ -21,9 +21,9 @@ def create_form_csv(form, investigation_slug, build_absolute_uri, io_object, fil
 
     for form_response in responses:
         for field in form_response.rendered_fields():
-            if field['label']:
+            try:
                 fields.add(field['label'])
-            else:
+            except:
                 fields.add(field['title'])
 
     writer = csv.DictWriter(io_object, fieldnames=sorted(
