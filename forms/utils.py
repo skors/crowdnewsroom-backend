@@ -26,7 +26,7 @@ def create_form_csv(form, investigation_slug, build_absolute_uri, io_object, fil
                 fields.add(field['title'])
 
     writer = csv.DictWriter(io_object, fieldnames=sorted(
-        fields), extrasaction='ignore')
+        fields, key=lambda x: str(x)), extrasaction='ignore')
     writer.writeheader()
 
     for form_response in responses:
