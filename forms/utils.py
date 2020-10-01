@@ -18,12 +18,11 @@ def create_form_csv(form, investigation_slug, build_absolute_uri, io_object, fil
                     "submission_date", "id", "tags", "comments"}
     fields = {"meta_{}".format(field) for field in extra_fields}
     
-
     for form_response in responses:
         for field in form_response.rendered_fields():
-            try:
+            if 'label' in field:
                 fields.add(field['label'])
-            except:
+            elif 'title' in field:
                 fields.add(field['title'])
 
     writer = csv.DictWriter(io_object, fieldnames=sorted(
