@@ -20,10 +20,13 @@ def create_form_csv(form, investigation_slug, build_absolute_uri, io_object, fil
     
     for form_response in responses:
         for field in form_response.rendered_fields():
-            if 'label' in field:
+            try:
                 fields.add(field['label'])
-            elif 'title' in field:
-                fields.add(field['title'])
+            except:
+                try:
+                    fields.add(field['title'])
+                except:
+                    next
 
     writer = csv.DictWriter(io_object, fieldnames=sorted(
         fields, key=lambda x: str(x)), extrasaction='ignore')
