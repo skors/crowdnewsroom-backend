@@ -368,7 +368,7 @@ class FormResponse(models.Model):
         flat_ui_schema = {}
         import json
         for (key, values) in self.form_instance.ui_schema_json.items():
-            flat_ui_schema.update(json.dumps(values))
+            flat_ui_schema.update(values, {})
 
         sorted_properties = sorted(self.all_json_properties().items(),
                                    key=self._priority_order)
