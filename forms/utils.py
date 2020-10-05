@@ -20,12 +20,25 @@ def create_form_csv(form, investigation_slug, build_absolute_uri, io_object, fil
     
     for form_response in responses:
         for field in form_response.rendered_fields():
-            if field['label'] != None and field['label'] != '':
-                fields.add(field['label'])
-            elif field['title'] != None and field['title'] != '':
-                fields.add(field['title'])
-            else:
-                fields.add(field['json_name'])
+            try:
+                if field['label'] != None and field['label'] != '':
+                    fields.add(field['label'])
+                else:
+                    try:
+                        if field['title'] != None and field['title'] != '':
+                            fields.add(field['title'])
+                        else:
+                            fields.add(field['json_name'])
+                    except:
+                        fields.add(field['json_name'])
+            except:
+                try:
+                    if field['title'] != None and field['title'] != '':
+                        fields.add(field['title'])
+                    else:
+                        fields.add(field['json_name'])
+                except:
+                    fields.add(field['json_name'])
 
     writer = csv.DictWriter(io_object, fieldnames=sorted(
         fields, key=lambda x: str(x)), extrasaction='ignore')
@@ -39,12 +52,25 @@ def create_form_csv(form, investigation_slug, build_absolute_uri, io_object, fil
                     row[field["json_name"]] = build_absolute_uri(
                         field["value"])
                 else:
-                    if field['label'] != None and field['label'] != '':
-                        row[field["label"]] = field["value"]
-                    elif field['title'] != None and field['title'] != '':
-                        row[field["title"]] = field["value"]
-                    else:
-                        row[field["json_name"]] = field["value"]
+                    try:
+                        if field['label'] != None and field['label'] != '':
+                            row[field["label"]] = field["value"]
+                        else:
+                            try:
+                                if field['title'] != None and field['title'] != '':
+                                    row[field["title"]] = field["value"]
+                                else:
+                                    row[field["json_name"]] = field["value"]
+                            except:
+                                row[field["json_name"]] = field["value"]
+                    except:
+                        try:
+                            if field['title'] != None and field['title'] != '':
+                                row[field["title"]] = field["value"]
+                            else:
+                                row[field["json_name"]] = field["value"]
+                        except:
+                            row[field["json_name"]] = field["value"]
 
             path = reverse("response_details", kwargs={"investigation_slug": investigation_slug,
                                                         "form_slug": form.slug,
