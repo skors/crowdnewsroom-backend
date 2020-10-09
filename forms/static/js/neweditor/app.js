@@ -495,7 +495,8 @@ var vm = new Vue({
         type: "string",
         format: "date",
         title: "Date",
-      });
+        field_type: "date"
+      }, {'ui:widget': 'patternTypeTextInputWidget'});
     },
     addSignatureField: function() {
       this.addField("signature", {
